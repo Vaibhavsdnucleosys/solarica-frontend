@@ -1,0 +1,214 @@
+
+            {/* Repair Company Modal */}
+            {showRepairCompanyModal && (
+                <div className="fixed inset-0 z-[60] flex items-start justify-center pt-[100px] bg-black/10" onClick={() => setShowRepairCompanyModal(false)}>
+                    <div className="flex flex-col w-[600px] min-h-[500px] shadow-2xl border border-[#2d819b] font-sans relative bg-[#e8f6fa]" onClick={(e) => e.stopPropagation()}>
+                        <div className="bg-white text-black px-2 py-1 text-[13px] font-bold text-center border-b border-[#2d819b] relative">
+                            Repair Company
+                            <span className="absolute right-2 top-0 cursor-pointer hover:text-red-300" onClick={() => setShowRepairCompanyModal(false)}>✕</span>
+                        </div>
+
+                        {/* Editable Input */}
+                        <div className="mx-4 my-2 border-b border-black text-center text-[13px] font-bold text-black py-1 bg-[#feba35]">
+                             <input
+                                type="text"
+                                className="w-full bg-[#feba35] text-center font-bold outline-none placeholder-black/50"
+                                value={menuSearchQuery}
+                                onChange={(e) => setMenuSearchQuery(e.target.value)}
+                                placeholder="Select Company to Repair"
+                                autoFocus
+                            />
+                        </div>
+
+                        <div className="flex flex-col flex-1">
+                            <div className="bg-[#2d819b] text-white px-2 py-0.5 text-[12px] font-bold flex justify-between">
+                                <span>List of Companies</span>
+                                <span>Number</span>
+                                <span>Period</span>
+                            </div>
+                            <div className="flex-1 bg-[#e8f6fa] overflow-y-auto font-mono text-[13px]">
+                                <div className="px-2 py-0.5 font-bold">Data Path: C:\Users\Public\TallyPrime\data</div>
+                                {openCompanies.filter(c => c.name.toLowerCase().includes(menuSearchQuery.toLowerCase())).map((comp, idx) => (
+                                    <div key={idx}
+                                        className={`flex justify-between px-2 cursor-pointer hover:bg-[#dceef5]`}
+                                        onClick={() => {
+                                            alert(`Repairing ${comp.name}...`); // Placeholder
+                                            setShowRepairCompanyModal(false);
+                                        }}
+                                    >
+                                        <div className="font-bold text-black">{comp.name}</div>
+                                        <div>{comp.number}</div>
+                                        <div>{comp.period}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Migrate Company Modal */}
+            {showMigrateCompanyModal && (
+                <div className="fixed inset-0 z-[60] flex items-start justify-center pt-[100px] bg-black/10" onClick={() => setShowMigrateCompanyModal(false)}>
+                    <div className="flex flex-col w-[600px] min-h-[500px] shadow-2xl border border-[#2d819b] font-sans relative bg-[#e8f6fa]" onClick={(e) => e.stopPropagation()}>
+                        <div className="bg-[#8ec7ff] text-black px-2 py-1 text-[13px] font-bold text-center border-b border-[#2d819b] relative">
+                            Migrate Company
+                            <span className="absolute right-2 top-0 cursor-pointer hover:text-red-300" onClick={() => setShowMigrateCompanyModal(false)}>✕</span>
+                        </div>
+
+                         <div className="mx-4 my-2 border-b border-black text-center text-[13px] font-bold text-black py-1 bg-[#feba35]">
+                             <input
+                                type="text"
+                                className="w-full bg-[#feba35] text-center font-bold outline-none placeholder-black/50"
+                                value={menuSearchQuery}
+                                onChange={(e) => setMenuSearchQuery(e.target.value)}
+                                placeholder="Select Company to Migrate"
+                                autoFocus
+                            />
+                        </div>
+
+                        <div className="flex flex-col flex-1">
+                            <div className="bg-[#2d819b] text-white px-2 py-0.5 text-[12px] font-bold flex justify-between">
+                                <span>List of Companies</span>
+                            </div>
+                            <div className="flex-1 bg-[#e8f6fa] overflow-y-auto font-mono text-[13px]">
+                                 <div className="px-2 py-0.5 font-bold">Data Path: C:\Users\Public\TallyPrime\data</div>
+                                {openCompanies.filter(c => c.name.toLowerCase().includes(menuSearchQuery.toLowerCase())).map((comp, idx) => (
+                                    <div key={idx}
+                                        className={`flex justify-between px-2 cursor-pointer hover:bg-[#dceef5]`}
+                                        onClick={() => {
+                                            alert(`Migrating ${comp.name}...`); // Placeholder
+                                            setShowMigrateCompanyModal(false);
+                                        }}
+                                    >
+                                        <div className="font-bold text-black">{comp.name}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Data Configuration Modal */}
+            {showDataConfigurationModal && (
+                <div className="fixed inset-0 z-[60] flex items-center justify-center bg-transparent" onClick={() => setShowDataConfigurationModal(false)}>
+                    <div className="bg-white p-2 shadow-2xl border border-[#2d819b] w-[700px] font-sans relative flex flex-col" onClick={(e) => e.stopPropagation()}>
+                        <div className="text-center font-bold text-[14px] border-b border-gray-300 mb-4 pb-1">Data Configuration</div>
+                         
+                         <div className="px-4 text-[13px] font-bold text-black flex flex-col gap-2"
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    const inputs = Array.from(e.currentTarget.querySelectorAll('input'));
+                                    const index = inputs.indexOf(e.target as HTMLInputElement);
+                                    if (index > -1 && index < inputs.length - 1) {
+                                        inputs[index+1].focus();
+                                    } else {
+                                        setShowDataConfigAccept(true);
+                                        (e.target as HTMLElement).blur();
+                                    }
+                                }
+                                if (e.key === 'Escape') {
+                                    e.stopPropagation();
+                                    if(showDataConfigAccept) setShowDataConfigAccept(false);
+                                    else setShowDataConfigQuit(true);
+                                }
+                            }}
+                         >
+                            {/* General Header */}
+                            <div className="font-bold text-[#1d5b6e] border-b border-gray-200">General</div>
+                            <div className="flex">
+                                <label className="w-[350px]">Company Data Path</label>
+                                <span className="mr-2">:</span>
+                                <input type="text" defaultValue="C:\Users\Public\TallyPrime\data" className="flex-1 bg-[#feba35] px-1 outline-none" autoFocus />
+                            </div>
+                             <div className="flex">
+                                <label className="w-[350px]">Backup Data Path</label>
+                                <span className="mr-2">:</span>
+                                <input type="text" defaultValue="TallyDrive" className="flex-1 bg-transparent px-1 outline-none focus:bg-[#ffe599]" />
+                            </div>
+                             <div className="flex">
+                                <label className="w-[350px]">Schedule Backup Data Path</label>
+                                <span className="mr-2">:</span>
+                                <input type="text" defaultValue="TallyDrive" className="flex-1 bg-transparent px-1 outline-none focus:bg-[#ffe599]" />
+                            </div>
+                             <div className="flex">
+                                <label className="w-[350px]">Auto-restore companies from TallyDrive with the same Backup Password</label>
+                                <span className="mr-2">:</span>
+                                <input type="text" defaultValue="Yes" className="flex-1 bg-transparent px-1 outline-none focus:bg-[#ffe599]" />
+                            </div>
+
+                            {/* Migration Header */}
+                            <div className="font-bold text-[#1d5b6e] border-b border-gray-200 mt-2">Migration</div>
+                             <div className="flex">
+                                <label className="w-[350px]">Allow working on data during migration</label>
+                                <span className="mr-2">:</span>
+                                <input type="text" defaultValue="No" className="flex-1 bg-transparent px-1 outline-none focus:bg-[#ffe599]" />
+                            </div>
+                         </div>
+
+                         {/* Config Accept Modal */}
+                         {showDataConfigAccept && (
+                             <div className="absolute bottom-10 right-10 z-[70] bg-[#dceef5] border-[2px] border-[#2d819b] shadow-2xl p-4 w-[200px] text-center font-sans">
+                                <div className="text-[14px] font-bold text-[#1d5b6e] mb-4">Accept?</div>
+                                <div className="flex justify-around">
+                                    <button className="px-3 py-1 bg-white border border-[#2d819b] text-[#1d5b6e] font-bold text-[12px] hover:bg-[#2d819b] hover:text-white"
+                                        onClick={() => {
+                                            setShowDataConfigAccept(false);
+                                            setShowDataConfigurationModal(false);
+                                        }} autoFocus>Yes</button>
+                                    <button className="px-3 py-1 bg-white border border-[#2d819b] text-[#1d5b6e] font-bold text-[12px] hover:bg-[#2d819b] hover:text-white"
+                                        onClick={() => setShowDataConfigAccept(false)}>No</button>
+                                </div>
+                            </div>
+                         )}
+
+                         {/* Config Quit Modal */}
+                         {showDataConfigQuit && (
+                             <div className="absolute inset-0 z-[70] flex items-center justify-center bg-black/10">
+                                <div className="bg-[#dceef5] border-[2px] border-[#2d819b] shadow-2xl p-4 w-[200px] text-center font-sans">
+                                    <div className="text-[14px] font-bold text-[#1d5b6e] mb-4">Quit?</div>
+                                    <div className="flex justify-around">
+                                        <button className="px-3 py-1 bg-white border border-[#2d819b] text-[#1d5b6e] font-bold text-[12px] hover:bg-[#2d819b] hover:text-white"
+                                            onClick={() => {
+                                                setShowDataConfigQuit(false);
+                                                setShowDataConfigurationModal(false);
+                                            }} autoFocus>Yes</button>
+                                        <button className="px-3 py-1 bg-white border border-[#2d819b] text-[#1d5b6e] font-bold text-[12px] hover:bg-[#2d819b] hover:text-white"
+                                            onClick={() => setShowDataConfigQuit(false)}>No</button>
+                                    </div>
+                                </div>
+                            </div>
+                         )}
+                    </div>
+                </div>
+            )}
+
+            {/* Split Menu Modal */}
+             {showSplitMenu && (
+                 <div className="fixed inset-0 z-[60] flex items-start justify-center pt-[100px] bg-transparent" onClick={() => setShowSplitMenu(false)}>
+                     <div className="bg-white border border-[#2d819b] shadow-xl w-[200px] flex flex-col font-sans text-[13px]" onClick={(e) => e.stopPropagation()}>
+                         <div className="bg-[#2d819b] text-white px-2 py-1 font-bold">Split</div>
+                         <div className="hover:bg-[#feba35] px-4 py-1 cursor-pointer" onClick={() => { alert('Verify Data'); setShowSplitMenu(false); }}>Verify Data</div>
+                         <div className="hover:bg-[#feba35] px-4 py-1 cursor-pointer" onClick={() => { alert('Split Data'); setShowSplitMenu(false); }}>Split Data</div>
+                    </div>
+                 </div>
+             )}
+
+             {/* Backup Modal (Simple placeholder as mostly similar to Restore/Others) */}
+             {showBackupModal && (
+                  <div className="fixed inset-0 z-[60] flex items-start justify-center pt-[100px] bg-black/10" onClick={() => setShowBackupModal(false)}>
+                    <div className="bg-white p-4 shadow-2xl border border-[#2d819b] w-[400px] text-center font-sans" onClick={(e) => e.stopPropagation()}>
+                        <div className="font-bold mb-4">Backup Companies on Disk</div>
+                        <div className="italic text-gray-500">Source: C:\Users\Public\TallyPrime\data</div>
+                        <div className="italic text-gray-500 mb-4">Destination: C:\Users\Public\TallyPrime\data\Backup</div>
+                        
+                        <div className="max-h-[300px] overflow-y-auto border border-gray-300 text-left">
+                             {openCompanies.map((c, i) => (
+                                 <div key={i} className="px-2 py-1 hover:bg-blue-100 cursor-pointer" onClick={() => { alert(`Backing up ${c.name}`); setShowBackupModal(false); }}>{c.name}</div>
+                             ))}
+                        </div>
+                    </div>
+                  </div>
+             )}

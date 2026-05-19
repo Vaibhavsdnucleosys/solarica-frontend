@@ -1,0 +1,11 @@
+/* App-specific styles */
+.App {
+  text-align: center;
+}
+
+/* Writing vertical text utility */
+.writing-vertical-rl {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
