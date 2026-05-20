@@ -642,19 +642,35 @@ const [additionalAmount, setAdditionalAmount] =
   ]);
 
   // Fetch Estimate Number on Mount or Company Change
+  // useEffect(() => {
+  //   const fetchEstimateNumber = async () => {
+  //     if (formData.fromCompanyName) {
+  //       try {
+  //         const num = await getNextEstimateNumber(formData.fromCompanyName);
+  //         setFormData((prev) => ({ ...prev, invoiceNumber: num }));
+  //       } catch (error) {
+  //         console.error("Failed to fetch estimate number", error);
+  //       }
+  //     }
+  //   };
+  //   fetchEstimateNumber();
+  // }, [formData.fromCompanyName]);
+
   useEffect(() => {
-    const fetchEstimateNumber = async () => {
-      if (formData.fromCompanyName) {
-        try {
-          const num = await getNextEstimateNumber(formData.fromCompanyName);
-          setFormData((prev) => ({ ...prev, invoiceNumber: num }));
-        } catch (error) {
-          console.error("Failed to fetch estimate number", error);
-        }
+  const fetchEstimateNumber = async () => {
+    // ONLY fetch if it's a NEW entry and we have a company name
+    if (formData.fromCompanyName && !isEditMode) {
+      try {
+        const num = await getNextEstimateNumber(formData.fromCompanyName);
+        setFormData((prev) => ({ ...prev, invoiceNumber: num }));
+      } catch (error) {
+        console.error("Failed to fetch estimate number", error);
       }
-    };
-    fetchEstimateNumber();
-  }, [formData.fromCompanyName]);
+    }
+  };
+  fetchEstimateNumber();
+}, [formData.fromCompanyName, isEditMode]); // Added isEditMode to dependencies
+
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -1090,7 +1106,20 @@ const [additionalAmount, setAdditionalAmount] =
     try {
       const submissionData = {
         ...formData,
-        items,
+        // items,
+
+           items: items.map((it) => ({
+                description: it.description || "",
+                subDescription: it.subDescription || "",
+                hsnSac: it.hsn || "",           // DB Column: hsnSac
+                quantity: Number(it.qty || 0),  // DB Column: quantity
+                unit: it.unit || "PCS",
+                rate: Number(it.rate || 0),
+                discPercent: Number(it.discPercent || 0),
+                gstRate: Number(it.gstRate || 0),
+                amount: Number(it.amount || 0), // <--- FIX: Ensure amount is sent!
+            })),
+
         totals,
         lightBill,
         paymentType,

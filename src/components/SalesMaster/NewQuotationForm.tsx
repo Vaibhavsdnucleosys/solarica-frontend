@@ -917,94 +917,366 @@ const [additionalAmount, setAdditionalAmount] =
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+
+  const buildCreatePayload = () => {
+
+    return {
+
+        ...formData,
+
+        companyName:
+            formData.customerName || "",
+
+        companyEmail:
+            formData.customerEmail || "",
+
+        companyPhone:
+            formData.customerPhone || "",
+
+        netPayableAmount:
+            Number(formData.netPayable || 0),
+
+        fromGstNumber:
+            formData.fromGstNumber || "",
+
+        systemCapacityKw:
+            Number(formData.systemCapacityKw || 0),
+
+        paymentType,
+        paidAmount,
+        advancedEnabled,
+        additionalAmount,
+
+        items: formData.items.map((item) => ({
+
+            itemName:
+                item.itemName || "",
+                
+
+            make1:
+                item.make || "",
+                
+
+            make2:
+                "",
+
+            quantity:
+                item.qty || "",
+
+            specification:
+                item.specification || "",
+
+            specification1:
+                item.specification1 || "",
+
+            specification2:
+                item.specification2 || "",
+
+            specification3:
+                item.specification3 || "",
+
+            specification7:
+                item.specification7 || "",
+
+            specification8:
+                item.specification8 || "",
+
+            specification9:
+                item.specification9 || ""
+
+        })),
+
+        documents,
+
+    };
+};
+
+
+// const buildUpdatePayload = () => {
+
+//     return {
+
+//         fromCompanyName:
+//             formData.fromCompanyName || "",
+
+//         fromGstNumber:
+//             formData.fromGstNumber || "",
+
+//         companyName:
+//             formData.customerName || "",
+
+//         companyEmail:
+//             formData.customerEmail || "",
+
+//         companyPhone:
+//             formData.customerPhone || "",
+
+//         customerType:
+//             formData.customerType || "",
+
+//         subsidyType:
+//             formData.subsidyType || "",
+
+//         serviceType:
+//             formData.serviceType || "",
+
+//         onGrid:
+//             formData.serviceType || "",
+
+//         phase:
+//             formData.phase || "",
+
+//         consumerNumber:
+//             formData.consumerNumber || "",
+
+//         BillingNumber:
+//             formData.BillingNumber || "",
+
+//         CustomerNumber:
+//             formData.CustomerNumber || "",
+
+//         gstNumber:
+//             formData.gstNumber || "",
+
+//         gstRate:
+//             Number(formData.gstRate || 0),
+
+//         gstAmount:
+//             Number(formData.gstAmount || 0),
+
+//         systemCost:
+//             Number(formData.systemCost || 0),
+
+//         totalAmount:
+//             Number(formData.totalAmount || 0),
+
+//         subsidyAmount:
+//             Number(formData.subsidyAmount || 0),
+
+//         netPayableAmount:
+//             Number(formData.netPayable || 0),
+
+//         systemCapacityKw:
+//             Number(formData.systemCapacityKw || 0),
+
+//         validityDays:
+//             Number(formData.validityDays || 0),
+
+//         numberOfFlats:
+//             Number(formData.numberOfFlats || 0),
+
+//         paymentType,
+//         paidAmount,
+//         advancedEnabled,
+//         additionalAmount,
+
+//         status: "PENDING",
+
+//         items: formData.items.map((item) => ({
+
+//             itemName:
+//                 item.itemName || "",
+
+//           make1: item.make || "", 
+//             make2: "",
+
+//             // FIX: Use item.qty (from form state) to fill quantity (for API)
+//             quantity: String(item.qty || ""), 
+
+
+//             specification:
+//                 item.specification || "",
+
+//             specification1:
+//                 item.specification1 || "",
+
+//             specification2:
+//                 item.specification2 || "",
+
+//             specification3:
+//                 item.specification3 || "",
+
+//             specification7:
+//                 item.specification7 || "",
+
+//             specification8:
+//                 item.specification8 || "",
+
+//             specification9:
+//                 item.specification9 || ""
+
+//         })),
+
+//     };
+// };
+
+
+
+//   const handleSubmit = async (e: React.FormEvent) => {
+//     e.preventDefault();
+
+//     // [VALIDATION] Required Customer Details
+//     if (!formData.customerName.trim()) {
+//       toast.error("Customer Name is required.");
+//       return;
+//     }
+
+//     if (
+//       !formData.customerPhone.trim() ||
+//       formData.customerPhone.length !== 10
+//     ) {
+//       toast.error("Phone Number is required and must be exactly 10 digits.");
+//       return;
+//     }
+
+//     // [VALIDATION] Final Check
+//     if (formData.consumerNumber && formData.consumerNumber.length !== 12) {
+//       toast.error("Consumer Number must be exactly 12 digits.");
+//       return;
+//     }
+
+//     if (formData.whatsAppNumber && formData.whatsAppNumber.length !== 10) {
+//       toast.error("WhatsApp Number must be exactly 10 digits.");
+//       return;
+//     }
+
+//     if (formData.gstNumber && formData.gstNumber.length !== 15) {
+//       toast.error("GST Number must be exactly 15 characters.");
+//       return;
+//     }
+
+//     setLoading(true);
+//     try {
+//       const submissionData = {
+//         ...formData,
+//         paymentType,
+// paidAmount,
+// advancedEnabled,
+// additionalAmount,
+//       items: formData.items.map((item) => ({
+
+//   itemName:
+//     item.itemName || "",
+
+//   make1:
+//     item.make || "",
+
+//   make2:
+//     "",
+
+//   quantity:
+//     item.qty || "",
+
+//   specification:
+//     item.specification || "",
+
+//   specification1:
+//     item.specification1 || "",
+
+//   specification2:
+//     item.specification2 || "",
+
+//   specification3:
+//     item.specification3 || "",
+
+//   specification7:
+//     item.specification7 || "",
+
+//   specification8:
+//     item.specification8 || "",
+
+//   specification9:
+//     item.specification9 || ""
+
+// })),
+
+//         documents: documents, // Pass documents to parent
+//       };
+//       await onSubmit(submissionData);
+//     } catch (error) {
+//       console.error("Submission failed", error);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+const buildUpdatePayload = () => {
+    return {
+        ...formData, // Direct customer/company data
+        onGrid: formData.serviceType,
+        netPayableAmount: Number(formData.netPayable || 0),
+        
+        // Map items: Form State ('make', 'qty') -> API Keys ('make1', 'quantity')
+        items: formData.items.map((item) => ({
+            itemName: item.itemName || "",
+            specification: item.specification || "",
+            
+            // FIX: Map from 'item.make' (what you type) to 'make1' (what DB wants)
+            make1: item.make || "", 
+            
+            // FIX: Map from 'item.qty' (what you type) to 'quantity' (what DB wants)
+            quantity: String(item.qty || ""), 
+
+            make2: "",
+            specification1: item.specification1 || "",
+            specification2: item.specification2 || "",
+            specification3: item.specification3 || "",
+            specification7: item.specification7 || "",
+            specification8: item.specification8 || "",
+            specification9: item.specification9 || ""
+        })),
+    };
+};
+const handleSubmit = async (
+    e: React.FormEvent
+) => {
+
     e.preventDefault();
 
-    // [VALIDATION] Required Customer Details
     if (!formData.customerName.trim()) {
-      toast.error("Customer Name is required.");
-      return;
+        toast.error("Customer Name is required.");
+        return;
     }
 
     if (
-      !formData.customerPhone.trim() ||
-      formData.customerPhone.length !== 10
+        !formData.customerPhone.trim() ||
+        formData.customerPhone.length !== 10
     ) {
-      toast.error("Phone Number is required and must be exactly 10 digits.");
-      return;
-    }
-
-    // [VALIDATION] Final Check
-    if (formData.consumerNumber && formData.consumerNumber.length !== 12) {
-      toast.error("Consumer Number must be exactly 12 digits.");
-      return;
-    }
-
-    if (formData.whatsAppNumber && formData.whatsAppNumber.length !== 10) {
-      toast.error("WhatsApp Number must be exactly 10 digits.");
-      return;
-    }
-
-    if (formData.gstNumber && formData.gstNumber.length !== 15) {
-      toast.error("GST Number must be exactly 15 characters.");
-      return;
+        toast.error(
+            "Phone Number must be 10 digits."
+        );
+        return;
     }
 
     setLoading(true);
+
     try {
-      const submissionData = {
-        ...formData,
-        paymentType,
-paidAmount,
-advancedEnabled,
-additionalAmount,
-      items: formData.items.map((item) => ({
 
-  itemName:
-    item.itemName || "",
+        const submissionData =
+            isEditMode
+                ? buildUpdatePayload()
+                : buildCreatePayload();
 
-  make1:
-    item.make || "",
+        console.log(
+            "FINAL SUBMISSION DATA =>",
+            submissionData
+        );
 
-  make2:
-    "",
+        await onSubmit(submissionData);
 
-  quantity:
-    item.qty || "",
-
-  specification:
-    item.specification || "",
-
-  specification1:
-    item.specification1 || "",
-
-  specification2:
-    item.specification2 || "",
-
-  specification3:
-    item.specification3 || "",
-
-  specification7:
-    item.specification7 || "",
-
-  specification8:
-    item.specification8 || "",
-
-  specification9:
-    item.specification9 || ""
-
-})),
-
-        documents: documents, // Pass documents to parent
-      };
-      await onSubmit(submissionData);
     } catch (error) {
-      console.error("Submission failed", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
+        console.error(
+            "Submission failed",
+            error
+        );
+
+    } finally {
+
+        setLoading(false);
+
+    }
+};
   return (
     <div className="min-h-screen bg-slate-50 w-full animate-in fade-in duration-500 overflow-y-auto pb-20">
       <style>{hideSpinnersStyle}</style>

@@ -387,384 +387,433 @@ const renderContent = () => {
 
            {formType === "simple" ? (
 
- <SimpleQuotationForm
-    initialData={formData}
-    isEditMode={true}
+//  <SimpleQuotationForm
+//     initialData={formData}
+//     isEditMode={true}
 
-    isReadOnly={isPaymentMode}
-isPaymentMode={isPaymentMode}
-    onBack={onClose}
+//     isReadOnly={isPaymentMode}
+// isPaymentMode={isPaymentMode}
+//     onBack={onClose}
     
 
-    initialCompany={
-        formData.fromCompanyName ||
-        formData.companyName ||
-        ""
-    }
+//     initialCompany={
+//         formData.fromCompanyName ||
+//         formData.companyName ||
+//         ""
+//     }
 
 
 
-    formTitle={
-        itemType === "invoice"
-            ? "Edit Invoice"
-            : "Edit Quotation"
-    }
+//     formTitle={
+//         itemType === "invoice"
+//             ? "Edit Invoice"
+//             : "Edit Quotation"
+//     }
 
-//   onSubmit={async (updatedData) => {
+// //   onSubmit={async (updatedData) => {
+
+// //     let payload;
+
+// //     if (formType === "simple") {
+
+// //         payload = {
+
+// //             companyName:
+// //                 updatedData.fromCompanyName || "",
+
+// //             gstinNumber:
+// //                 updatedData.fromGstin || "",
+
+// //             invoiceNumber:
+// //                 updatedData.invoiceNumber || "",
+
+// //             invoiceDate:
+// //                 updatedData.invoiceDate || "",
+
+// //             customerName:
+// //                 updatedData.customerName || "",
+
+// //             customerEmail:
+// //                 updatedData.customerEmail || "",
+
+// //             customerAddress:
+// //                 updatedData.customerAddress || "",
+
+// //             customerContact:
+// //                 updatedData.customerContact || "",
+
+// //             customerGstinUin:
+// //                 updatedData.customerGstin || "",
+
+// //             recipientName:
+// //                 updatedData.recipientName || "",
+
+// //             shippingAddress:
+// //                 updatedData.shippingAddress || "",
+
+// //             stateCode:
+// //                 updatedData.stateCode || "",
+
+// //             placeOfSupply:
+// //                 updatedData.placeOfSupply || "",
+
+// //             bankName:
+// //                 updatedData.bankName || "",
+
+// //             accountNumber:
+// //                 updatedData.bankAccountNo || "",
+
+// //             ifscCode:
+// //                 updatedData.bankIfsc || "",
+
+// //             termsAndConditions:
+// //                 updatedData.termsAndConditions || "",
+
+// //             paymentStatus:
+// //                 updatedData.status || "PENDING",
+
+// //             status:
+// //                 updatedData.status || "PENDING",
+
+// //             netAmount:
+// //                 updatedData.totals?.netAmount || 0,
+
+// //             cgst:
+// //                 updatedData.totals?.cgst || 0,
+
+// //             sgst:
+// //                 updatedData.totals?.sgst || 0,
+
+// //             grandTotalPayable:
+// //                 updatedData.totals?.grandTotal || 0,
+
+// //             items:
+// //                 Array.isArray(updatedData.items)
+// //                     ? updatedData.items.map(
+// //                           (item: {
+// //                               description?: string;
+// //                               subDescription?: string;
+// //                               hsn?: string;
+// //                               qty?: number;
+// //                               unit?: string;
+// //                               rate?: number;
+// //                               gstRate?: number;
+// //                           }) => ({
+// //                               description:
+// //                                   item.description || "",
+
+// //                               subDescription:
+// //                                   item.subDescription || "",
+
+// //                               hsnSac:
+// //                                   item.hsn || "",
+
+// //                               quantity:
+// //                                   Number(item.qty || 0),
+
+// //                               unit:
+// //                                   item.unit || "PCS",
+
+// //                               rate:
+// //                                   Number(item.rate || 0),
+
+// //                               gstRate:
+// //                                   Number(item.gstRate || 18),
+// //                           })
+// //                       )
+// //                     : [],
+// //         };
+
+// //     } else {
+
+// //         payload = {
+
+// //             companyName:
+// //                 updatedData.companyName || "",
+
+// //             companyEmail:
+// //                 updatedData.companyEmail || "",
+
+// //             companyPhone:
+// //                 updatedData.companyPhone || "",
+
+// //             gstNumber:
+// //                 updatedData.gstNumber || "",
+
+// //             serviceType:
+// //                 updatedData.serviceType || "",
+
+// //             systemCapacityKw:
+// //                 Number(
+// //                     updatedData.systemCapacityKw || 0
+// //                 ),
+
+// //             netPayableAmount:
+// //                 Number(
+// //                     updatedData.netPayableAmount || 0
+// //                 ),
+
+// //             status:
+// //                 updatedData.status || "PENDING",
+
+// //             items:
+// //                 Array.isArray(updatedData.items)
+// //                     ? updatedData.items.map(
+// //                           (item: {
+// //                               itemName?: string;
+// //                               specification?: string;
+// //                               make?: string;
+// //                               qty?: string | number;
+// //                           }) => ({
+// //                               itemName:
+// //                                   item.itemName || "",
+
+// //                               specification:
+// //                                   item.specification || "",
+
+// //                               make:
+// //                                   item.make || "",
+
+// //                               qty:
+// //                                   String(item.qty || ""),
+// //                           })
+// //                       )
+// //                     : [],
+// //         };
+// //     }
+
+// //     console.log("FINAL UPDATE PAYLOAD => ", payload);
+
+// //     const response = await updateItemDetails(
+// //         item.id,
+// //         itemType,
+// //         payload
+// //     );
+
+// //     toast.success("Updated Successfully");
+
+// //     onSave(response);
+
+// //     onClose();
+// // }}
+
+// onSubmit={async (updatedData) => {
+
+//     // PAYMENT MODE
+//     if (isPaymentMode) {
+
+//         const paymentPayload = {
+
+//             status: "PAID",
+
+//             paymentStatus:
+//                 updatedData.paymentType === "HALF"
+//                     ? "HALF_PAID"
+//                     : "PAID",
+
+//             paidAmount:
+//                 Number(updatedData.paidAmount || 0),
+
+//             paymentType:
+//                 updatedData.paymentType || "FULL",
+
+//             advancedEnabled:
+//                 updatedData.advancedEnabled || false,
+
+//             additionalAmount:
+//                 Number(updatedData.additionalAmount || 0),
+//         };
+
+//         const response =
+//             await updateItemDetails(
+//                 item.id,
+//                 itemType,
+//                 paymentPayload
+//             );
+
+//         toast.success(
+//             "Payment Updated Successfully"
+//         );
+
+//         onSave(response);
+
+//         onClose();
+
+//         return;
+//     }
 
 //     let payload;
 
-//     if (formType === "simple") {
+//     payload = {
 
-//         payload = {
+//         companyName:
+//             updatedData.fromCompanyName || "",
 
-//             companyName:
-//                 updatedData.fromCompanyName || "",
+//         gstinNumber:
+//             updatedData.fromGstin || "",
 
-//             gstinNumber:
-//                 updatedData.fromGstin || "",
+//         invoiceNumber:
+//             updatedData.invoiceNumber || "",
 
-//             invoiceNumber:
-//                 updatedData.invoiceNumber || "",
+//         invoiceDate:
+//             updatedData.invoiceDate || "",
 
-//             invoiceDate:
-//                 updatedData.invoiceDate || "",
+//         customerName:
+//             updatedData.customerName || "",
 
-//             customerName:
-//                 updatedData.customerName || "",
+//         customerEmail:
+//             updatedData.customerEmail || "",
 
-//             customerEmail:
-//                 updatedData.customerEmail || "",
+//         customerAddress:
+//             updatedData.customerAddress || "",
 
-//             customerAddress:
-//                 updatedData.customerAddress || "",
+//         customerContact:
+//             updatedData.customerContact || "",
 
-//             customerContact:
-//                 updatedData.customerContact || "",
+//         customerGstinUin:
+//             updatedData.customerGstin || "",
 
-//             customerGstinUin:
-//                 updatedData.customerGstin || "",
+//         recipientName:
+//             updatedData.recipientName || "",
 
-//             recipientName:
-//                 updatedData.recipientName || "",
+//         shippingAddress:
+//             updatedData.shippingAddress || "",
 
-//             shippingAddress:
-//                 updatedData.shippingAddress || "",
+//         stateCode:
+//             updatedData.stateCode || "",
 
-//             stateCode:
-//                 updatedData.stateCode || "",
+//         placeOfSupply:
+//             updatedData.placeOfSupply || "",
 
-//             placeOfSupply:
-//                 updatedData.placeOfSupply || "",
+//         bankName:
+//             updatedData.bankName || "",
 
-//             bankName:
-//                 updatedData.bankName || "",
+//         accountNumber:
+//             updatedData.bankAccountNo || "",
 
-//             accountNumber:
-//                 updatedData.bankAccountNo || "",
+//         ifscCode:
+//             updatedData.bankIfsc || "",
 
-//             ifscCode:
-//                 updatedData.bankIfsc || "",
+//         termsAndConditions:
+//             updatedData.termsAndConditions || "",
 
-//             termsAndConditions:
-//                 updatedData.termsAndConditions || "",
+//         paymentStatus:
+//             updatedData.status || "PENDING",
 
-//             paymentStatus:
-//                 updatedData.status || "PENDING",
+//         status:
+//             updatedData.status || "PENDING",
 
-//             status:
-//                 updatedData.status || "PENDING",
+//         netAmount:
+//             updatedData.totals?.netAmount || 0,
 
-//             netAmount:
-//                 updatedData.totals?.netAmount || 0,
+//         cgst:
+//             updatedData.totals?.cgst || 0,
 
-//             cgst:
-//                 updatedData.totals?.cgst || 0,
+//         sgst:
+//             updatedData.totals?.sgst || 0,
 
-//             sgst:
-//                 updatedData.totals?.sgst || 0,
+//         grandTotalPayable:
+//             updatedData.totals?.grandTotal || 0,
 
-//             grandTotalPayable:
-//                 updatedData.totals?.grandTotal || 0,
+//         items:
+//             Array.isArray(updatedData.items)
+//                 ? updatedData.items.map(
+//                       (item: any) => ({
+//                           description:
+//                               item.description || "",
 
-//             items:
-//                 Array.isArray(updatedData.items)
-//                     ? updatedData.items.map(
-//                           (item: {
-//                               description?: string;
-//                               subDescription?: string;
-//                               hsn?: string;
-//                               qty?: number;
-//                               unit?: string;
-//                               rate?: number;
-//                               gstRate?: number;
-//                           }) => ({
-//                               description:
-//                                   item.description || "",
+//                           subDescription:
+//                               item.subDescription || "",
 
-//                               subDescription:
-//                                   item.subDescription || "",
+//                           hsnSac:
+//                               item.hsn || "",
 
-//                               hsnSac:
-//                                   item.hsn || "",
+//                           quantity:
+//                               Number(item.qty || 0),
 
-//                               quantity:
-//                                   Number(item.qty || 0),
+//                           unit:
+//                               item.unit || "PCS",
 
-//                               unit:
-//                                   item.unit || "PCS",
+//                           rate:
+//                               Number(item.rate || 0),
 
-//                               rate:
-//                                   Number(item.rate || 0),
+//                           gstRate:
+//                               Number(item.gstRate || 18),
+//                       })
+//                   )
+//                 : [],
+//     };
 
-//                               gstRate:
-//                                   Number(item.gstRate || 18),
-//                           })
-//                       )
-//                     : [],
-//         };
-
-//     } else {
-
-//         payload = {
-
-//             companyName:
-//                 updatedData.companyName || "",
-
-//             companyEmail:
-//                 updatedData.companyEmail || "",
-
-//             companyPhone:
-//                 updatedData.companyPhone || "",
-
-//             gstNumber:
-//                 updatedData.gstNumber || "",
-
-//             serviceType:
-//                 updatedData.serviceType || "",
-
-//             systemCapacityKw:
-//                 Number(
-//                     updatedData.systemCapacityKw || 0
-//                 ),
-
-//             netPayableAmount:
-//                 Number(
-//                     updatedData.netPayableAmount || 0
-//                 ),
-
-//             status:
-//                 updatedData.status || "PENDING",
-
-//             items:
-//                 Array.isArray(updatedData.items)
-//                     ? updatedData.items.map(
-//                           (item: {
-//                               itemName?: string;
-//                               specification?: string;
-//                               make?: string;
-//                               qty?: string | number;
-//                           }) => ({
-//                               itemName:
-//                                   item.itemName || "",
-
-//                               specification:
-//                                   item.specification || "",
-
-//                               make:
-//                                   item.make || "",
-
-//                               qty:
-//                                   String(item.qty || ""),
-//                           })
-//                       )
-//                     : [],
-//         };
-//     }
-
-//     console.log("FINAL UPDATE PAYLOAD => ", payload);
-
-//     const response = await updateItemDetails(
-//         item.id,
-//         itemType,
+//     console.log(
+//         "FINAL UPDATE PAYLOAD => ",
 //         payload
 //     );
 
-//     toast.success("Updated Successfully");
+//     const response =
+//         await updateItemDetails(
+//             item.id,
+//             itemType,
+//             payload
+//         );
+
+//     toast.success(
+//         "Updated Successfully"
+//     );
 
 //     onSave(response);
 
 //     onClose();
 // }}
 
-onSubmit={async (updatedData) => {
+// />
 
-    // PAYMENT MODE
-    if (isPaymentMode) {
+// Inside EditSalesModal.tsx -> SimpleQuotationForm section
 
-        const paymentPayload = {
+<SimpleQuotationForm
+    initialData={formData}
+    isEditMode={true}
+    isReadOnly={isPaymentMode}
+    isPaymentMode={isPaymentMode}
+    onBack={onClose}
+    initialCompany={formData.fromCompanyName || formData.companyName || ""}
+    
+    onSubmit={async (updatedData) => {
+        // updatedData is the submissionData we built in Step 1 above.
+        
+        if (isPaymentMode) {
+            // Keep your payment logic...
+            const paymentPayload = {
+                status: "PAID",
+                paymentStatus: updatedData.paymentType === "HALF" ? "HALF_PAID" : "PAID",
+                paidAmount: Number(updatedData.paidAmount || 0),
+                paymentType: updatedData.paymentType || "FULL",
+                advancedEnabled: updatedData.advancedEnabled || false,
+                additionalAmount: Number(updatedData.additionalAmount || 0),
+            };
+            await updateItemDetails(item.id, itemType, paymentPayload);
+            onSave(paymentPayload);
+            onClose();
+            return;
+        }
 
-            status: "PAID",
+        // --- DIRECT SEND ---
+        // We send updatedData directly because the form formatted everything correctly.
+        console.log("SENDING DIRECT DATA FROM FORM:", updatedData);
 
-            paymentStatus:
-                updatedData.paymentType === "HALF"
-                    ? "HALF_PAID"
-                    : "PAID",
-
-            paidAmount:
-                Number(updatedData.paidAmount || 0),
-
-            paymentType:
-                updatedData.paymentType || "FULL",
-
-            advancedEnabled:
-                updatedData.advancedEnabled || false,
-
-            additionalAmount:
-                Number(updatedData.additionalAmount || 0),
-        };
-
-        const response =
-            await updateItemDetails(
-                item.id,
-                itemType,
-                paymentPayload
+        try {
+            const response = await updateItemDetails(
+                item.id, 
+                itemType, 
+                updatedData // Send the object exactly as received from the form
             );
 
-        toast.success(
-            "Payment Updated Successfully"
-        );
-
-        onSave(response);
-
-        onClose();
-
-        return;
-    }
-
-    let payload;
-
-    payload = {
-
-        companyName:
-            updatedData.fromCompanyName || "",
-
-        gstinNumber:
-            updatedData.fromGstin || "",
-
-        invoiceNumber:
-            updatedData.invoiceNumber || "",
-
-        invoiceDate:
-            updatedData.invoiceDate || "",
-
-        customerName:
-            updatedData.customerName || "",
-
-        customerEmail:
-            updatedData.customerEmail || "",
-
-        customerAddress:
-            updatedData.customerAddress || "",
-
-        customerContact:
-            updatedData.customerContact || "",
-
-        customerGstinUin:
-            updatedData.customerGstin || "",
-
-        recipientName:
-            updatedData.recipientName || "",
-
-        shippingAddress:
-            updatedData.shippingAddress || "",
-
-        stateCode:
-            updatedData.stateCode || "",
-
-        placeOfSupply:
-            updatedData.placeOfSupply || "",
-
-        bankName:
-            updatedData.bankName || "",
-
-        accountNumber:
-            updatedData.bankAccountNo || "",
-
-        ifscCode:
-            updatedData.bankIfsc || "",
-
-        termsAndConditions:
-            updatedData.termsAndConditions || "",
-
-        paymentStatus:
-            updatedData.status || "PENDING",
-
-        status:
-            updatedData.status || "PENDING",
-
-        netAmount:
-            updatedData.totals?.netAmount || 0,
-
-        cgst:
-            updatedData.totals?.cgst || 0,
-
-        sgst:
-            updatedData.totals?.sgst || 0,
-
-        grandTotalPayable:
-            updatedData.totals?.grandTotal || 0,
-
-        items:
-            Array.isArray(updatedData.items)
-                ? updatedData.items.map(
-                      (item: any) => ({
-                          description:
-                              item.description || "",
-
-                          subDescription:
-                              item.subDescription || "",
-
-                          hsnSac:
-                              item.hsn || "",
-
-                          quantity:
-                              Number(item.qty || 0),
-
-                          unit:
-                              item.unit || "PCS",
-
-                          rate:
-                              Number(item.rate || 0),
-
-                          gstRate:
-                              Number(item.gstRate || 18),
-                      })
-                  )
-                : [],
-    };
-
-    console.log(
-        "FINAL UPDATE PAYLOAD => ",
-        payload
-    );
-
-    const response =
-        await updateItemDetails(
-            item.id,
-            itemType,
-            payload
-        );
-
-    toast.success(
-        "Updated Successfully"
-    );
-
-    onSave(response);
-
-    onClose();
-}}
-
+            toast.success("Updated Successfully");
+            onSave(response);
+            onClose();
+        } catch (err: any) {
+            toast.error("Failed to update amounts");
+        }
+    }}
 />
 
 ) : (
@@ -782,116 +831,242 @@ isPaymentMode={isPaymentMode}
         ""
     }
 
+// onSubmit={async (updatedData) => {
+//     // PAYMENT MODE
+// if (isPaymentMode) {
+
+//     const paymentPayload = {
+
+//         status: "PAID",
+
+//         paymentStatus:
+//             updatedData.paymentType === "HALF"
+//                 ? "HALF_PAID"
+//                 : "PAID",
+
+//         paidAmount:
+//             Number(updatedData.paidAmount || 0),
+
+//         paymentType:
+//             updatedData.paymentType || "FULL",
+
+//         advancedEnabled:
+//             updatedData.advancedEnabled || false,
+
+//         additionalAmount:
+//             Number(updatedData.additionalAmount || 0),
+//     };
+
+//     const response =
+//         await updateItemDetails(
+//             item.id,
+//             itemType,
+//             paymentPayload
+//         );
+
+//     toast.success(
+//         "Payment Updated Successfully"
+//     );
+
+//     onSave(response);
+
+//     onClose();
+
+//     return;
+// }
+
+//     const payload = {
+
+//         companyName:
+//             updatedData.companyName || "",
+
+//         companyEmail:
+//             updatedData.companyEmail || "",
+
+//         companyPhone:
+//             updatedData.companyPhone || "",
+
+//         gstNumber:
+//             updatedData.gstNumber || "",
+
+//         serviceType:
+//             updatedData.serviceType || "",
+
+//         systemCapacityKw:
+//             Number(
+//                 updatedData.systemCapacityKw || 0
+//             ),
+
+//         netPayableAmount:
+//             Number(
+//                 updatedData.netPayableAmount || 0
+//             ),
+
+//         status:
+//             updatedData.status || "PENDING",
+
+//         items:
+//             Array.isArray(updatedData.items)
+//                 ? updatedData.items.map(
+//                       (item: {
+//                           itemName?: string;
+//                           specification?: string;
+//                           make?: string;
+//                           qty?: string | number;
+//                       }) => ({
+//                           itemName:
+//                               item.itemName || "",
+
+//                           specification:
+//                               item.specification || "",
+
+//                           make:
+//                               item.make || "",
+
+//                           qty:
+//                               String(item.qty || ""),
+//                       })
+//                   )
+//                 : [],
+//     };
+
+//     const response = await updateItemDetails(
+//         item.id,
+//         itemType,
+//         payload
+//     );
+
+//     toast.success("Updated Successfully");
+
+//     onSave(response);
+
+//     onClose();
+// }}
+
+
+// Inside EditSalesModal.tsx -> renderContent() -> NewQuotationForm branch
+
+// onSubmit={async (updatedData) => {
+//     // 1. Handle Payment Mode (This part looks okay)
+//     if (isPaymentMode) {
+//         const paymentPayload = {
+//             status: "PAID",
+//             paymentStatus: updatedData.paymentType === "HALF" ? "HALF_PAID" : "PAID",
+//             paidAmount: Number(updatedData.paidAmount || 0),
+//             paymentType: updatedData.paymentType || "FULL",
+//             advancedEnabled: updatedData.advancedEnabled || false,
+//             additionalAmount: Number(updatedData.additionalAmount || 0),
+//         };
+//         const response = await updateItemDetails(item.id, itemType, paymentPayload);
+//         toast.success("Payment Updated Successfully");
+//         onSave(response);
+//         onClose();
+//         return;
+//     }
+
+//     // 2. Handle FULL Update (Fixing the missing fields here)
+//     const payload = {
+//         // Company Info
+//         fromCompanyName: updatedData.fromCompanyName,
+//         fromGstNumber: updatedData.fromGstNumber,
+        
+//         // Customer Info
+//         customerName: updatedData.customerName,
+//         customerEmail: updatedData.customerEmail,
+//         customerPhone: updatedData.customerPhone,
+//         customerType: updatedData.customerType,
+        
+//         // Identity / Utility Nos
+//         gstNumber: updatedData.gstNumber,
+//         consumerNumber: updatedData.consumerNumber,
+//         BillingNumber: updatedData.BillingNumber,
+//         CustomerNumber: updatedData.CustomerNumber,
+
+//         // Service Info
+//         serviceType: updatedData.serviceType,
+//         onGrid: updatedData.serviceType, // Sync with your backend logic
+//         phase: updatedData.phase,
+//         subsidyType: updatedData.subsidyType,
+//         systemCapacityKw: Number(updatedData.systemCapacityKw || 0),
+//         numberOfFlats: Number(updatedData.numberOfFlats || 0),
+
+//         // Financials
+//         systemCost: Number(updatedData.systemCost || 0),
+//         gstRate: Number(updatedData.gstRate || 0),
+//         gstAmount: Number(updatedData.gstAmount || 0),
+//         totalAmount: Number(updatedData.totalAmount || 0),
+//         subsidyAmount: Number(updatedData.subsidyAmount || 0),
+//         netPayableAmount: Number(updatedData.netPayable || 0),
+        
+//         // Misc
+//         validityDays: Number(updatedData.validityDays || 0),
+//         status: updatedData.status || "PENDING",
+
+//         // Items Mapping (Ensure make1 is used for make)
+//         items: Array.isArray(updatedData.items)
+//             ? updatedData.items.map((it: any) => ({
+//                   itemName: it.itemName || "",
+//                   specification: it.specification || "",
+//                     make1: item.make || item.make1 || "", 
+
+//                 // FIX: Map 'qty' to 'quantity' (Database column name)
+//                 quantity: String(item.qty || item.quantity || ""),
+
+//                   specification1: it.specification1 || "",
+//                   specification2: it.specification2 || "",
+//                   specification3: it.specification3 || "",
+//                   specification7: it.specification7 || "",
+//                   specification8: it.specification8 || "",
+//                   specification9: it.specification9 || "",
+//               }))
+//             : [],
+//     };
+
+//     console.log("FINAL UPDATE PAYLOAD => ", payload);
+
+//     const response = await updateItemDetails(item.id, itemType, payload);
+//     toast.success("Updated Successfully");
+//     onSave(response);
+//     onClose();
+// }}
+
+
+// Inside EditSalesModal.tsx -> NewQuotationForm branch
 onSubmit={async (updatedData) => {
-    // PAYMENT MODE
-if (isPaymentMode) {
+    // 1. Handle Payment Mode
+    if (isPaymentMode) {
+        const paymentPayload = {
+            status: "PAID",
+            paymentStatus: updatedData.paymentType === "HALF" ? "HALF_PAID" : "PAID",
+            paidAmount: Number(updatedData.paidAmount || 0),
+            paymentType: updatedData.paymentType || "FULL",
+            advancedEnabled: updatedData.advancedEnabled || false,
+            additionalAmount: Number(updatedData.additionalAmount || 0),
+        };
+        const response = await updateItemDetails(item.id, itemType, paymentPayload);
+        onSave(response);
+        onClose();
+        return;
+    }
 
-    const paymentPayload = {
+    // 2. SEND DIRECT DATA FROM FORM
+    // updatedData already contains the correct make1 and quantity 
+    // because it comes directly from the buildUpdatePayload above.
+    console.log("FINAL UPDATE PAYLOAD => ", updatedData);
 
-        status: "PAID",
-
-        paymentStatus:
-            updatedData.paymentType === "HALF"
-                ? "HALF_PAID"
-                : "PAID",
-
-        paidAmount:
-            Number(updatedData.paidAmount || 0),
-
-        paymentType:
-            updatedData.paymentType || "FULL",
-
-        advancedEnabled:
-            updatedData.advancedEnabled || false,
-
-        additionalAmount:
-            Number(updatedData.additionalAmount || 0),
-    };
-
-    const response =
-        await updateItemDetails(
-            item.id,
-            itemType,
-            paymentPayload
+    try {
+        const response = await updateItemDetails(
+            item.id, 
+            itemType, 
+            updatedData // <--- SEND EVERYTHING DIRECTLY
         );
 
-    toast.success(
-        "Payment Updated Successfully"
-    );
-
-    onSave(response);
-
-    onClose();
-
-    return;
-}
-
-    const payload = {
-
-        companyName:
-            updatedData.companyName || "",
-
-        companyEmail:
-            updatedData.companyEmail || "",
-
-        companyPhone:
-            updatedData.companyPhone || "",
-
-        gstNumber:
-            updatedData.gstNumber || "",
-
-        serviceType:
-            updatedData.serviceType || "",
-
-        systemCapacityKw:
-            Number(
-                updatedData.systemCapacityKw || 0
-            ),
-
-        netPayableAmount:
-            Number(
-                updatedData.netPayableAmount || 0
-            ),
-
-        status:
-            updatedData.status || "PENDING",
-
-        items:
-            Array.isArray(updatedData.items)
-                ? updatedData.items.map(
-                      (item: {
-                          itemName?: string;
-                          specification?: string;
-                          make?: string;
-                          qty?: string | number;
-                      }) => ({
-                          itemName:
-                              item.itemName || "",
-
-                          specification:
-                              item.specification || "",
-
-                          make:
-                              item.make || "",
-
-                          qty:
-                              String(item.qty || ""),
-                      })
-                  )
-                : [],
-    };
-
-    const response = await updateItemDetails(
-        item.id,
-        itemType,
-        payload
-    );
-
-    toast.success("Updated Successfully");
-
-    onSave(response);
-
-    onClose();
+        toast.success("Updated Successfully");
+        onSave(response);
+        onClose();
+    } catch (err: any) {
+        toast.error("Update failed");
+    }
 }}
   
 />
