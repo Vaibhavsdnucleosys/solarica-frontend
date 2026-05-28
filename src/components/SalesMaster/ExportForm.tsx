@@ -36,6 +36,7 @@ const ExportForm: React.FC<ExportFormProps> = ({ onBack, onSubmit, loading }) =>
     const [formData, setFormData] = useState({
         proposalFor: '',
         customerEmail: '',
+        leadId: '',
         estimateNo: '',
         date: new Date().toISOString().split('T')[0],
         currency: 'USD',
@@ -356,6 +357,7 @@ const handleHsnSelect = (index: number, hsnData: any) => {
         // Note: The backend controller now accepts category, currency, exchangeRate, swiftCode
         const submissionData = {
             // Helper fields for Dashboard to recognize this is from ExportForm
+            leadId: formData.leadId,
             isExport: true,
 
             // Core Invoice Data
@@ -521,6 +523,7 @@ const handleHsnSelect = (index: number, hsnData: any) => {
           onMouseDown={() => {
             setFormData(prev => ({
               ...prev,
+                   leadId: lead.id,
               proposalFor: lead.name,
               customerEmail: lead.email || ''
             }));

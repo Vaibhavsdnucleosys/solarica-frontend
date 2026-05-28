@@ -266,6 +266,7 @@ const [selectedAction, setSelectedAction] = useState<
         // SimpleQuotationForm returns a slightly different structure than CreateInvoiceForm
         // Need to map it to backend Invoice schema
         invoicePayload = {
+            leadId: data.leadId,
           companyName: data.fromCompanyName,
           invoiceNumber: data.invoiceNumber || `INV-${Date.now()}`,
           invoiceDate: data.invoiceDate

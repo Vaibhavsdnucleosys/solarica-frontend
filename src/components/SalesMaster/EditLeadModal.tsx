@@ -202,7 +202,7 @@ const EditLeadModal: React.FC<EditLeadModalProps> = ({ isOpen, onClose, lead, on
                             </div>
 
                             {/* Email */}
-                            <div className="space-y-1.5">
+                            {/* <div className="space-y-1.5">
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Email <span className="text-red-500">*</span></label>
                                 <div className="relative">
                                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
@@ -214,7 +214,19 @@ const EditLeadModal: React.FC<EditLeadModalProps> = ({ isOpen, onClose, lead, on
                                         onChange={e => handleEmailChange(e.target.value)}
                                     />
                                 </div>
-                            </div>
+                            </div> */}
+                            <div className="space-y-1.5">
+    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Email</label>
+    <div className="relative">
+        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
+        <input
+            type="email" // Removed required
+            className={`w-full ... ${emailError ? 'border-red-300' : 'border-slate-100'}`}
+            value={formData.email}
+            onChange={e => handleEmailChange(e.target.value)}
+        />
+    </div>
+</div>
 
                             {/* Phone */}
                             <div className="space-y-1.5">
@@ -249,18 +261,19 @@ const EditLeadModal: React.FC<EditLeadModalProps> = ({ isOpen, onClose, lead, on
                             </div>
 
                             {/* Estimated Value */}
-                            <div className="space-y-1.5">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Value (₹)</label>
-                                <div className="relative">
-                                    <IndianRupee className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
-                                    <input
-                                        type="number"
-                                        className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-700"
-                                        value={formData.estimatedValue}
-                                        onChange={e => setFormData({ ...formData, estimatedValue: e.target.value })}
-                                    />
-                                </div>
-                            </div>
+                        {/* Value Section */}
+<div className="space-y-1.5">
+    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Value (₹)</label>
+    <div className="relative">
+        <IndianRupee className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
+        <input
+            type="number" // Removed required
+            className="w-full ..."
+            value={formData.estimatedValue}
+            onChange={e => setFormData({ ...formData, estimatedValue: e.target.value })}
+        />
+    </div>
+</div>
 
                             {/* Assign To */}
                             <div className="space-y-1.5">

@@ -372,6 +372,8 @@ systemCapacity:
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState<Lead[]>([]);
   const [recentLeads, setRecentLeads] = useState<Lead[]>([]);
+  const [selectedLead, setSelectedLead] =
+  useState<Lead | null>(null);
   const [showLeadResults, setShowLeadResults] = useState(false);
   const [isCreateLeadOpen, setIsCreateLeadOpen] = useState(false);
   const searchTimeoutRef = React.useRef<any>(null);
@@ -506,7 +508,19 @@ const [additionalAmount, setAdditionalAmount] =
       ? indianLeads 
       : indianLeads.filter((lead: any) => lead.assignedToId === currentUser.id);
 
+    // setSearchResults(filteredByAccess);
+
     setSearchResults(filteredByAccess);
+
+if (filteredByAccess.length > 0) {
+
+  selectLead(filteredByAccess[0]);
+
+} else {
+
+  setSelectedLead(null);
+
+}
   } catch (err) {
     console.error("Search failed", err);
   } finally {
@@ -515,6 +529,7 @@ const [additionalAmount, setAdditionalAmount] =
 };
 
   const selectLead = (lead: Lead) => {
+      setSelectedLead(lead);
     setFormData((prev) => {
       const newData = {
         ...prev,
@@ -1107,7 +1122,7 @@ const [additionalAmount, setAdditionalAmount] =
       const submissionData = {
         ...formData,
         // items,
-
+leadId: selectedLead?.id || null,
            items: items.map((it) => ({
                 description: it.description || "",
                 subDescription: it.subDescription || "",
@@ -1313,13 +1328,27 @@ additionalAmount,
                         if (searchTimeoutRef.current)
                           clearTimeout(searchTimeoutRef.current);
 
-                        if (value.length > 1) {
-                          setIsSearching(true);
-                          searchTimeoutRef.current = setTimeout(
-                            () => handleLeadSearch(value),
-                            300,
-                          );
-                        } else {
+                        // if (value.length > 1) {
+                        //   setIsSearching(true);
+                        //   searchTimeoutRef.current = setTimeout(
+                        //     () => handleLeadSearch(value),
+                        //     300,
+                        //   );
+                        // } 
+
+if (value.length > 1) {
+
+  setIsSearching(true);
+
+  searchTimeoutRef.current = setTimeout(async () => {
+
+    await handleLeadSearch(value);
+
+  }, 300);
+
+}
+                        
+                        else {
                           setSearchResults([]);
                           setIsSearching(false);
                         }

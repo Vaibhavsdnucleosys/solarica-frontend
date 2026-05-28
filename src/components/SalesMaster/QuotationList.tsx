@@ -50,6 +50,7 @@ interface Quotation {
     pdfFilePath?: string;
     remarks?: string;
     leadStatus?: string;
+    leadId?: string;
     rejectionReason?: string;
     createdBy: {
         email: string;
@@ -110,16 +111,52 @@ const [showEditModal, setShowEditModal] =
     useState(false);
 
     // Status Update Handler (Hot/Warm/Cold)
-    const updateLeadStatus = async (id: string, status: string) => {
-        try {
-            await updateQuotation(id, { leadStatus: status });
-            onRefresh();
-            // toast.success('Status updated'); // Assuming we want silent update or need to add toast
-        } catch (error) {
-            console.error('Failed to update lead status', error);
-            alert('Failed to update lead status');
-        }
-    };
+//     const updateLeadStatus = async (
+//     leadId: string,
+//     status: string
+// ) => {
+//         try {
+//             await updateQuotation(leadId, { leadStatus: status });
+//             onRefresh();
+//             // toast.success('Status updated'); // Assuming we want silent update or need to add toast
+//         } catch (error) {
+//             console.error('Failed to update lead status', error);
+//             alert('Failed to update lead status');
+//         }
+//     };
+
+const updateLeadStatus = async (
+    leadId: string | undefined,
+    status: string
+) => {
+
+    if (!leadId) {
+        alert("Lead ID not found");
+        return;
+    }
+
+    try {
+
+        await axios.put(
+            `${API_URL}/leads/${leadId}`,
+            {
+                status: status
+            },
+            getAxiosConfig()
+        );
+
+        onRefresh();
+
+    } catch (error) {
+
+        console.error(
+            'Failed to update lead status',
+            error
+        );
+
+        alert('Failed to update lead status');
+    }
+};
 
     const openRemarkModal = (quotation: Quotation) => {
         setActiveRemarkInvoice(quotation);
@@ -460,22 +497,44 @@ const isAdmin = currentUser?.role?.name?.toLowerCase() === "admin";
                                                 return (
                                                     <div className="flex flex-col gap-1 items-center">
                                                         {advanceProof ? (
+                                                            // <div className="relative group/proof">
+                                                            //     <div
+                                                            //         onClick={() => window.open(advanceProof.imageUrl, '_blank')}
+                                                            //         className="size-8 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-500 cursor-pointer hover:bg-blue-100 transition-all shadow-sm"
+                                                            //     >
+                                                            //         <ImageIcon size={14} />
+                                                            //     </div>
+                                                            //     {isAdmin && (
+                                                            //         <button
+                                                            //             onClick={() => handleDeleteProof(advanceProof.id)}
+                                                            //             className="absolute -top-1 -right-1 size-4 bg-rose-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover/proof:opacity-100 transition-opacity shadow-sm"
+                                                            //         >
+                                                            //             <XCircle size={10} />
+                                                            //         </button>
+                                                            //     )}
+                                                            // </div>
+
                                                             <div className="relative group/proof">
-                                                                <div
-                                                                    onClick={() => window.open(advanceProof.imageUrl, '_blank')}
-                                                                    className="size-8 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-500 cursor-pointer hover:bg-blue-100 transition-all shadow-sm"
-                                                                >
-                                                                    <ImageIcon size={14} />
-                                                                </div>
-                                                                {isAdmin && (
-                                                                    <button
-                                                                        onClick={() => handleDeleteProof(advanceProof.id)}
-                                                                        className="absolute -top-1 -right-1 size-4 bg-rose-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover/proof:opacity-100 transition-opacity shadow-sm"
-                                                                    >
-                                                                        <XCircle size={10} />
-                                                                    </button>
-                                                                )}
-                                                            </div>
+    <a 
+        href={advanceProof.imageUrl} 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="size-8 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-500 cursor-pointer hover:bg-blue-100 transition-all shadow-sm"
+    >
+        <ImageIcon size={14} />
+    </a>
+    {isAdmin && (
+        <button
+            onClick={(e) => {
+                e.preventDefault(); // Prevent opening the link
+                handleDeleteProof(advanceProof.id);
+            }}
+            className="absolute -top-1 -right-1 size-4 bg-rose-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover/proof:opacity-100 transition-opacity shadow-sm"
+        >
+            <XCircle size={10} />
+        </button>
+    )}
+</div>
                                                         ) : (
                                                             <label className="cursor-pointer group/upload">
                                                                 <input
@@ -658,7 +717,15 @@ const isAdmin = currentUser?.role?.name?.toLowerCase() === "admin";
                                         <div className="flex flex-col gap-2 min-w-[110px]">
                                             <select
                                                 value={q.leadStatus || ''}
-                                                onChange={(e) => updateLeadStatus(q.id, e.target.value)}
+                                                // onChange={(e) => 
+                                                //     updateLeadStatus(q.id, e.target.value)
+                                                // }
+                                                onChange={(e) =>
+    updateLeadStatus(
+        q.leadId,
+        e.target.value
+    )
+}
                                                 className={`text-[10px] font-black uppercase tracking-wider px-2 py-1 rounded-lg border outline-none transition-all ${q.leadStatus === 'HOT' ? 'bg-rose-50 text-rose-600 border-rose-200' :
                                                     q.leadStatus === 'WARM' ? 'bg-amber-50 text-amber-600 border-amber-200' :
                                                         q.leadStatus === 'COLD' ? 'bg-blue-50 text-blue-600 border-blue-200' :
@@ -721,7 +788,7 @@ const isAdmin = currentUser?.role?.name?.toLowerCase() === "admin";
             <span>View</span>
         </button>
 
-        {isAdmin && (
+       
             <button
                 onClick={() => {
                     setEditingItem(q);
@@ -732,7 +799,7 @@ const isAdmin = currentUser?.role?.name?.toLowerCase() === "admin";
             >
                 <FileText size={16} />
             </button>
-        )}
+     
         {isAdmin && (
     <button
         onClick={() => handleDelete(q.id)}

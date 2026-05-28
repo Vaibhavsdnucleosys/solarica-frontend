@@ -488,7 +488,8 @@ validityDays:
   const [recentLeads, setRecentLeads] = useState<Lead[]>([]);
   const [showLeadResults, setShowLeadResults] = useState(false);
   const [isCreateLeadOpen, setIsCreateLeadOpen] = useState(false);
-  
+  const [selectedLeadId, setSelectedLeadId] =
+  useState<string>("");
 
   const [paymentType, setPaymentType] =
     useState<string>(
@@ -811,6 +812,7 @@ const [additionalAmount, setAdditionalAmount] =
   };
 
   const selectLead = (lead: Lead) => {
+     setSelectedLeadId(lead.id);
     setFormData((prev) => {
       const newData = {
         ...prev,
@@ -923,12 +925,18 @@ const [additionalAmount, setAdditionalAmount] =
     return {
 
         ...formData,
+        leadId: selectedLeadId,
 
         companyName:
             formData.customerName || "",
 
+        // companyEmail:
+        //     formData.customerEmail || "",
+
         companyEmail:
-            formData.customerEmail || "",
+    formData.customerEmail ||
+    formData.email.split(",")[0].trim() ||
+    "",
 
         companyPhone:
             formData.customerPhone || "",
@@ -1203,6 +1211,7 @@ const [additionalAmount, setAdditionalAmount] =
 const buildUpdatePayload = () => {
     return {
         ...formData, // Direct customer/company data
+            leadId: selectedLeadId,
         onGrid: formData.serviceType,
         netPayableAmount: Number(formData.netPayable || 0),
         

@@ -636,14 +636,32 @@ const CreateLeadModal: React.FC<CreateLeadModalProps> = ({ isOpen, onClose, onSu
                                 </div>
                             </div>
 
-                            <div className="space-y-1.5">
+                            {/* <div className="space-y-1.5">
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Email Address <span className="text-red-500">*</span></label>
                                 <div className="relative group">
                                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
                                     <input required type="email" placeholder="example@mail.com" className={`w-full pl-11 pr-4 py-3.5 bg-slate-50/50 border rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-400 font-semibold text-slate-700 ${emailError ? 'border-red-300' : 'border-slate-100'}`} value={formData.email} onChange={e => handleEmailChange(e.target.value)} />
                                 </div>
                                 {emailError && <p className="text-red-500 text-[10px] ml-1">{emailError}</p>}
-                            </div>
+                            </div> */}
+
+                            {/* Email Address Section */}
+<div className="space-y-1.5">
+    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+        Email Address (Optional) {/* Removed * */}
+    </label>
+    <div className="relative group">
+        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
+        <input 
+            type="email" // Removed required
+            placeholder="example@mail.com" 
+            className={`w-full ... ${emailError ? 'border-red-300' : 'border-slate-100'}`} 
+            value={formData.email} 
+            onChange={e => handleEmailChange(e.target.value)} 
+        />
+    </div>
+    {emailError && <p className="text-red-500 text-[10px] ml-1">{emailError}</p>}
+</div>
 
                             <div className="space-y-1.5">
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Phone Number <span className="text-red-500">*</span></label>
@@ -653,13 +671,30 @@ const CreateLeadModal: React.FC<CreateLeadModalProps> = ({ isOpen, onClose, onSu
                                 </div>
                             </div>
 
-                            <div className="space-y-1.5">
+                            {/* <div className="space-y-1.5">
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Est. Value (₹) <span className="text-red-500">*</span></label>
                                 <div className="relative group">
                                     <IndianRupee className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
                                     <input required type="text" inputMode="numeric" placeholder="0" className="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-400 font-bold text-slate-700" value={formData.estimatedValue} onChange={e => handleEstimatedValueChange(e.target.value)} />
                                 </div>
-                            </div>
+                            </div> */}
+
+                            <div className="space-y-1.5">
+    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+        Est. Value (₹) (Optional) {/* Removed * */}
+    </label>
+    <div className="relative group">
+        <IndianRupee className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
+        <input 
+            type="text" // Removed required
+            inputMode="numeric" 
+            placeholder="0" 
+            className="w-full ..." 
+            value={formData.estimatedValue} 
+            onChange={e => handleEstimatedValueChange(e.target.value)} 
+        />
+    </div>
+</div>
                         </div>
 
                         <div className="space-y-1.5">

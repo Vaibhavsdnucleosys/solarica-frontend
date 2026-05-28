@@ -1,6 +1,15 @@
 import axios from 'axios';
 import { API_URL, getAxiosConfig } from '../config';
-
+export interface PaymentProof {
+    id: string;
+    type: 'ADVANCE' | 'FULL' | 'WORK' | 'LIGHT_BILL';
+    imageUrl: string;
+    uploadedAt: string;
+    uploadedBy: {
+        id: string;
+        name: string;
+    };
+}
 export interface InvoiceItem {
     itemDescription: string;
     hsnSac: string;
@@ -106,6 +115,7 @@ remainingAmount?: number;
 paidType?: string;
 
 paymentType?: string;
+ paymentProofs?: PaymentProof[]; 
 
 serviceType?: string;
 
@@ -113,7 +123,15 @@ systemCapacityKw?: number;
 
 gstNumber?: string;
 invoiceType?: string;
+lead?: {
+  id: string;
+  status?: string;
+  companyName?: string;
+  assignedToId?: string;
+};
 
+leadId?: string;
+leadStatus?: string;
 }
 
 export const getInvoices = async (filters?: any): Promise<Invoice[]> => {
@@ -143,6 +161,9 @@ export const deleteInvoice = async (id: string): Promise<void> => {
     await axios.delete(`${API_URL}/invoices/${id}`, getAxiosConfig());
 };
 
+export const deleteInvoiceProof = async (proofId: string) => {
+    return axios.delete(`${API_URL}/payment-proofs/${proofId}`, getAxiosConfig());
+};
 
 export const getInvoiceDownloadUrl = async (id: string): Promise<{ url: string }> => {
     const response = await axios.get(`${API_URL}/invoices/${id}/download-invoice`, {
