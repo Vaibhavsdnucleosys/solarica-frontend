@@ -98,15 +98,18 @@ const getStateFromGST = (
 //     formTitle?: string;
 // }
 
-interface SimpleQuotationFormProps {  
+interface SimpleQuotationFormProps {
   onBack: () => void;
   onSubmit: (data: any) => Promise<void>;
   initialCompany: string;
-  initialData?: Record<string, string | number | boolean | null | undefined | object>;
-isEditMode?: boolean;
-isReadOnly?: boolean;
-isPaymentMode?: boolean;
-isTaxInvoiceMode?: boolean;
+  initialData?: Record<
+    string,
+    string | number | boolean | null | undefined | object
+  >;
+  isEditMode?: boolean;
+  isReadOnly?: boolean;
+  isPaymentMode?: boolean;
+  isTaxInvoiceMode?: boolean;
   formTitle?: string;
   type?: "NORMAL" | "PUMP";
 }
@@ -125,13 +128,21 @@ interface ItemRow {
   amount: number;
   gstRate: number;
 }
+interface PumpBOQRow {
+  sr: number;
+  item: string;
+  specification: string;
+  make: string;
+  qty: string;
+  image: string;
+}
 
 const SimpleQuotationForm = ({
-    initialData,
-    isEditMode = false,
-    isReadOnly = false,
-isPaymentMode = false,
-isTaxInvoiceMode = false,
+  initialData,
+  isEditMode = false,
+  isReadOnly = false,
+  isPaymentMode = false,
+  isTaxInvoiceMode = false,
   onBack,
   onSubmit,
   initialCompany,
@@ -143,11 +154,298 @@ isTaxInvoiceMode = false,
   const [loading, setLoading] = useState(false);
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
   const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
-const isAdmin = (currentUser?.role?.name || currentUser?.role || "").toLowerCase() === "admin";
+  const pumpConfigurations = {
+    "0.5 HP": {
+      amount: 46860,
+      panelQty: 1,
+      motor: "0.5 HP SOLAR WATER PUMP and Motor",
+      controller: "1 HP Solar Water Pump Controller",
+    },
+
+    "1 HP": {
+      amount: 81720,
+      panelQty: 2,
+      motor: "1 HP SOLAR WATER PUMP and Motor",
+      controller: "1 HP Solar Water Pump Controller",
+    },
+
+    "2 HP": {
+      amount: 147550,
+      panelQty: 4,
+      motor: "2 HP SOLAR WATER PUMP and Motor",
+      controller: "2 HP Solar Water Pump Controller",
+    },
+
+    "3 HP": {
+      amount: 182000,
+      panelQty: 6,
+      motor: "3 HP SOLAR WATER PUMP and Motor",
+      controller: "3 HP Solar Water Pump Controller",
+    },
+
+    "5 HP": {
+      amount: 320000,
+      panelQty: 9,
+      motor: "5 HP SOLAR WATER PUMP and Motor",
+      controller: "5 HP Solar Water Pump Controller",
+    },
+
+    "7.5 HP": {
+      amount: 415000,
+      panelQty: 13,
+      motor: "7.5 HP SOLAR WATER PUMP and Motor",
+      controller: "7.5 HP Solar Water Pump Controller",
+    },
+  };
+
+  const pumpTemplates = {
+    "0.5 HP": {
+      projectCost: 46860,
+      boq: [
+        {
+          sr: 1,
+          item: "Solar PV Modules",
+          specification: "535 to 550 Wp (Mono Crystalline)",
+          make: "Vikram / Goldi / Renewsys / Mackwin / Livguard / Microtech",
+          qty: "1 NOS",
+          image: "/images/pump/panel.jpg",
+        },
+        {
+          sr: 2,
+          item: "Solar Water Pump Motor",
+          specification: "0.5 HP SOLAR WATER PUMP and Motor FULLY SS IMPELLER",
+          make: "SOLARICA (2 Years Warranty)",
+          qty: "1-1 EACH",
+          image: "/images/pump/motor.jpg",
+        },
+        {
+          sr: 3,
+          item: "Solar Water Pump Controller",
+          specification:
+            "1 HP Solar Water Pump Controller 3 Phase / Single Phase",
+          make: "SOLARICA (2 Years Warranty)",
+          qty: "1 NOS",
+          image: "/images/pump/controller.jpg",
+        },
+      ],
+    },
+
+    "1 HP": {
+      projectCost: 81720,
+      boq: [
+        {
+          sr: 1,
+          item: "Solar PV Modules",
+          specification: "535 to 550 Wp (Mono Crystalline)",
+          make: "Vikram / Goldi / Renewsys / Mackwin / Livguard / Microtech",
+          qty: "2 NOS",
+          image: "/images/pump/panel.jpg",
+        },
+        {
+          sr: 2,
+          item: "Solar Water Pump Motor",
+          specification: "1 HP SOLAR WATER PUMP and Motor FULLY SS IMPELLER",
+          make: "SOLARICA (2 Years Warranty)",
+          qty: "1-1 EACH",
+          image: "/images/pump/motor.jpg",
+        },
+        {
+          sr: 3,
+          item: "Solar Water Pump Controller",
+          specification:
+            "1 HP Solar Water Pump Controller 3 Phase / Single Phase",
+          make: "SOLARICA (2 Years Warranty)",
+          qty: "1 NOS",
+          image: "/images/pump/controller.jpg",
+        },
+      ],
+    },
+
+    "2 HP": {
+      projectCost: 147550,
+      boq: [
+        {
+          sr: 1,
+          item: "Solar PV Modules",
+          specification: "535 to 550 Wp (Mono Crystalline)",
+          make: "Remosys / Dhoop (25 Years Warranty)",
+          qty: "4 NOS",
+          image: "/images/pump/panel.jpg",
+        },
+        {
+          sr: 2,
+          item: "Solar Water Pump Motor",
+          specification: "2 HP SOLAR WATER PUMP and Motor FULLY SS IMPELLER",
+          make: "SOLARICA (2 Years Warranty)",
+          qty: "1-1 EACH",
+          image: "/images/pump/motor.jpg",
+        },
+        {
+          sr: 3,
+          item: "Solar Water Pump Controller",
+          specification:
+            "2 HP Solar Water Pump Controller 3 Phase / Single Phase",
+          make: "SOLARICA (2 Years Warranty)",
+          qty: "1 NOS",
+          image: "/images/pump/controller.jpg",
+        },
+      ],
+    },
+
+    "3 HP": {
+      projectCost: 182000,
+      boq: [
+        {
+          sr: 1,
+          item: "Solar PV Modules",
+          specification: "535 to 550 Wp (Mono Crystalline)",
+          make: "Vikram / Goldi / Renewsys / Mackwin / Livguard / Microtech",
+          qty: "6 NOS",
+          image: "/images/pump/panel.jpg",
+        },
+        {
+          sr: 2,
+          item: "Solar Water Pump Motor",
+          specification: "3 HP SOLAR WATER PUMP and Motor FULLY SS IMPELLER",
+          make: "SOLARICA (2 Years Warranty)",
+          qty: "1-1 EACH",
+          image: "/images/pump/motor.jpg",
+        },
+        {
+          sr: 3,
+          item: "Solar Water Pump Controller",
+          specification:
+            "3 HP Solar Water Pump Controller 3 Phase / Single Phase",
+          make: "SOLARICA (2 Years Warranty)",
+          qty: "1 NOS",
+          image: "/images/pump/controller.jpg",
+        },
+      ],
+    },
+
+    "5 HP": {
+      projectCost: 320000,
+      boq: [
+        {
+          sr: 1,
+          item: "Solar PV Modules",
+          specification: "535 to 550 Wp (Mono Crystalline)",
+          make: "Vikram / Goldi / Renewsys / Mackwin / Livguard / Microtech",
+          qty: "9 NOS",
+          image: "/images/pump/panel.jpg",
+        },
+        {
+          sr: 2,
+          item: "Solar Water Pump Motor",
+          specification: "5 HP SOLAR WATER PUMP and Motor FULLY SS IMPELLER",
+          make: "SOLARICA (2 Years Warranty)",
+          qty: "1-1 EACH",
+          image: "/images/pump/motor.jpg",
+        },
+        {
+          sr: 3,
+          item: "Solar Water Pump Controller",
+          specification:
+            "5 HP Solar Water Pump Controller 3 Phase / Single Phase",
+          make: "SOLARICA (2 Years Warranty)",
+          qty: "1 NOS",
+          image: "/images/pump/controller.jpg",
+        },
+      ],
+    },
+
+    "7.5 HP": {
+      projectCost: 415000,
+      boq: [
+        {
+          sr: 1,
+          item: "Solar PV Modules",
+          specification: "535 to 550 Wp (Mono Crystalline)",
+          make: "Vikram / Goldi / Renewsys / Mackwin / Livguard / Microtech",
+          qty: "13 NOS",
+          image: "/images/pump/panel.jpg",
+        },
+        {
+          sr: 2,
+          item: "Solar Water Pump Motor",
+          specification: "7.5 HP SOLAR WATER PUMP and Motor FULLY SS IMPELLER",
+          make: "SOLARICA (2 Years Warranty)",
+          qty: "1-1 EACH",
+          image: "/images/pump/motor.jpg",
+        },
+        {
+          sr: 3,
+          item: "Solar Water Pump Controller",
+          specification:
+            "7.5 HP Solar Water Pump Controller 3 Phase / Single Phase",
+          make: "SOLARICA (2 Years Warranty)",
+          qty: "1 NOS",
+          image: "/images/pump/controller.jpg",
+        },
+      ],
+    },
+  };
+
+  const commonPumpRows = [
+    {
+      sr: 4,
+      item: "Solar Panel Mounting Structure",
+      specification: "GI Structure",
+      make: "GI Structure (Approved) - 5 Years Warranty",
+      qty: "1 Set",
+      image: "/images/pump/structure.jpg",
+    },
+
+    {
+      sr: 5,
+      item: "Solar Pump Pipe",
+      specification: "6 Gauge Solar Pipe For Pump With Adjuster Warranted",
+      make: "APR",
+      qty: "",
+      image: "/images/pump/pipe.jpg",
+    },
+
+    {
+      sr: 6,
+      item: "Nylon Rope For Solar Pump",
+      specification: "Nylon Rope Warranted",
+      make: "APR",
+      qty: "",
+      image: "/images/pump/rope.jpg",
+    },
+
+    {
+      sr: 7,
+      item: "Solar Pump Cable",
+      specification: "3 Core Cable For Connection To Controller",
+      make: "Polycab APR",
+      qty: "",
+      image: "/images/pump/cable.jpg",
+    },
+
+    {
+      sr: 8,
+      item: "Installation Charges",
+      specification: "Installation Charges With Foundation Work",
+      make: "SOLARICA",
+      qty: "-",
+      image: "/images/pump/installation.jpg",
+    },
+
+    {
+      sr: 9,
+      item: "Transportation Charges",
+      specification: "From Pune To Installation Location",
+      make: "",
+      qty: "-",
+      image: "/images/pump/transport.jpg",
+    },
+  ];
+  const isAdmin =
+    (currentUser?.role?.name || currentUser?.role || "").toLowerCase() ===
+    "admin";
   // const isPump = type === "PUMP";
-  const isPump =
-  type === "PUMP" ||
-  initialData?.category === "PUMP";
+  const isPump = type === "PUMP" || initialData?.category === "PUMP";
 
   // [UPGRADE] State for resolved GST detection present in Code B
   const [resolvedGstState, setResolvedGstState] = useState<{
@@ -156,14 +454,14 @@ const isAdmin = (currentUser?.role?.name || currentUser?.role || "").toLowerCase
   } | null>(null);
 
   const [formData, setFormData] = useState({
-    
     // Company Details
     fromCompanyName: initialCompany || "",
     invoiceNumber: "",
     invoiceDate: new Date().toISOString().split("T")[0],
     officerName: isPump ? "Mr. Kiran Jagtap" : "",
     officerContact: isPump ? "9325389168 / 9665389150" : "",
-    systemCapacity: isPump ? "5 HP Solar Water Pump System Full Set" : "",
+    // systemCapacity: isPump ? "5 HP Solar Water Pump System Full Set" : "",
+    systemCapacity: isPump ? "5 HP" : "",
 
     fromGstin: "",
     paymentTerms: "",
@@ -197,113 +495,75 @@ const isAdmin = (currentUser?.role?.name || currentUser?.role || "").toLowerCase
   });
 
   useEffect(() => {
+    if (!isEditMode || !initialData) {
+      return;
+    }
 
-  if (!isEditMode || !initialData) {
-    return;
-  }
+    setFormData((prev) => ({
+      ...prev,
 
-  setFormData((prev) => ({
+      // ONLY API DATA
+      invoiceNumber: String(initialData.invoiceNumber || ""),
 
-    ...prev,
+      invoiceDate: String(initialData.invoiceDate || ""),
 
-    // ONLY API DATA
-    invoiceNumber:
-      String(initialData.invoiceNumber || ""),
+      customerName: String(initialData.customerName || ""),
 
-    invoiceDate:
-      String(initialData.invoiceDate || ""),
+      customerEmail: String(initialData.customerEmail || ""),
 
-    customerName:
-      String(initialData.customerName || ""),
+      customerAddress: String(initialData.customerAddress || ""),
 
-    customerEmail:
-      String(initialData.customerEmail || ""),
-
-    customerAddress:
-      String(initialData.customerAddress || ""),
-
-    customerContact:
-      String(
-        initialData.customerContact ||
-        initialData.customerPhone ||
-        ""
+      customerContact: String(
+        initialData.customerContact || initialData.customerPhone || "",
       ),
 
-    customerGstin:
-      String(
-        initialData.customerGstin ||
-        initialData.customerGstinUin ||
-        ""
+      customerGstin: String(
+        initialData.customerGstin || initialData.customerGstinUin || "",
       ),
 
-    recipientName:
-      String(initialData.recipientName || ""),
+      recipientName: String(initialData.recipientName || ""),
 
-    shippingAddress:
-      String(initialData.shippingAddress || ""),
+      shippingAddress: String(initialData.shippingAddress || ""),
 
-    stateCode:
-      String(initialData.stateCode || ""),
+      stateCode: String(initialData.stateCode || ""),
 
-    placeOfSupply:
-      String(initialData.placeOfSupply || ""),
+      placeOfSupply: String(initialData.placeOfSupply || ""),
 
-    paymentTerms:
-      String(initialData.paymentTerms || ""),
+      paymentTerms: String(initialData.paymentTerms || ""),
 
-    transportThrough:
-      String(initialData.transportThrough || ""),
+      transportThrough: String(initialData.transportThrough || ""),
 
-    trackingNumber:
-      String(initialData.trackingNumber || ""),
+      trackingNumber: String(initialData.trackingNumber || ""),
 
-    termsAndConditions:
-      String(initialData.termsAndConditions || ""),
+      termsAndConditions: String(initialData.termsAndConditions || ""),
 
-    bankName:
-      String(initialData.bankName || prev.bankName),
+      bankName: String(initialData.bankName || prev.bankName),
 
-    bankAccountNo:
-      String(
+      bankAccountNo: String(
         initialData.bankAccountNo ||
-        initialData.accountNumber ||
-        prev.bankAccountNo
+          initialData.accountNumber ||
+          prev.bankAccountNo,
       ),
 
-    bankIfsc:
-      String(
-        initialData.bankIfsc ||
-        initialData.ifscCode ||
-        prev.bankIfsc
+      bankIfsc: String(
+        initialData.bankIfsc || initialData.ifscCode || prev.bankIfsc,
       ),
 
-    cashDiscount:
-      Number(initialData.cashDiscount || 0),
+      cashDiscount: Number(initialData.cashDiscount || 0),
 
-    roundOff:
-      Number(initialData.roundOff || 0),
+      roundOff: Number(initialData.roundOff || 0),
 
-      officerName:
-  String(initialData.officerName || ""),
+      officerName: String(initialData.officerName || ""),
 
-officerContact:
-  String(initialData.officerContact || ""),
+      officerContact: String(initialData.officerContact || ""),
 
-systemCapacity:
-  String(initialData.systemCapacity || ""),
+      systemCapacity: String(initialData.systemCapacity || ""),
+    }));
 
-  }));
+    // ITEMS
 
-
-  // ITEMS
-
-  if (
-    initialData.items &&
-    Array.isArray(initialData.items)
-  ) {
-
-    const mappedItems: ItemRow[] =
-      initialData.items.map(
+    if (initialData.items && Array.isArray(initialData.items)) {
+      const mappedItems: ItemRow[] = initialData.items.map(
         (
           item: {
             id?: string;
@@ -319,86 +579,101 @@ systemCapacity:
             amount?: number;
             gstRate?: number;
           },
-          index: number
+          index: number,
         ) => ({
           id: index + 1,
 
-          description:
-            item.description ||
-            item.itemDescription ||
-            "",
+          description: item.description || item.itemDescription || "",
 
           subDescription: "",
 
-          hsn:
-            item.hsn ||
-            item.hsnSac ||
-            "",
+          hsn: item.hsn || item.hsnSac || "",
 
-          qty:
-            Number(
-              item.quantity ||
-              item.qty ||
-              0
-            ),
+          qty: Number(item.quantity || item.qty || 0),
 
-          unit:
-            item.unit || "PCS",
+          unit: item.unit || "PCS",
 
-          rate:
-            Number(item.rate || 0),
+          rate: Number(item.rate || 0),
 
           watt: 0,
 
           isSolarPanel: false,
 
-          discPercent:
-            Number(item.discPercent || 0),
+          discPercent: Number(item.discPercent || 0),
 
-          amount:
-            Number(item.amount || 0),
+          amount: Number(item.amount || 0),
 
-          gstRate:
-            Number(item.gstRate || 18),
-        })
+          gstRate: Number(item.gstRate || 18),
+        }),
       );
 
-    setItems(mappedItems);
-  }
-
-}, [initialData, isEditMode]);
+      setItems(mappedItems);
+    }
+  }, [initialData, isEditMode]);
 
   // Lead Search State
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState<Lead[]>([]);
   const [recentLeads, setRecentLeads] = useState<Lead[]>([]);
-  const [selectedLead, setSelectedLead] =
-  useState<Lead | null>(null);
+  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [showLeadResults, setShowLeadResults] = useState(false);
   const [isCreateLeadOpen, setIsCreateLeadOpen] = useState(false);
   const searchTimeoutRef = React.useRef<any>(null);
   const [lightBill, setLightBill] = useState<File | null>(null);
 
+  const pumpBOQ = {
+    "0.5 HP": {
+      panelQty: "1 NOS",
+      motor: "0.5 HP SOLAR WATER PUMP and Motor",
+      controller: "1 HP Solar Water Pump Controller",
+    },
 
-const [paymentType, setPaymentType] =
-    useState<string>(
-        String(initialData?.paidType || "FULL")
-    );
+    "1 HP": {
+      panelQty: "2 NOS",
+      motor: "1 HP SOLAR WATER PUMP and Motor",
+      controller: "1 HP Solar Water Pump Controller",
+    },
 
-const [paidAmount, setPaidAmount] =
-    useState<number>(
-        Number(initialData?.paidAmount || 0)
-    );
+    "2 HP": {
+      panelQty: "4 NOS",
+      motor: "2 HP SOLAR WATER PUMP and Motor",
+      controller: "2 HP Solar Water Pump Controller",
+    },
 
-const [advancedEnabled, setAdvancedEnabled] =
-    useState<boolean>(
-        Boolean(initialData?.advancedEnabled)
-    );
+    "3 HP": {
+      panelQty: "6 NOS",
+      motor: "3 HP SOLAR WATER PUMP and Motor",
+      controller: "3 HP Solar Water Pump Controller",
+    },
 
-const [additionalAmount, setAdditionalAmount] =
-    useState<number>(
-        Number(initialData?.additionalAmount || 0)
-    );
+    "5 HP": {
+      panelQty: "9 NOS",
+      motor: "5 HP SOLAR WATER PUMP and Motor",
+      controller: "5 HP Solar Water Pump Controller",
+    },
+
+    "7.5 HP": {
+      panelQty: "13 NOS",
+      motor: "7.5 HP SOLAR WATER PUMP and Motor",
+      controller: "7.5 HP Solar Water Pump Controller",
+    },
+  };
+
+  const [paymentType, setPaymentType] = useState<string>(
+    String(initialData?.paidType || "FULL"),
+  );
+
+  const [paidAmount, setPaidAmount] = useState<number>(
+    Number(initialData?.paidAmount || 0),
+  );
+
+  const [advancedEnabled, setAdvancedEnabled] = useState<boolean>(
+    Boolean(initialData?.advancedEnabled),
+  );
+
+  const [additionalAmount, setAdditionalAmount] = useState<number>(
+    Number(initialData?.additionalAmount || 0),
+  );
 
   // HSN Suggestions State
   const [hsnSuggestions, setHsnSuggestions] = useState<any[]>([]);
@@ -406,23 +681,23 @@ const [additionalAmount, setAdditionalAmount] =
     null,
   );
   const [hsnLoading, setHsnLoading] = useState(false);
-  useEffect(() => {
-  if (isPump) {
-    setFormData(prev => ({
-      ...prev,
-      officerName: "Mr. Kiran Jagtap",
-      officerContact: "9325389168 / 9665389150",
-      systemCapacity: "5 HP Solar Water Pump System Full Set"
-    }));
-  } else {
-    setFormData(prev => ({
-      ...prev,
-      officerName: "",
-      officerContact: "",
-      systemCapacity: ""
-    }));
-  }
-}, [isPump]);
+  // useEffect(() => {
+  //   if (isPump) {
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       officerName: "Mr. Kiran Jagtap",
+  //       officerContact: "9325389168 / 9665389150",
+  //       systemCapacity: "5 HP Solar Water Pump System Full Set",
+  //     }));
+  //   } else {
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       officerName: "",
+  //       officerContact: "",
+  //       systemCapacity: "",
+  //     }));
+  //   }
+  // }, [isPump]);
 
   // Load recent leads on mount
   // useEffect(() => {
@@ -438,21 +713,52 @@ const [additionalAmount, setAdditionalAmount] =
   // }, []);
 
   useEffect(() => {
-  getRecentLeads().then((data) => {
-    // 1. Filter for Indian region
-    const indianLeads = (data || []).filter(
-      (lead: any) =>
-        lead.customerType && lead.customerType.toLowerCase() === "indian"
-    );
+    if (!isPump) return;
 
-    // 2. Filter by Assignment (Admin sees all, others see own)
-    const filteredByAccess = isAdmin 
-      ? indianLeads 
-      : indianLeads.filter((lead: any) => lead.assignedToId === currentUser.id);
+    const config = pumpConfigurations["5 HP"];
 
-    setRecentLeads(filteredByAccess);
-  });
-}, [isAdmin, currentUser.id]); // Add dependencies
+    setFormData((prev) => ({
+      ...prev,
+      officerName: "Mr. Kiran Jagtap",
+      officerContact: "9325389168 / 9665389150",
+      systemCapacity: "5 HP",
+    }));
+
+    setItems([
+      {
+        id: Date.now(),
+        description: "5 HP Solar Water Pump System",
+        subDescription: config.motor,
+        hsn: "",
+        qty: 1,
+        unit: "SET",
+        rate: config.amount,
+        watt: 0,
+        isSolarPanel: false,
+        discPercent: 0,
+        amount: config.amount,
+        gstRate: 18,
+      },
+    ]);
+  }, [isPump]);
+  useEffect(() => {
+    getRecentLeads().then((data) => {
+      // 1. Filter for Indian region
+      const indianLeads = (data || []).filter(
+        (lead: any) =>
+          lead.customerType && lead.customerType.toLowerCase() === "indian",
+      );
+
+      // 2. Filter by Assignment (Admin sees all, others see own)
+      const filteredByAccess = isAdmin
+        ? indianLeads
+        : indianLeads.filter(
+            (lead: any) => lead.assignedToId === currentUser.id,
+          );
+
+      setRecentLeads(filteredByAccess);
+    });
+  }, [isAdmin, currentUser.id]); // Add dependencies
 
   // Close HSN suggestions when clicking outside
   useEffect(() => {
@@ -492,44 +798,42 @@ const [additionalAmount, setAdditionalAmount] =
   // };
 
   const handleLeadSearch = async (query: string) => {
-  if (!query) return;
-  setIsSearching(true);
-  try {
-    const results = await searchLeads(query);
+    if (!query) return;
+    setIsSearching(true);
+    try {
+      const results = await searchLeads(query);
 
-    // 1. Filter for Indian region
-    const indianLeads = (results || []).filter(
-      (lead: any) =>
-        lead.customerType && lead.customerType.toLowerCase() === "indian"
-    );
+      // 1. Filter for Indian region
+      const indianLeads = (results || []).filter(
+        (lead: any) =>
+          lead.customerType && lead.customerType.toLowerCase() === "indian",
+      );
 
-    // 2. Filter by Assignment
-    const filteredByAccess = isAdmin 
-      ? indianLeads 
-      : indianLeads.filter((lead: any) => lead.assignedToId === currentUser.id);
+      // 2. Filter by Assignment
+      const filteredByAccess = isAdmin
+        ? indianLeads
+        : indianLeads.filter(
+            (lead: any) => lead.assignedToId === currentUser.id,
+          );
 
-    // setSearchResults(filteredByAccess);
+      // setSearchResults(filteredByAccess);
 
-    setSearchResults(filteredByAccess);
+      setSearchResults(filteredByAccess);
 
-if (filteredByAccess.length > 0) {
-
-  selectLead(filteredByAccess[0]);
-
-} else {
-
-  setSelectedLead(null);
-
-}
-  } catch (err) {
-    console.error("Search failed", err);
-  } finally {
-    setIsSearching(false);
-  }
-};
+      if (filteredByAccess.length > 0) {
+        selectLead(filteredByAccess[0]);
+      } else {
+        setSelectedLead(null);
+      }
+    } catch (err) {
+      console.error("Search failed", err);
+    } finally {
+      setIsSearching(false);
+    }
+  };
 
   const selectLead = (lead: Lead) => {
-      setSelectedLead(lead);
+    setSelectedLead(lead);
     setFormData((prev) => {
       const newData = {
         ...prev,
@@ -580,7 +884,7 @@ if (filteredByAccess.length > 0) {
       description: "",
       subDescription: "",
       hsn: "",
-      qty: 0,
+      qty: 1,
       unit: "MTR",
       rate: 0,
       watt: 0,
@@ -672,20 +976,19 @@ if (filteredByAccess.length > 0) {
   // }, [formData.fromCompanyName]);
 
   useEffect(() => {
-  const fetchEstimateNumber = async () => {
-    // ONLY fetch if it's a NEW entry and we have a company name
-    if (formData.fromCompanyName && !isEditMode) {
-      try {
-        const num = await getNextEstimateNumber(formData.fromCompanyName);
-        setFormData((prev) => ({ ...prev, invoiceNumber: num }));
-      } catch (error) {
-        console.error("Failed to fetch estimate number", error);
+    const fetchEstimateNumber = async () => {
+      // ONLY fetch if it's a NEW entry and we have a company name
+      if (formData.fromCompanyName && !isEditMode) {
+        try {
+          const num = await getNextEstimateNumber(formData.fromCompanyName);
+          setFormData((prev) => ({ ...prev, invoiceNumber: num }));
+        } catch (error) {
+          console.error("Failed to fetch estimate number", error);
+        }
       }
-    }
-  };
-  fetchEstimateNumber();
-}, [formData.fromCompanyName, isEditMode]); // Added isEditMode to dependencies
-
+    };
+    fetchEstimateNumber();
+  }, [formData.fromCompanyName, isEditMode]); // Added isEditMode to dependencies
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -782,17 +1085,76 @@ if (filteredByAccess.length > 0) {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handlePumpCapacityChange = (
+    e: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
+    const capacity = e.target.value;
+
+    const config =
+      pumpConfigurations[capacity as keyof typeof pumpConfigurations];
+
+    setFormData((prev) => ({
+      ...prev,
+      systemCapacity: capacity,
+    }));
+
+    setItems([
+      {
+        id: Date.now(),
+
+        description: `${capacity} Solar Water Pump System`,
+
+        subDescription: `${config.motor}`,
+
+        hsn: "",
+
+        qty: 1,
+
+        unit: "SET",
+
+        rate: config.amount,
+
+        watt: 0,
+
+        isSolarPanel: false,
+
+        discPercent: 0,
+
+        amount: config.amount,
+
+        gstRate: 18,
+      },
+    ]);
+  };
+
+  // const handleItemChange = async (
+  //   id: number,
+  //   field: keyof ItemRow,
+  //   value: any,
+  // ) => {
+
   const handleItemChange = async (
     id: number,
     field: keyof ItemRow,
     value: any,
   ) => {
+    if (
+      field === "qty" ||
+      field === "rate" ||
+      field === "discPercent" ||
+      field === "gstRate" ||
+      field === "watt"
+    ) {
+      value = value === "" ? 0 : parseFloat(value);
+    }
     // Process HSN value for suggestions
     let hsnProcessedValue = value;
     // if (field === 'hsn') {
     //     hsnProcessedValue = value.replace(/[^0-9]/g, '').slice(0, 8);
     // }
-
+    if (field === "qty") {
+      console.log("QTY RECEIVED", value);
+    }
     if (field === "hsn") {
       const isNumeric = /^[0-9]+$/.test(value);
 
@@ -956,7 +1318,7 @@ if (filteredByAccess.length > 0) {
         description: "",
         subDescription: "",
         hsn: "",
-        qty: 0,
+        qty: 1,
         unit: "MTR",
         rate: 0,
         watt: 0,
@@ -1119,33 +1481,36 @@ if (filteredByAccess.length > 0) {
 
     setLoading(true);
     try {
+      console.log("ITEMS BEFORE SUBMIT", items);
       const submissionData = {
         ...formData,
         // items,
-leadId: selectedLead?.id || null,
-           items: items.map((it) => ({
-                description: it.description || "",
-                subDescription: it.subDescription || "",
-                hsnSac: it.hsn || "",           // DB Column: hsnSac
-                quantity: Number(it.qty || 0),  // DB Column: quantity
-                unit: it.unit || "PCS",
-                rate: Number(it.rate || 0),
-                discPercent: Number(it.discPercent || 0),
-                gstRate: Number(it.gstRate || 0),
-                amount: Number(it.amount || 0), // <--- FIX: Ensure amount is sent!
-            })),
+        leadId: selectedLead?.id || null,
+        items: items.map((it) => ({
+          description: it.description || "",
+          subDescription: it.subDescription || "",
+          hsnSac: it.hsn || "", // DB Column: hsnSac
+          // quantity: Number(it.qty || 0), // DB Column: quantity
+          quantity: Number(it.qty),
+          watt: Number(it.watt || 0),
+          unit: it.unit || "PCS",
+          rate: Number(it.rate || 0),
+          discPercent: Number(it.discPercent || 0),
+          gstRate: Number(it.gstRate || 0),
+          amount: Number(it.amount || 0), // <--- FIX: Ensure amount is sent!
+        })),
 
         totals,
         lightBill,
         paymentType,
-paidAmount,
-advancedEnabled,
-additionalAmount,
+        paidAmount,
+        advancedEnabled,
+        additionalAmount,
         status: "Draft",
         category: isPump ? "PUMP" : "DOMESTIC",
-         officerName: formData.officerName,
-  officerContact: formData.officerContact,
-  systemCapacity: formData.systemCapacity,
+        officerName: formData.officerName,
+        officerContact: formData.officerContact,
+        systemCapacity: formData.systemCapacity,
       };
       console.log("SUBMISSION DATA", submissionData);
       await onSubmit(submissionData);
@@ -1155,6 +1520,13 @@ additionalAmount,
       setLoading(false);
     }
   };
+
+  const currentBOQ =
+    pumpBOQ[formData.systemCapacity as keyof typeof pumpBOQ] || pumpBOQ["5 HP"];
+  const currentPump =
+    pumpTemplates[formData.systemCapacity as keyof typeof pumpTemplates] ||
+    pumpTemplates["5 HP"];
+  const completeBOQ = [...currentPump.boq, ...commonPumpRows];
 
   return (
     <div className="min-h-screen bg-white transition-colors duration-200 invoice-form">
@@ -1313,7 +1685,7 @@ additionalAmount,
                       type="text"
                       name="customerName"
                       value={formData.customerName}
-                       readOnly={isReadOnly}
+                      readOnly={isReadOnly}
                       onChange={(e) => {
                         const value = e.target.value
                           .replace(/[^a-zA-Z\s]/g, "")
@@ -1334,21 +1706,15 @@ additionalAmount,
                         //     () => handleLeadSearch(value),
                         //     300,
                         //   );
-                        // } 
+                        // }
 
-if (value.length > 1) {
+                        if (value.length > 1) {
+                          setIsSearching(true);
 
-  setIsSearching(true);
-
-  searchTimeoutRef.current = setTimeout(async () => {
-
-    await handleLeadSearch(value);
-
-  }, 300);
-
-}
-                        
-                        else {
+                          searchTimeoutRef.current = setTimeout(async () => {
+                            await handleLeadSearch(value);
+                          }, 300);
+                        } else {
                           setSearchResults([]);
                           setIsSearching(false);
                         }
@@ -1673,7 +2039,7 @@ if (value.length > 1) {
                       type="text"
                       name="stateCode"
                       value={formData.stateCode}
-                       disabled={isReadOnly}
+                      disabled={isReadOnly}
                       onChange={handleInputChange}
                       maxLength={2}
                       placeholder="e.g., 27"
@@ -1761,11 +2127,10 @@ if (value.length > 1) {
             </section>
           )} */}
 
-
           {isPump && (
-  <>
-    {/* System Capacity */}
-    <div className="grid grid-cols-2 gap-4">
+            <>
+              {/* System Capacity */}
+              {/* <div className="grid grid-cols-2 gap-4">
       <input
         name="systemCapacity"
         value={formData.systemCapacity}
@@ -1773,31 +2138,198 @@ if (value.length > 1) {
         placeholder="System Capacity"
         className="border p-3 rounded-lg"
       />
-    </div>
+    </div> */}
 
-    {/* PROJECT DETAILS */}
-    <section className="bg-white p-6 rounded-xl border mb-6">
-      <h2 className="text-lg font-bold mb-4">PROJECT DETAILS</h2>
+              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <label className="block text-sm font-bold text-slate-700 mb-3">
+                  Solar Water Pump Capacity
+                </label>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label className="font-semibold">Officer In Charge</label>
-          <input value={formData.officerName} readOnly className="border p-2 w-full bg-gray-100" />
-        </div>
+                <select
+                  value={formData.systemCapacity}
+                  onChange={handlePumpCapacityChange}
+                  className="
+      w-full
+      px-4
+      py-3
+      rounded-xl
+      border
+      border-slate-300
+      bg-white
+      text-slate-800
+      font-semibold
+      focus:ring-4
+      focus:ring-blue-100
+      focus:border-blue-500
+    "
+                >
+                  <option value="0.5 HP">0.5 HP</option>
+                  <option value="1 HP">1 HP</option>
+                  <option value="2 HP">2 HP</option>
+                  <option value="3 HP">3 HP</option>
+                  <option value="5 HP">5 HP</option>
+                  <option value="7.5 HP">7.5 HP</option>
+                </select>
+              </div>
 
-        <div>
-          <label className="font-semibold">Contact</label>
-          <input value={formData.officerContact} readOnly className="border p-2 w-full bg-gray-100" />
-        </div>
+              {/* PROJECT DETAILS */}
+              <section className="bg-white p-6 rounded-xl border mb-6">
+                <h2 className="text-lg font-bold mb-4">PROJECT DETAILS</h2>
 
-        <div className="md:col-span-2">
-          <label className="font-semibold">System Capacity</label>
-          <input value={formData.systemCapacity} readOnly className="border p-2 w-full bg-gray-100" />
-        </div>
-      </div>
-    </section>
-  </>
-)}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="font-semibold">Officer In Charge</label>
+                    <input
+                      value={formData.officerName}
+                      readOnly
+                      className="border p-2 w-full bg-gray-100"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="font-semibold">Contact</label>
+                    <input
+                      value={formData.officerContact}
+                      readOnly
+                      className="border p-2 w-full bg-gray-100"
+                    />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label className="font-semibold">System Capacity</label>
+                    <input
+                      value={formData.systemCapacity}
+                      readOnly
+                      className="border p-2 w-full bg-gray-100"
+                    />
+                  </div>
+                </div>
+              </section>
+
+              <section className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-6">
+                <div className="bg-green-600 px-6 py-4">
+                  <h2 className="text-white font-bold text-lg">
+                    Financial Offer
+                  </h2>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse">
+                    <thead>
+                      <tr className="bg-slate-100">
+                        <th className="border p-3 text-center w-16">Sr No</th>
+                        <th className="border p-3 text-left">
+                          Item Description
+                        </th>
+                        <th className="border p-3 text-right w-52">
+                          Project Cost
+                        </th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <tr>
+                        <td className="border p-3 text-center">1</td>
+
+                        <td className="border p-3">
+                          Supply of Solar Water Pump, Motor and Controller,
+                          Solar PV Module, GI Structure Ground Mounted etc.
+                        </td>
+
+                        <td className="border p-3 text-right font-bold text-green-700">
+                          ₹ {currentPump.projectCost.toLocaleString("en-IN")}
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td className="border p-3 text-center">2</td>
+                        <td className="border p-3">
+                          Supply of Solar Pump Pipe, Solar Cable for Pump and
+                          Nylon Rope
+                        </td>
+                        <td className="border p-3"></td>
+                      </tr>
+
+                      <tr>
+                        <td className="border p-3 text-center">3</td>
+                        <td className="border p-3">
+                          Other Misc Material Applicable To Solar Water Pump
+                          System
+                        </td>
+                        <td className="border p-3"></td>
+                      </tr>
+
+                      <tr>
+                        <td className="border p-3 text-center">4</td>
+                        <td className="border p-3">
+                          Packing, Unpacking, Loading & Unloading, Warranty
+                          Services, Installation etc.
+                        </td>
+                        <td className="border p-3"></td>
+                      </tr>
+
+                      <tr>
+                        <td className="border p-3 text-center">5</td>
+                        <td className="border p-3">Transportation Including</td>
+                        <td className="border p-3"></td>
+                      </tr>
+
+                      <tr>
+                        <td className="border p-3 text-center">6</td>
+                        <td className="border p-3">
+                          Taxes As Applicable For System
+                        </td>
+                        <td className="border p-3"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+
+              <section className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-6">
+                <div className="bg-blue-600 px-6 py-4">
+                  <h2 className="text-white font-bold text-lg">
+                    Bill Of Material
+                  </h2>
+                </div>
+
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr className="bg-slate-100">
+                      <th className="border p-3">Sr</th>
+                      <th className="border p-3">Item</th>
+                      <th className="border p-3">Specification</th>
+                      <th className="border p-3">Make</th>
+                      <th className="border p-3">Qty</th>
+                      <th className="border p-3">Image</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {completeBOQ.map((row) => (
+                      <tr key={row.sr}>
+                        <td className="border p-2">{row.sr}</td>
+                        <td className="border p-2">{row.item}</td>
+                        <td className="border p-2">{row.specification}</td>
+                        <td className="border p-2">{row.make}</td>
+                        <td className="border p-2">{row.qty}</td>
+
+                        <td className="border p-2">
+                          {row.image && (
+                            <img
+                              src={row.image}
+                              className="h-16 mx-auto"
+                              alt=""
+                            />
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </section>
+            </>
+          )}
 
           <section className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
             <div className="p-8 border-b border-slate-50 flex justify-between items-center">
@@ -1808,29 +2340,25 @@ if (value.length > 1) {
                 Item Details
               </h3>
               {!isReadOnly && (
-              <button
-                type="button"
-                onClick={addItem}
-                className="px-6 py-2.5 bg-amber-50 text-amber-600 rounded-xl text-sm font-bold hover:bg-amber-100 transition-all shadow-sm flex items-center gap-2"
-              >
-                <Plus size={18} />
-                Add Item
-              </button>
-
+                <button
+                  type="button"
+                  onClick={addItem}
+                  className="px-6 py-2.5 bg-amber-50 text-amber-600 rounded-xl text-sm font-bold hover:bg-amber-100 transition-all shadow-sm flex items-center gap-2"
+                >
+                  <Plus size={18} />
+                  Add Item
+                </button>
               )}
               {!isReadOnly && (
-              
-              <button
-                type="button"
-                onClick={() => setIsCatalogOpen(true)}
-                className="px-6 py-2.5 bg-blue-50 text-blue-600 rounded-xl text-sm font-bold hover:bg-blue-100 transition-all shadow-sm flex items-center gap-2"
-              >
-                
-                <Layers size={18} />
-                Add from Catalog
-              </button>
+                <button
+                  type="button"
+                  onClick={() => setIsCatalogOpen(true)}
+                  className="px-6 py-2.5 bg-blue-50 text-blue-600 rounded-xl text-sm font-bold hover:bg-blue-100 transition-all shadow-sm flex items-center gap-2"
+                >
+                  <Layers size={18} />
+                  Add from Catalog
+                </button>
               )}
-              
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left">
@@ -1953,17 +2481,21 @@ if (value.length > 1) {
                       <td className="px-2 py-6">
                         <input
                           type="number"
+                          step="any"
                           value={item.qty}
-                          min="0"
                           onChange={(e) =>
-                            handleItemChange(item.id, "qty", e.target.value)
+                            handleItemChange(
+                              item.id,
+                              "qty",
+                              Number(e.target.value),
+                            )
                           }
-                          className="w-full px-2 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-center focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all outline-none font-bold text-slate-700 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         />
                       </td>
                       <td className="px-2 py-6">
                         <input
                           type="number"
+                          step="any"
                           value={item.watt || ""}
                           min="0"
                           onChange={(e) =>
@@ -1999,6 +2531,7 @@ if (value.length > 1) {
                       <td className="px-2 py-6">
                         <input
                           type="number"
+                          step="any"
                           value={item.rate}
                           min="0"
                           onChange={(e) =>
@@ -2010,10 +2543,11 @@ if (value.length > 1) {
                       <td className="px-2 py-6">
                         <input
                           type="number"
+                          step="any"
                           value={item.discPercent}
                           min="0"
                           max="100"
-                          step="0.5"
+                          // step="0.5"
                           onChange={(e) =>
                             handleItemChange(
                               item.id,
@@ -2028,10 +2562,11 @@ if (value.length > 1) {
                       <td className="px-2 py-6">
                         <input
                           type="number"
+                          step="any"
                           value={item.gstRate}
                           min="0"
                           max="100"
-                          step="0.5"
+                          // step="0.5"
                           onChange={(e) =>
                             handleItemChange(item.id, "gstRate", e.target.value)
                           }
@@ -2151,6 +2686,7 @@ if (value.length > 1) {
                     </span>
                     <input
                       type="number"
+                      step="any"
                       name="cashDiscount"
                       value={formData.cashDiscount}
                       onChange={handleInputChange}
@@ -2185,6 +2721,7 @@ if (value.length > 1) {
                     </span>
                     <input
                       type="number"
+                      step="any"
                       name="roundOff"
                       value={formData.roundOff}
                       onChange={handleInputChange}
@@ -2238,102 +2775,72 @@ if (value.length > 1) {
             </div>
           </section>
           {isPaymentMode && (
+            <section className="bg-white p-6 rounded-2xl border border-green-200 mt-6">
+              <h2 className="text-xl font-bold text-green-700 mb-5">
+                Payment Details
+              </h2>
 
-<section className="bg-white p-6 rounded-2xl border border-green-200 mt-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                  <label className="block text-sm font-bold mb-2">
+                    Payment Type
+                  </label>
 
-    <h2 className="text-xl font-bold text-green-700 mb-5">
-        Payment Details
-    </h2>
-
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-
-        <div>
-            <label className="block text-sm font-bold mb-2">
-                Payment Type
-            </label>
-
-            <select
-                value={paymentType}
-                onChange={(e) =>
-                    setPaymentType(
-                        e.target.value
-                    )
-                }
-                className="w-full border rounded-xl px-4 py-3"
-            >
-                <option value="FULL">
-                    Full Payment
-                </option>
-
-                <option value="HALF">
-                    Half Payment
-                </option>
-            </select>
-        </div>
-
-        <div>
-            <label className="block text-sm font-bold mb-2">
-                Paid Amount
-            </label>
-
-            <input
-                type="number"
-                value={paidAmount}
-                onChange={(e) =>
-                    setPaidAmount(
-                        Number(e.target.value)
-                    )
-                }
-                className="w-full border rounded-xl px-4 py-3"
-            />
-        </div>
-
-        <div className="flex items-center gap-3 mt-2">
-
-            <input
-                type="checkbox"
-                checked={advancedEnabled}
-                onChange={(e) =>
-                    setAdvancedEnabled(
-                        e.target.checked
-                    )
-                }
-            />
-
-            <label className="font-medium">
-                Advance Included
-            </label>
-
-        </div>
-
-        {advancedEnabled && (
-
-            <div>
-
-                <label className="block text-sm font-bold mb-2">
-                    Additional Amount
-                </label>
-
-                <input
-                    type="number"
-                    value={additionalAmount}
-                    onChange={(e) =>
-                        setAdditionalAmount(
-                            Number(e.target.value)
-                        )
-                    }
+                  <select
+                    value={paymentType}
+                    onChange={(e) => setPaymentType(e.target.value)}
                     className="w-full border rounded-xl px-4 py-3"
-                />
+                  >
+                    <option value="FULL">Full Payment</option>
 
-            </div>
+                    <option value="HALF">Half Payment</option>
+                  </select>
+                </div>
 
-        )}
+                <div>
+                  <label className="block text-sm font-bold mb-2">
+                    Paid Amount
+                  </label>
 
-    </div>
+                  <input
+                    type="number"
+                    step="any"
+                    value={paidAmount}
+                    onChange={(e) => setPaidAmount(Number(e.target.value))}
+                    className="w-full border rounded-xl px-4 py-3"
+                  />
+                </div>
 
-</section>
+                <div className="flex items-center gap-3 mt-2">
+                  <input
+                    type="checkbox"
+                    checked={advancedEnabled}
+                    onChange={(e) => setAdvancedEnabled(e.target.checked)}
+                  />
 
-)}
+                  <label className="font-medium">Advance Included</label>
+                </div>
+
+                {advancedEnabled && (
+                  <div>
+                    <label className="block text-sm font-bold mb-2">
+                      Additional Amount
+                    </label>
+
+                    <input
+                      type="number"
+                      step="any"
+                      value={additionalAmount}
+                      onChange={(e) =>
+                        setAdditionalAmount(Number(e.target.value))
+                      }
+                      className="w-full border rounded-xl px-4 py-3"
+                    />
+                  </div>
+                )}
+              </div>
+            </section>
+          )}
         </form>
 
         <CatalogItemSelector

@@ -455,9 +455,300 @@
 
 
 
+// import React, { useEffect, useState } from 'react';
+// import ReactDOM from 'react-dom';
+// import { X, User, Building2, Mail, Phone, Globe, IndianRupee, FileText, Plus, ShieldCheck, Users } from 'lucide-react';
+
+// interface CreateLeadModalProps {
+//     isOpen: boolean;
+//     onClose: () => void;
+//     onSubmit: (leadData: any) => void;
+// }
+
+// interface SalesEmployee {
+//     id: string;
+//     name: string;
+//     email?: string;
+//     role?: {
+//         name?: string;
+//     };
+// }
+
+// const CreateLeadModal: React.FC<CreateLeadModalProps> = ({ isOpen, onClose, onSubmit }) => {
+//     // 1. Get Current User Info
+//     const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+//     const isAdmin = currentUser?.role?.name?.toLowerCase() === "admin";
+
+//     const [formData, setFormData] = useState({
+//         name: '',
+//         company: '',
+//         email: '',
+//         phone: '',
+//         source: 'Website',
+//         estimatedValue: '',
+//         customerType: 'Indian',
+//         notes: '',
+//         // If not admin, pre-assign to current user ID
+//         assignedTo: !isAdmin ? currentUser.id : ''
+//     });
+
+//     const [emailError, setEmailError] = useState('');
+//     const [salesEmployees, setSalesEmployees] = useState<SalesEmployee[]>([]);
+
+//     // 2. Fetch Logic based on Role
+//     useEffect(() => {
+//         if (!isOpen) return;
+
+//         if (isAdmin) {
+//             // ADMIN: Fetch all sales employees
+//             fetch('/api/v1/employees', {
+//                 headers: {
+//                     Authorization: `Bearer ${localStorage.getItem('token')}`
+//                 }
+//             })
+//                 .then(res => res.json())
+//                 .then(data => {
+//                     const users = data.employees || [];
+//                     const filtered = users.filter((u: SalesEmployee) =>
+//                         u.role?.name?.toLowerCase() === 'sales'
+//                     );
+//                     setSalesEmployees(filtered);
+//                 })
+//                 .catch(err => console.error("Error fetching employees:", err));
+//         } else {
+//             // NON-ADMIN: Only show the current user in the list
+//             setSalesEmployees([{
+//                 id: currentUser.id,
+//                 name: currentUser.name || "Self"
+//             }]);
+//         }
+//     }, [isOpen, isAdmin]);
+
+//     if (!isOpen) return null;
+
+//     // Validation Handlers
+//     const handleNameChange = (value: string) => {
+//         const alphabetsOnly = value.replace(/[^a-zA-Z\s]/g, '').slice(0, 100);
+//         setFormData({ ...formData, name: alphabetsOnly });
+//     };
+
+//     const handleCompanyChange = (value: string) => {
+//         const validChars = value.replace(/[^a-zA-Z0-9\s.,&'-]/g, '').slice(0, 150);
+//         setFormData({ ...formData, company: validChars });
+//     };
+
+//     const handleEmailChange = (value: string) => {
+//         setFormData({ ...formData, email: value });
+//         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+//         setEmailError(value && !emailRegex.test(value) ? 'Please enter a valid email address' : '');
+//     };
+
+//     const handlePhoneChange = (value: string) => {
+//         const digitsOnly = value.replace(/[^0-9]/g, '').slice(0, 10);
+//         setFormData({ ...formData, phone: digitsOnly });
+//     };
+
+//     const handleEstimatedValueChange = (value: string) => {
+//         const digitsOnly = value.replace(/[^0-9]/g, '');
+//         setFormData({ ...formData, estimatedValue: digitsOnly });
+//     };
+
+//     const handleNotesChange = (value: string) => {
+//         const sanitized = value.replace(/<[^>]*>/g, '').replace(/javascript:/gi, '').slice(0, 1000);
+//         setFormData({ ...formData, notes: sanitized });
+//     };
+
+//     const handleSubmit = (e: React.FormEvent) => {
+//         e.preventDefault();
+//         if (emailError || formData.phone.length !== 10) return;
+
+//         const selectedEmployee = salesEmployees.find(emp => emp.id === formData.assignedTo);
+
+//         onSubmit({
+//             ...formData,
+//             assignedToId: formData.assignedTo,
+//             assignedToName: selectedEmployee?.name || currentUser.name || "",
+//             estimatedValue: parseInt(formData.estimatedValue) || 0,
+//             status: 'new',
+//             createdAt: new Date().toISOString(),
+//             updatedAt: new Date().toISOString()
+//         });
+//         resetForm();
+//     };
+
+//     const resetForm = () => {
+//         setFormData({
+//             name: '',
+//             company: '',
+//             email: '',
+//             phone: '',
+//             source: 'Website',
+//             customerType: 'Indian',
+//             estimatedValue: '',
+//             notes: '',
+//             assignedTo: !isAdmin ? currentUser.id : ''
+//         });
+//     };
+
+//     return ReactDOM.createPortal(
+//         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-6">
+//             <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-xl" onClick={onClose} />
+
+//             <div className="relative bg-white/95 backdrop-blur-3xl w-full max-w-xl sm:max-w-2xl max-h-[90vh] rounded-[2rem] sm:rounded-[2.5rem] shadow-2xl border border-white/50 overflow-hidden animate-in zoom-in-95 duration-500">
+//                 <div className="p-5 sm:p-8 overflow-y-auto max-h-[calc(90vh-80px)]">
+//                     <div className="flex justify-between items-start mb-8">
+//                         <div className="space-y-1">
+//                             <div className="flex items-center gap-3 text-blue-600 mb-1">
+//                                 <div className="p-1.5 bg-blue-50 rounded-lg"><ShieldCheck size={16} /></div>
+//                                 <span className="text-[9px] font-black uppercase tracking-[0.2em]">Sales Intelligence</span>
+//                             </div>
+//                             <h2 className="text-2xl font-black text-slate-800 tracking-tight">Add a New Lead</h2>
+//                         </div>
+//                         <button onClick={onClose} className="p-2.5 hover:bg-slate-100 rounded-xl transition-all text-slate-400 hover:text-slate-600"><X size={22} /></button>
+//                     </div>
+
+//                     <form onSubmit={handleSubmit} className="space-y-6">
+//                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+//                             <div className="space-y-1.5">
+//                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Lead Name <span className="text-red-500">*</span></label>
+//                                 <div className="relative group">
+//                                     <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-500" size={16} />
+//                                     <input required type="text" placeholder="Full name" className="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-400 font-semibold text-slate-700" value={formData.name} onChange={e => handleNameChange(e.target.value)} />
+//                                 </div>
+//                             </div>
+
+//                             <div className="space-y-1.5">
+//                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Company <span className="text-red-500">*</span></label>
+//                                 <div className="relative group">
+//                                     <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-500" size={16} />
+//                                     <input required type="text" placeholder="Organization" className="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-400 font-semibold text-slate-700" value={formData.company} onChange={e => handleCompanyChange(e.target.value)} />
+//                                 </div>
+//                             </div>
+
+//                             <div className="space-y-1.5">
+//                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Customer Region <span className="text-red-500">*</span></label>
+//                                 <div className="relative group">
+//                                     <Users className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
+//                                     <select required className="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-400 font-semibold text-slate-700 appearance-none" value={formData.customerType} onChange={e => setFormData({ ...formData, customerType: e.target.value })}>
+//                                         <option value="Indian">Indian</option>
+//                                         <option value="International">International</option>
+//                                     </select>
+//                                 </div>
+//                             </div>
+
+//                             {/* <div className="space-y-1.5">
+//                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Email Address <span className="text-red-500">*</span></label>
+//                                 <div className="relative group">
+//                                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
+//                                     <input required type="email" placeholder="example@mail.com" className={`w-full pl-11 pr-4 py-3.5 bg-slate-50/50 border rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-400 font-semibold text-slate-700 ${emailError ? 'border-red-300' : 'border-slate-100'}`} value={formData.email} onChange={e => handleEmailChange(e.target.value)} />
+//                                 </div>
+//                                 {emailError && <p className="text-red-500 text-[10px] ml-1">{emailError}</p>}
+//                             </div> */}
+
+//                             {/* Email Address Section */}
+// <div className="space-y-1.5">
+//     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+//         Email Address (Optional) {/* Removed * */}
+//     </label>
+//     <div className="relative group">
+//         <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
+//         <input 
+//             type="email" // Removed required
+//             placeholder="example@mail.com" 
+//             className={`w-full ... ${emailError ? 'border-red-300' : 'border-slate-100'}`} 
+//             value={formData.email} 
+//             onChange={e => handleEmailChange(e.target.value)} 
+//         />
+//     </div>
+//     {emailError && <p className="text-red-500 text-[10px] ml-1">{emailError}</p>}
+// </div>
+
+//                             <div className="space-y-1.5">
+//                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Phone Number <span className="text-red-500">*</span></label>
+//                                 <div className="relative group">
+//                                     <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
+//                                     <input required type="tel" placeholder="10 digit number" maxLength={10} className="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-400 font-semibold text-slate-700" value={formData.phone} onChange={e => handlePhoneChange(e.target.value)} />
+//                                 </div>
+//                             </div>
+
+//                             {/* <div className="space-y-1.5">
+//                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Est. Value (₹) <span className="text-red-500">*</span></label>
+//                                 <div className="relative group">
+//                                     <IndianRupee className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
+//                                     <input required type="text" inputMode="numeric" placeholder="0" className="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-400 font-bold text-slate-700" value={formData.estimatedValue} onChange={e => handleEstimatedValueChange(e.target.value)} />
+//                                 </div>
+//                             </div> */}
+
+//                             <div className="space-y-1.5">
+//     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+//         Est. Value (₹) (Optional) {/* Removed * */}
+//     </label>
+//     <div className="relative group">
+//         <IndianRupee className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
+//         <input 
+//             type="text" // Removed required
+//             inputMode="numeric" 
+//             placeholder="0" 
+//             className="w-full ..." 
+//             value={formData.estimatedValue} 
+//             onChange={e => handleEstimatedValueChange(e.target.value)} 
+//         />
+//     </div>
+// </div>
+//                         </div>
+
+//                         <div className="space-y-1.5">
+//                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Strategic Notes <span className="text-red-500">*</span></label>
+//                             <div className="relative group">
+//                                 <FileText className="absolute left-4 top-4 text-slate-300" size={16} />
+//                                 <textarea placeholder="Add requirements..." rows={2} className="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-400 font-semibold text-slate-700 resize-none" value={formData.notes} onChange={e => handleNotesChange(e.target.value)} />
+//                             </div>
+//                         </div>
+
+//                         {/* Assign Lead Section */}
+//                         <div className="space-y-1.5">
+//                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Assign To <span className="text-red-500">*</span></label>
+//                             <div className="relative group">
+//                                 <Users className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-500 transition-colors" size={16} />
+//                                 <select 
+//                                     required 
+//                                     disabled={!isAdmin} // Disabled if not admin
+//                                     className={`w-full pl-11 pr-4 py-3.5 border rounded-2xl focus:outline-none font-semibold text-slate-700 appearance-none ${!isAdmin ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : 'bg-slate-50/50 border-slate-100 focus:ring-4 focus:ring-blue-500/5 focus:border-blue-400'}`} 
+//                                     value={formData.assignedTo} 
+//                                     onChange={(e) => setFormData({ ...formData, assignedTo: e.target.value })}
+//                                 >
+//                                     {isAdmin && <option value="">Select Sales Employee</option>}
+//                                     {salesEmployees.map((emp: SalesEmployee) => (
+//                                         <option key={emp.id} value={emp.id}>{emp.name}</option>
+//                                     ))}
+//                                 </select>
+//                             </div>
+//                             {!isAdmin && <p className="text-[9px] text-slate-400 ml-1 italic">Automatically assigned to you.</p>}
+//                         </div>
+
+//                         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2">
+//                             <button type="button" onClick={onClose} className="flex-1 px-6 py-4 bg-white border border-slate-200 text-slate-500 font-bold rounded-2xl hover:bg-slate-50 text-sm transition-all">Cancel</button>
+//                             <button type="submit" className="flex-[1.5] px-6 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-2xl hover:shadow-xl transition-all active:scale-95 flex items-center justify-center gap-3 text-sm">
+//                                 <Plus size={18} />
+//                                 <span>Add a New Lead</span>
+//                             </button>
+//                         </div>
+//                     </form>
+//                 </div>
+//             </div>
+//         </div>,
+//         document.body
+//     );
+// };
+
+// export default CreateLeadModal;
+
+
+
+
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
-import { X, User, Building2, Mail, Phone, Globe, IndianRupee, FileText, Plus, ShieldCheck, Users } from 'lucide-react';
+import { X, User, Building2, Mail, Phone, IndianRupee, FileText, Plus, ShieldCheck, Users } from 'lucide-react';
 
 interface CreateLeadModalProps {
     isOpen: boolean;
@@ -475,7 +766,6 @@ interface SalesEmployee {
 }
 
 const CreateLeadModal: React.FC<CreateLeadModalProps> = ({ isOpen, onClose, onSubmit }) => {
-    // 1. Get Current User Info
     const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
     const isAdmin = currentUser?.role?.name?.toLowerCase() === "admin";
 
@@ -488,23 +778,18 @@ const CreateLeadModal: React.FC<CreateLeadModalProps> = ({ isOpen, onClose, onSu
         estimatedValue: '',
         customerType: 'Indian',
         notes: '',
-        // If not admin, pre-assign to current user ID
         assignedTo: !isAdmin ? currentUser.id : ''
     });
 
     const [emailError, setEmailError] = useState('');
     const [salesEmployees, setSalesEmployees] = useState<SalesEmployee[]>([]);
 
-    // 2. Fetch Logic based on Role
     useEffect(() => {
         if (!isOpen) return;
 
         if (isAdmin) {
-            // ADMIN: Fetch all sales employees
             fetch('/api/v1/employees', {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`
-                }
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
             })
                 .then(res => res.json())
                 .then(data => {
@@ -516,7 +801,6 @@ const CreateLeadModal: React.FC<CreateLeadModalProps> = ({ isOpen, onClose, onSu
                 })
                 .catch(err => console.error("Error fetching employees:", err));
         } else {
-            // NON-ADMIN: Only show the current user in the list
             setSalesEmployees([{
                 id: currentUser.id,
                 name: currentUser.name || "Self"
@@ -526,7 +810,6 @@ const CreateLeadModal: React.FC<CreateLeadModalProps> = ({ isOpen, onClose, onSu
 
     if (!isOpen) return null;
 
-    // Validation Handlers
     const handleNameChange = (value: string) => {
         const alphabetsOnly = value.replace(/[^a-zA-Z\s]/g, '').slice(0, 100);
         setFormData({ ...formData, name: alphabetsOnly });
@@ -539,8 +822,11 @@ const CreateLeadModal: React.FC<CreateLeadModalProps> = ({ isOpen, onClose, onSu
 
     const handleEmailChange = (value: string) => {
         setFormData({ ...formData, email: value });
-        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-        setEmailError(value && !emailRegex.test(value) ? 'Please enter a valid email address' : '');
+        if (value && !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) {
+            setEmailError('Please enter a valid email address');
+        } else {
+            setEmailError('');
+        }
     };
 
     const handlePhoneChange = (value: string) => {
@@ -560,7 +846,15 @@ const CreateLeadModal: React.FC<CreateLeadModalProps> = ({ isOpen, onClose, onSu
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (emailError || formData.phone.length !== 10) return;
+        if (emailError) return;
+        if (formData.phone.length !== 10) {
+            alert("Phone number must be 10 digits");
+            return;
+        }
+        if (!formData.name.trim()) {
+            alert("Lead name is required");
+            return;
+        }
 
         const selectedEmployee = salesEmployees.find(emp => emp.id === formData.assignedTo);
 
@@ -588,147 +882,200 @@ const CreateLeadModal: React.FC<CreateLeadModalProps> = ({ isOpen, onClose, onSu
             notes: '',
             assignedTo: !isAdmin ? currentUser.id : ''
         });
+        setEmailError('');
     };
 
     return ReactDOM.createPortal(
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-6">
-            <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-xl" onClick={onClose} />
+            <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={onClose} />
 
-            <div className="relative bg-white/95 backdrop-blur-3xl w-full max-w-xl sm:max-w-2xl max-h-[90vh] rounded-[2rem] sm:rounded-[2.5rem] shadow-2xl border border-white/50 overflow-hidden animate-in zoom-in-95 duration-500">
-                <div className="p-5 sm:p-8 overflow-y-auto max-h-[calc(90vh-80px)]">
-                    <div className="flex justify-between items-start mb-8">
-                        <div className="space-y-1">
-                            <div className="flex items-center gap-3 text-blue-600 mb-1">
-                                <div className="p-1.5 bg-blue-50 rounded-lg"><ShieldCheck size={16} /></div>
-                                <span className="text-[9px] font-black uppercase tracking-[0.2em]">Sales Intelligence</span>
-                            </div>
-                            <h2 className="text-2xl font-black text-slate-800 tracking-tight">Add a New Lead</h2>
+            <div className="relative bg-white w-full max-w-5xl max-h-[90vh] rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
+                <div className="flex justify-between items-center px-6 py-5 border-b border-slate-200 bg-slate-50/30">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 bg-blue-50 rounded-xl">
+                            <ShieldCheck size={20} className="text-blue-600" />
                         </div>
-                        <button onClick={onClose} className="p-2.5 hover:bg-slate-100 rounded-xl transition-all text-slate-400 hover:text-slate-600"><X size={22} /></button>
+                        <div>
+                            <h2 className="text-xl font-bold text-slate-800">Add a New Lead</h2>
+                            <p className="text-xs text-slate-500 mt-0.5">Fill in the details to create a new prospect</p>
+                        </div>
                     </div>
+                    <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-xl transition-colors text-slate-400 hover:text-slate-600">
+                        <X size={20} />
+                    </button>
+                </div>
 
+                <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
                     <form onSubmit={handleSubmit} className="space-y-6">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
-                            <div className="space-y-1.5">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Lead Name <span className="text-red-500">*</span></label>
-                                <div className="relative group">
-                                    <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-500" size={16} />
-                                    <input required type="text" placeholder="Full name" className="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-400 font-semibold text-slate-700" value={formData.name} onChange={e => handleNameChange(e.target.value)} />
+                        {/* Row 1: Required Fields (Name, Region, Phone) */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                            <div>
+                                <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+                                    Lead Name <span className="text-red-500">*</span>
+                                </label>
+                                <div className="relative">
+                                    <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                                    <input
+                                        required
+                                        type="text"
+                                        placeholder="Full name"
+                                        className="w-full pl-9 pr-3 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-white text-slate-800"
+                                        value={formData.name}
+                                        onChange={e => handleNameChange(e.target.value)}
+                                    />
                                 </div>
                             </div>
 
-                            <div className="space-y-1.5">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Company <span className="text-red-500">*</span></label>
-                                <div className="relative group">
-                                    <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-500" size={16} />
-                                    <input required type="text" placeholder="Organization" className="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-400 font-semibold text-slate-700" value={formData.company} onChange={e => handleCompanyChange(e.target.value)} />
-                                </div>
-                            </div>
-
-                            <div className="space-y-1.5">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Customer Region <span className="text-red-500">*</span></label>
-                                <div className="relative group">
-                                    <Users className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
-                                    <select required className="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-400 font-semibold text-slate-700 appearance-none" value={formData.customerType} onChange={e => setFormData({ ...formData, customerType: e.target.value })}>
+                            <div>
+                                <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+                                    Customer Region <span className="text-red-500">*</span>
+                                </label>
+                                <div className="relative">
+                                    <Users size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                                    <select
+                                        required
+                                        className="w-full pl-9 pr-3 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-white text-slate-800 appearance-none"
+                                        value={formData.customerType}
+                                        onChange={e => setFormData({ ...formData, customerType: e.target.value })}
+                                    >
                                         <option value="Indian">Indian</option>
                                         <option value="International">International</option>
                                     </select>
                                 </div>
                             </div>
 
-                            {/* <div className="space-y-1.5">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Email Address <span className="text-red-500">*</span></label>
-                                <div className="relative group">
-                                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
-                                    <input required type="email" placeholder="example@mail.com" className={`w-full pl-11 pr-4 py-3.5 bg-slate-50/50 border rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-400 font-semibold text-slate-700 ${emailError ? 'border-red-300' : 'border-slate-100'}`} value={formData.email} onChange={e => handleEmailChange(e.target.value)} />
+                            <div>
+                                <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+                                    Phone Number <span className="text-red-500">*</span>
+                                </label>
+                                <div className="relative">
+                                    <Phone size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                                    <input
+                                        required
+                                        type="tel"
+                                        placeholder="10 digit number"
+                                        maxLength={10}
+                                        className="w-full pl-9 pr-3 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-white text-slate-800"
+                                        value={formData.phone}
+                                        onChange={e => handlePhoneChange(e.target.value)}
+                                    />
                                 </div>
-                                {emailError && <p className="text-red-500 text-[10px] ml-1">{emailError}</p>}
-                            </div> */}
-
-                            {/* Email Address Section */}
-<div className="space-y-1.5">
-    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-        Email Address (Optional) {/* Removed * */}
-    </label>
-    <div className="relative group">
-        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
-        <input 
-            type="email" // Removed required
-            placeholder="example@mail.com" 
-            className={`w-full ... ${emailError ? 'border-red-300' : 'border-slate-100'}`} 
-            value={formData.email} 
-            onChange={e => handleEmailChange(e.target.value)} 
-        />
-    </div>
-    {emailError && <p className="text-red-500 text-[10px] ml-1">{emailError}</p>}
-</div>
-
-                            <div className="space-y-1.5">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Phone Number <span className="text-red-500">*</span></label>
-                                <div className="relative group">
-                                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
-                                    <input required type="tel" placeholder="10 digit number" maxLength={10} className="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-400 font-semibold text-slate-700" value={formData.phone} onChange={e => handlePhoneChange(e.target.value)} />
-                                </div>
-                            </div>
-
-                            {/* <div className="space-y-1.5">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Est. Value (₹) <span className="text-red-500">*</span></label>
-                                <div className="relative group">
-                                    <IndianRupee className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
-                                    <input required type="text" inputMode="numeric" placeholder="0" className="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-400 font-bold text-slate-700" value={formData.estimatedValue} onChange={e => handleEstimatedValueChange(e.target.value)} />
-                                </div>
-                            </div> */}
-
-                            <div className="space-y-1.5">
-    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-        Est. Value (₹) (Optional) {/* Removed * */}
-    </label>
-    <div className="relative group">
-        <IndianRupee className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
-        <input 
-            type="text" // Removed required
-            inputMode="numeric" 
-            placeholder="0" 
-            className="w-full ..." 
-            value={formData.estimatedValue} 
-            onChange={e => handleEstimatedValueChange(e.target.value)} 
-        />
-    </div>
-</div>
-                        </div>
-
-                        <div className="space-y-1.5">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Strategic Notes <span className="text-red-500">*</span></label>
-                            <div className="relative group">
-                                <FileText className="absolute left-4 top-4 text-slate-300" size={16} />
-                                <textarea placeholder="Add requirements..." rows={2} className="w-full pl-11 pr-4 py-3.5 bg-slate-50/50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-500/5 focus:border-blue-400 font-semibold text-slate-700 resize-none" value={formData.notes} onChange={e => handleNotesChange(e.target.value)} />
                             </div>
                         </div>
 
-                        {/* Assign Lead Section */}
-                        <div className="space-y-1.5">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Assign To <span className="text-red-500">*</span></label>
-                            <div className="relative group">
-                                <Users className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-500 transition-colors" size={16} />
-                                <select 
-                                    required 
-                                    disabled={!isAdmin} // Disabled if not admin
-                                    className={`w-full pl-11 pr-4 py-3.5 border rounded-2xl focus:outline-none font-semibold text-slate-700 appearance-none ${!isAdmin ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : 'bg-slate-50/50 border-slate-100 focus:ring-4 focus:ring-blue-500/5 focus:border-blue-400'}`} 
-                                    value={formData.assignedTo} 
-                                    onChange={(e) => setFormData({ ...formData, assignedTo: e.target.value })}
-                                >
-                                    {isAdmin && <option value="">Select Sales Employee</option>}
-                                    {salesEmployees.map((emp: SalesEmployee) => (
-                                        <option key={emp.id} value={emp.id}>{emp.name}</option>
-                                    ))}
-                                </select>
+                      
+
+                        {/* Row 3: Optional Fields (Company, Email, Estimated Value) */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                               <div >
+                                <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+                                    Assign To <span className="text-red-500">*</span>
+                                </label>
+                                <div className="relative">
+                                    <Users size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                                    <select
+                                        required
+                                        disabled={!isAdmin}
+                                        className={`w-full pl-9 pr-3 py-2.5 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-white text-slate-800 appearance-none ${
+                                            !isAdmin ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : 'border-slate-200'
+                                        }`}
+                                        value={formData.assignedTo}
+                                        onChange={(e) => setFormData({ ...formData, assignedTo: e.target.value })}
+                                    >
+                                        {isAdmin && <option value="">Select Sales Employee</option>}
+                                        {salesEmployees.map((emp) => (
+                                            <option key={emp.id} value={emp.id}>{emp.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                {!isAdmin && <p className="text-xs text-slate-400 mt-1">Automatically assigned to you.</p>}
                             </div>
-                            {!isAdmin && <p className="text-[9px] text-slate-400 ml-1 italic">Automatically assigned to you.</p>}
+                            <div>
+                                <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+                                    Company <span className="text-slate-400 text-[11px] font-normal">(Optional)</span>
+                                </label>
+                                <div className="relative">
+                                    <Building2 size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                                    <input
+                                        type="text"
+                                        placeholder="Organization name"
+                                        className="w-full pl-9 pr-3 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-white text-slate-800"
+                                        value={formData.company}
+                                        onChange={e => handleCompanyChange(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+                                    Email Address <span className="text-slate-400 text-[11px] font-normal">(Optional)</span>
+                                </label>
+                                <div className="relative">
+                                    <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                                    <input
+                                        type="email"
+                                        placeholder="example@mail.com"
+                                        className={`w-full pl-9 pr-3 py-2.5 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-white text-slate-800 ${
+                                            emailError ? 'border-red-300' : 'border-slate-200'
+                                        }`}
+                                        value={formData.email}
+                                        onChange={e => handleEmailChange(e.target.value)}
+                                    />
+                                </div>
+                                {emailError && <p className="text-red-500 text-xs mt-1">{emailError}</p>}
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+                                    Est. Value (₹) <span className="text-slate-400 text-[11px] font-normal">(Optional)</span>
+                                </label>
+                                <div className="relative">
+                                    <IndianRupee size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                                    <input
+                                        type="text"
+                                        inputMode="numeric"
+                                        placeholder="0"
+                                        className="w-full pl-9 pr-3 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-white text-slate-800"
+                                        value={formData.estimatedValue}
+                                        onChange={e => handleEstimatedValueChange(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+                         {/* Strategic Notes (full width) */}
+                        <div>
+                            <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+                                Strategic Notes <span className="text-red-500">*</span>
+                            </label>
+                            <div className="relative">
+                                <FileText size={16} className="absolute left-3 top-3 text-slate-400" />
+                                <textarea
+                                    required
+                                    rows={3}
+                                    placeholder="Add requirements, notes, or any relevant details..."
+                                    className="w-full pl-9 pr-3 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-white text-slate-800 resize-none"
+                                    value={formData.notes}
+                                    onChange={e => handleNotesChange(e.target.value)}
+                                />
+                            </div>
+                        </div>
+                       
                         </div>
 
-                        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2">
-                            <button type="button" onClick={onClose} className="flex-1 px-6 py-4 bg-white border border-slate-200 text-slate-500 font-bold rounded-2xl hover:bg-slate-50 text-sm transition-all">Cancel</button>
-                            <button type="submit" className="flex-[1.5] px-6 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-2xl hover:shadow-xl transition-all active:scale-95 flex items-center justify-center gap-3 text-sm">
+                      
+
+                        {/* Action Buttons */}
+                        <div className="flex flex-col sm:flex-row gap-5 pt-4 border-t border-slate-100">
+                            <button
+                                type="button"
+                                onClick={onClose}
+                                className="flex-1 px-4 py-2.5 bg-white border border-slate-200 text-slate-600 font-semibold rounded-xl hover:bg-slate-50 transition-all text-sm"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                className="flex-1 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl hover:shadow-md transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-sm"
+                            >
                                 <Plus size={18} />
                                 <span>Add a New Lead</span>
                             </button>

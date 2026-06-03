@@ -62,6 +62,9 @@ const [selectedAction, setSelectedAction] = useState<
   "estimate" | "export" | "pump" | null
 >(null);
 
+
+// Near other state declarations
+const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'accepted' | 'rejected'>('all');
   const fetchQuotations = async () => {
     try {
       setLoading(true);
@@ -298,8 +301,10 @@ const [selectedAction, setSelectedAction] = useState<
           items: (data.items || []).map((item: any) => ({
             itemDescription: item.description,
             hsnSac: item.hsn,
-            quantity: Number(item.qty || 0),
+          //  quantity: Number(item.qty || 0), 
+          quantity: Number(item.quantity ?? item.qty ?? 0),
             unit: item.unit || "PCS",
+             watt: Number(item.watt || 0),
             rate: Number(item.rate || 0),
             discount: Number(item.discPercent || 0),
             amount: Number(item.amount || 0),
@@ -491,34 +496,61 @@ const handleActionChoice = (action: "estimate" | "export" | "pump") => {
   //     rejected: 0,
   // };
 
-  const currentData =
-    activeTab === "quotations"
-      ? filteredQuotations
-      : activeTab === "invoices"
-        ? invoices.filter((i) => i.category !== "EXPORT")
-        : invoices.filter((i) => i.category === "EXPORT");
+  // const currentData =
+  //   activeTab === "quotations"
+  //     ? filteredQuotations
+  //     : activeTab === "invoices"
+  //       ? invoices.filter((i) => i.category !== "EXPORT")
+  //       : invoices.filter((i) => i.category === "EXPORT");
 
-  const stats = {
-    total: currentData.length,
-    pending: 0,
-    accepted: 0,
-    rejected: 0,
-  };
+  // const stats = {
+  //   total: currentData.length,
+  //   pending: 0,
+  //   accepted: 0,
+  //   rejected: 0,
+  // };
 
-  currentData.forEach((item: any) => {
-    const s = (item.status || item.paymentStatus || "").toLowerCase();
+  // currentData.forEach((item: any) => {
+  //   const s = (item.status || item.paymentStatus || "").toLowerCase();
 
-    if (s.includes("accept") || s.includes("paid")) stats.accepted++;
-    else if (s.includes("reject")) stats.rejected++;
-    else stats.pending++;
-  });
-  filteredQuotations.forEach((q) => {
-    const s = (q.status || q.quotationStatus || "").toString().toLowerCase();
+  //   if (s.includes("accept") || s.includes("paid")) stats.accepted++;
+  //   else if (s.includes("reject")) stats.rejected++;
+  //   else stats.pending++;
+  // });
+  // filteredQuotations.forEach((q) => {
+  //   const s = (q.status || q.quotationStatus || "").toString().toLowerCase();
 
-    if (s.includes("accept")) stats.accepted++;
-    else if (s.includes("reject")) stats.rejected++;
-    else stats.pending++;
-  });
+  //   if (s.includes("accept")) stats.accepted++;
+  //   else if (s.includes("reject")) stats.rejected++;
+  //   else stats.pending++;
+  // });
+
+  // --- FIXED STATS CALCULATION (no double counting) ---
+const currentData =
+  activeTab === "quotations"
+    ? filteredQuotations
+    : activeTab === "invoices"
+    ? invoices.filter((i) => i.category !== "EXPORT")
+    : invoices.filter((i) => i.category === "EXPORT");
+
+const stats = {
+  total: currentData.length,
+  pending: 0,
+  accepted: 0,
+  rejected: 0,
+};
+
+currentData.forEach((item: any) => {
+  const status = (item.status || item.paymentStatus || item.quotationStatus || "").toString().toLowerCase();
+  if (status.includes("accept") || status === "accepted" || status.includes("paid")) {
+    stats.accepted++;
+  } else if (status.includes("reject") || status === "rejected") {
+    stats.rejected++;
+  } else {
+    stats.pending++;
+  }
+});
+
 
   useEffect(() => {
     console.log(
@@ -625,7 +657,14 @@ const handleActionChoice = (action: "estimate" | "export" | "pump") => {
               />
 
               {/* <SalesStats {...stats} /> */}
-              {!loading && <SalesStats {...stats} />}
+              {!loading && <SalesStats 
+  total={stats.total} 
+  pending={stats.pending} 
+  accepted={stats.accepted} 
+  rejected={stats.rejected}
+  onFilterChange={setStatusFilter}
+  activeFilter={statusFilter}
+ />}
 
               {/* Tabs */}
               <div className="flex items-center gap-1 mb-6 p-1 bg-slate-100/50 rounded-2xl w-fit">
@@ -684,18 +723,21 @@ const handleActionChoice = (action: "estimate" | "export" | "pump") => {
                   setSelectedQuotationId(id);
                   setViewModalOpen(true);
                 }}
+                 statusFilter={statusFilter} 
               />
             ) : activeTab === "invoices" ? (
               <QuotationInvoiceList
                 invoices={invoices.filter((i) => i.category !== "EXPORT")}
                 loading={invoicesLoading}
                 onRefresh={fetchInvoices}
+                 statusFilter={statusFilter} 
               />
             ) : (
               <QuotationInvoiceList
                 invoices={invoices.filter((i) => i.category === "EXPORT")}
                 loading={invoicesLoading}
                 onRefresh={fetchInvoices}
+                 statusFilter={statusFilter} 
               />
             )}
           </div>

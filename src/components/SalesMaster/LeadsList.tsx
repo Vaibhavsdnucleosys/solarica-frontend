@@ -326,7 +326,271 @@
 
 // export default LeadsList;
 
-import React from 'react';
+// import React from 'react';
+// import {
+//     MoreHorizontal,
+//     Building2,
+//     Mail,
+//     Phone,
+//     Globe,
+//     Calendar,
+//     ChevronRight,
+//     Trash2,
+//     UserCircle2,
+//     CheckCircle2,
+//     Clock,
+//     XCircle,
+//     UserMinus,
+//     TrendingUp,
+//     Pencil
+// } from 'lucide-react';
+// import EditLeadModal from './EditLeadModal';
+
+// export interface Lead {
+//     id: string;
+//     name: string;
+//     company?: string;
+//     email: string;
+//     phone?: string;
+//     source?: string;
+//     status: 'new' | 'contacted' | 'qualified' | 'lost' | 'converted';
+//     estimatedValue?: number;
+//     notes?: string;
+//     createdAt: string;
+//     updatedAt: string;
+//     assignedToId?: string;
+// }
+
+// interface LeadsListProps {
+//     leads: Lead[];
+//     onStatusUpdate: (id: string, status: Lead['status']) => void;
+//     onDelete: (id: string) => void;
+//     loading?: boolean;
+// }
+
+// const LeadsList: React.FC<LeadsListProps> = ({ leads, onStatusUpdate, onDelete, loading }) => {
+//     const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
+//     const [selectedLead, setSelectedLead] = React.useState<any>(null);
+
+//     // 1. Get User and Check Role
+//     const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+//     const isAdmin = currentUser?.role?.name?.toLowerCase() === "admin";
+
+//     const getStatusTheme = (status: Lead['status']) => {
+//         switch (status) {
+//             case 'converted': return {
+//                 icon: <CheckCircle2 size={14} />,
+//                 gradient: 'from-emerald-400 to-teal-500',
+//                 glow: 'shadow-[0_0_15px_rgba(16,185,129,0.3)]',
+//                 light: 'bg-emerald-50/50',
+//                 text: 'text-emerald-600'
+//             };
+//             case 'lost': return {
+//                 icon: <XCircle size={14} />,
+//                 gradient: 'from-rose-400 to-red-500',
+//                 glow: 'shadow-[0_0_15px_rgba(244,63,94,0.3)]',
+//                 light: 'bg-rose-50/50',
+//                 text: 'text-rose-600'
+//             };
+//             case 'qualified': return {
+//                 icon: <TrendingUp size={14} />,
+//                 gradient: 'from-blue-400 to-indigo-500',
+//                 glow: 'shadow-[0_0_15px_rgba(59,130,246,0.3)]',
+//                 light: 'bg-blue-50/50',
+//                 text: 'text-blue-600'
+//             };
+//             case 'contacted': return {
+//                 icon: <Clock size={14} />,
+//                 gradient: 'from-amber-400 to-orange-500',
+//                 glow: 'shadow-[0_0_15px_rgba(245,158,11,0.3)]',
+//                 light: 'bg-amber-50/50',
+//                 text: 'text-amber-600'
+//             };
+//             default: return {
+//                 icon: <UserCircle2 size={14} />,
+//                 gradient: 'from-slate-400 to-slate-500',
+//                 glow: 'shadow-[0_0_15px_rgba(148,163,184,0.3)]',
+//                 light: 'bg-slate-50/50',
+//                 text: 'text-slate-600'
+//             };
+//         }
+//     };
+
+//     const filteredLeads = isAdmin
+//         ? leads
+//         : leads.filter((lead: any) => lead.assignedToId === currentUser.id);
+
+//     if (loading) {
+//         return (
+//             <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-xl overflow-hidden">
+//                 <div className="overflow-x-auto no-scrollbar">
+//                     <table className="w-full text-left border-collapse">
+//                         <thead>
+//                             <tr className="bg-slate-50/50 border-b border-slate-100">
+//                                 {['Customer / Lead', 'Contact Details', 'Estimated Value', 'Source', 'Added Date', 'Pipeline Status', 'Actions'].map(h => (
+//                                     <th key={h} className="py-4 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">{h}</th>
+//                                 ))}
+//                             </tr>
+//                         </thead>
+//                         <tbody className="divide-y divide-slate-50">
+//                             {Array.from({ length: 6 }).map((_, i) => (
+//                                 <tr key={i} className="animate-pulse">
+//                                     <td className="py-4 px-6"><div className="h-8 bg-slate-100 rounded-xl w-32" /></td>
+//                                     <td className="py-4 px-6"><div className="h-8 bg-slate-100 rounded-xl w-32" /></td>
+//                                     <td className="py-4 px-6"><div className="h-4 bg-slate-100 rounded-full w-16" /></td>
+//                                     <td className="py-4 px-6"><div className="h-6 bg-slate-100 rounded-lg w-20" /></td>
+//                                     <td className="py-4 px-6"><div className="h-4 bg-slate-100 rounded-full w-20" /></td>
+//                                     <td className="py-4 px-6"><div className="h-6 bg-slate-100 rounded-full w-20" /></td>
+//                                     <td className="py-4 px-6"><div className="h-8 bg-slate-100 rounded-xl w-8" /></td>
+//                                 </tr>
+//                             ))}
+//                         </tbody>
+//                     </table>
+//                 </div>
+//             </div>
+//         );
+//     }
+
+//     if (filteredLeads.length === 0) {
+//         return (
+//             <div className="bg-white/80 backdrop-blur-xl rounded-[3rem] p-24 border border-white shadow-xl text-center flex flex-col items-center">
+//                 <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-6">
+//                     <UserMinus size={48} className="text-slate-200" />
+//                 </div>
+//                 <h3 className="text-2xl font-black text-slate-800 mb-3 tracking-tight">No Leads Found</h3>
+//             </div>
+//         );
+//     }
+
+//     return (
+//         <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-xl overflow-hidden flex flex-col h-fit">
+//             <div className="overflow-x-auto no-scrollbar">
+//                 <table className="w-full text-left border-collapse">
+//                     <thead>
+//                         <tr className="bg-slate-50/50 border-b border-slate-100">
+//                             <th className="py-4 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Customer / Lead</th>
+//                             <th className="py-4 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Contact Details</th>
+//                             <th className="py-4 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Estimated Value</th>
+//                             <th className="py-4 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Source</th>
+//                             <th className="py-4 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Added Date</th>
+//                             <th className="py-4 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-center">Pipeline Status</th>
+//                             <th className="py-4 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-center">Actions</th>
+//                         </tr>
+//                     </thead>
+//                     <tbody className="divide-y divide-slate-50">
+//                         {filteredLeads.map((lead) => {
+//                             const theme = getStatusTheme(lead.status);
+//                             return (
+//                                 <tr key={lead.id} className="hover:bg-slate-50/50 transition-colors group">
+//                                     <td className="py-4 px-6">
+//                                         <div className="flex items-center gap-3">
+//                                             <div className={`p-2.5 rounded-xl ${theme.light} ${theme.text} shadow-sm shrink-0`}>
+//                                                 <UserCircle2 size={18} />
+//                                             </div>
+//                                             <div className="flex flex-col gap-0.5">
+//                                                 <span className="text-sm font-black text-slate-800 tracking-tight">{lead.name}</span>
+//                                                 <div className="flex items-center gap-1.5">
+//                                                     <Building2 size={10} className="text-slate-400" />
+//                                                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{lead.company || 'Private Lead'}</span>
+//                                                 </div>
+//                                             </div>
+//                                         </div>
+//                                     </td>
+//                                     <td className="py-4 px-6 text-slate-600 font-medium">
+//                                         <div className="flex flex-col gap-1 text-xs">
+//                                             <span>{lead.email}</span>
+//                                             <span>{lead.phone || 'N/A'}</span>
+//                                         </div>
+//                                     </td>
+//                                     <td className="py-4 px-6 font-black text-slate-900">₹ {(lead.estimatedValue || 0).toLocaleString('en-IN')}</td>
+//                                     <td className="py-4 px-6 uppercase text-[10px] font-black text-slate-500 tracking-widest">{lead.source}</td>
+//                                     <td className="py-4 px-6 text-xs text-slate-500 font-bold">{new Date(lead.createdAt).toLocaleDateString()}</td>
+//                                     <td className="py-4 px-6">
+//                                         <div className="flex justify-center">
+//                                             <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${theme.light} ${theme.text}`}>
+//                                                 {lead.status}
+//                                             </span>
+//                                         </div>
+//                                     </td>
+//                                     <td className="py-4 px-6">
+//                                         <div className="flex justify-center">
+//                                             <div className="relative group/actions">
+//                                                 <button className="p-2 rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-slate-900 shadow-sm transition-all group-hover/actions:rotate-90">
+//                                                     <MoreHorizontal size={16} />
+//                                                 </button>
+
+//                                                 <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl shadow-2xl border border-slate-50 p-2 z-50 opacity-0 invisible group-hover/actions:opacity-100 group-hover/actions:visible transition-all duration-300 translate-y-2 group-hover/actions:translate-y-0 origin-top-right">
+                                                    
+//                                                     {/* 2. ADMIN ONLY EDIT OPTION */}
+//                                                     {isAdmin && (
+//                                                         <>
+//                                                             <div className="px-4 py-2 mb-1">
+//                                                                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Management</p>
+//                                                             </div>
+//                                                             <button
+//                                                                 onClick={() => {
+//                                                                     setSelectedLead(lead);
+//                                                                     setIsEditModalOpen(true);
+//                                                                 }}
+//                                                                 className="w-full text-left px-4 py-2.5 text-[11px] font-black text-blue-600 hover:bg-blue-50 rounded-xl transition-all flex items-center justify-between group/edit"
+//                                                             >
+//                                                                 <span>Edit Details</span>
+//                                                                 <Pencil size={12} />
+//                                                             </button>
+//                                                             <div className="h-px bg-slate-50 my-1.5 mx-2" />
+//                                                         </>
+//                                                     )}
+
+//                                                     <div className="px-4 py-2 mb-1">
+//                                                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Update Pipeline</p>
+//                                                     </div>
+//                                                     <div className="space-y-0.5">
+//                                                         {['contacted', 'qualified', 'converted', 'lost'].map(status => (
+//                                                             <button
+//                                                                 key={status}
+//                                                                 onClick={() => onStatusUpdate(lead.id, status as Lead['status'])}
+//                                                                 className="w-full text-left px-4 py-2.5 text-[11px] font-black text-slate-600 hover:bg-blue-50 rounded-xl transition-all flex items-center justify-between"
+//                                                             >
+//                                                                 <span className="capitalize">{status}</span>
+//                                                                 <ChevronRight size={12} />
+//                                                             </button>
+//                                                         ))}
+//                                                         <div className="h-px bg-slate-50 my-1.5 mx-2" />
+//                                                         <button
+//                                                             onClick={() => onDelete(lead.id)}
+//                                                             className="w-full text-left px-4 py-2.5 text-[11px] font-black text-rose-500 hover:bg-rose-50 rounded-xl flex items-center justify-between"
+//                                                         >
+//                                                             <span>Remove Lead</span>
+//                                                             <Trash2 size={12} />
+//                                                         </button>
+//                                                     </div>
+//                                                 </div>
+//                                             </div>
+//                                         </div>
+//                                     </td>
+//                                 </tr>
+//                             );
+//                         })}
+//                     </tbody>
+//                 </table>
+//             </div>
+
+//             <EditLeadModal 
+//                 isOpen={isEditModalOpen}
+//                 lead={selectedLead}
+//                 onClose={() => {
+//                     setIsEditModalOpen(false);
+//                     setSelectedLead(null);
+//                 }}
+//                 onSuccess={() => window.location.reload()}
+//             />
+//         </div>
+//     );
+// };
+
+// export default LeadsList;
+
+import React, { useState } from 'react';
 import {
     MoreHorizontal,
     Building2,
@@ -342,9 +606,12 @@ import {
     XCircle,
     UserMinus,
     TrendingUp,
-    Pencil
+    Pencil,
+    ChevronLeft,
+    ChevronRight as ChevronRightIcon
 } from 'lucide-react';
 import EditLeadModal from './EditLeadModal';
+import toast from 'react-hot-toast';
 
 export interface Lead {
     id: string;
@@ -365,64 +632,91 @@ interface LeadsListProps {
     leads: Lead[];
     onStatusUpdate: (id: string, status: Lead['status']) => void;
     onDelete: (id: string) => void;
+    onEditSuccess: () => void;
     loading?: boolean;
+    // Pagination props
+    currentPage?: number;
+    itemsPerPage?: number;
+    totalPages?: number;
+    totalItems?: number;
+    onPageChange?: (page: number) => void;
+    onItemsPerPageChange?: (size: number) => void;
 }
 
-const LeadsList: React.FC<LeadsListProps> = ({ leads, onStatusUpdate, onDelete, loading }) => {
-    const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
-    const [selectedLead, setSelectedLead] = React.useState<any>(null);
+const LeadsList: React.FC<LeadsListProps> = ({
+    leads,
+    onStatusUpdate,
+    onDelete,
+    onEditSuccess,
+    loading,
+    currentPage = 1,
+    itemsPerPage = 10,
+    totalPages = 1,
+    totalItems = 0,
+    onPageChange,
+    onItemsPerPageChange,
+}) => {
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [selectedLead, setSelectedLead] = useState<any>(null);
 
-    // 1. Get User and Check Role
     const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
     const isAdmin = currentUser?.role?.name?.toLowerCase() === "admin";
 
     const getStatusTheme = (status: Lead['status']) => {
         switch (status) {
-            case 'converted': return {
-                icon: <CheckCircle2 size={14} />,
-                gradient: 'from-emerald-400 to-teal-500',
-                glow: 'shadow-[0_0_15px_rgba(16,185,129,0.3)]',
-                light: 'bg-emerald-50/50',
-                text: 'text-emerald-600'
-            };
-            case 'lost': return {
-                icon: <XCircle size={14} />,
-                gradient: 'from-rose-400 to-red-500',
-                glow: 'shadow-[0_0_15px_rgba(244,63,94,0.3)]',
-                light: 'bg-rose-50/50',
-                text: 'text-rose-600'
-            };
-            case 'qualified': return {
-                icon: <TrendingUp size={14} />,
-                gradient: 'from-blue-400 to-indigo-500',
-                glow: 'shadow-[0_0_15px_rgba(59,130,246,0.3)]',
-                light: 'bg-blue-50/50',
-                text: 'text-blue-600'
-            };
-            case 'contacted': return {
-                icon: <Clock size={14} />,
-                gradient: 'from-amber-400 to-orange-500',
-                glow: 'shadow-[0_0_15px_rgba(245,158,11,0.3)]',
-                light: 'bg-amber-50/50',
-                text: 'text-amber-600'
-            };
-            default: return {
-                icon: <UserCircle2 size={14} />,
-                gradient: 'from-slate-400 to-slate-500',
-                glow: 'shadow-[0_0_15px_rgba(148,163,184,0.3)]',
-                light: 'bg-slate-50/50',
-                text: 'text-slate-600'
-            };
+            case 'converted':
+                return {
+                    icon: <CheckCircle2 size={14} />,
+                    gradient: 'from-emerald-400 to-teal-500',
+                    glow: 'shadow-[0_0_15px_rgba(16,185,129,0.3)]',
+                    light: 'bg-emerald-50/50',
+                    text: 'text-emerald-600'
+                };
+            case 'lost':
+                return {
+                    icon: <XCircle size={14} />,
+                    gradient: 'from-rose-400 to-red-500',
+                    glow: 'shadow-[0_0_15px_rgba(244,63,94,0.3)]',
+                    light: 'bg-rose-50/50',
+                    text: 'text-rose-600'
+                };
+            case 'qualified':
+                return {
+                    icon: <TrendingUp size={14} />,
+                    gradient: 'from-blue-400 to-indigo-500',
+                    glow: 'shadow-[0_0_15px_rgba(59,130,246,0.3)]',
+                    light: 'bg-blue-50/50',
+                    text: 'text-blue-600'
+                };
+            case 'contacted':
+                return {
+                    icon: <Clock size={14} />,
+                    gradient: 'from-amber-400 to-orange-500',
+                    glow: 'shadow-[0_0_15px_rgba(245,158,11,0.3)]',
+                    light: 'bg-amber-50/50',
+                    text: 'text-amber-600'
+                };
+            default:
+                return {
+                    icon: <UserCircle2 size={14} />,
+                    gradient: 'from-slate-400 to-slate-500',
+                    glow: 'shadow-[0_0_15px_rgba(148,163,184,0.3)]',
+                    light: 'bg-slate-50/50',
+                    text: 'text-slate-600'
+                };
         }
     };
 
-    const filteredLeads = isAdmin
-        ? leads
-        : leads.filter((lead: any) => lead.assignedToId === currentUser.id);
+    const handleEditSuccess = () => {
+        setIsEditModalOpen(false);
+        setSelectedLead(null);
+        onEditSuccess(); // Refresh parent data without page reload
+        toast.success('Lead updated successfully');
+    };
 
     if (loading) {
         return (
-            <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-xl overflow-hidden">
+            <div className="bg-white  border border-slate-100 shadow-xl overflow-hidden">
                 <div className="overflow-x-auto no-scrollbar">
                     <table className="w-full text-left border-collapse">
                         <thead>
@@ -451,34 +745,37 @@ const LeadsList: React.FC<LeadsListProps> = ({ leads, onStatusUpdate, onDelete, 
         );
     }
 
-    if (filteredLeads.length === 0) {
+    if (leads.length === 0) {
         return (
             <div className="bg-white/80 backdrop-blur-xl rounded-[3rem] p-24 border border-white shadow-xl text-center flex flex-col items-center">
                 <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-6">
                     <UserMinus size={48} className="text-slate-200" />
                 </div>
                 <h3 className="text-2xl font-black text-slate-800 mb-3 tracking-tight">No Leads Found</h3>
+                <p className="text-slate-400 max-w-xs font-medium leading-relaxed">
+                    Try adjusting your filters or create a new lead.
+                </p>
             </div>
         );
     }
 
     return (
-        <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-xl overflow-hidden flex flex-col h-fit">
+        <div className="bg-white  border border-slate-100 shadow-xl overflow-hidden flex flex-col h-fit">
             <div className="overflow-x-auto no-scrollbar">
                 <table className="w-full text-left border-collapse">
                     <thead>
-                        <tr className="bg-slate-50/50 border-b border-slate-100">
-                            <th className="py-4 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Customer / Lead</th>
-                            <th className="py-4 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Contact Details</th>
-                            <th className="py-4 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Estimated Value</th>
-                            <th className="py-4 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Source</th>
-                            <th className="py-4 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Added Date</th>
-                            <th className="py-4 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-center">Pipeline Status</th>
-                            <th className="py-4 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-center">Actions</th>
+                        <tr className="bg-slate-50/80 border-b border-slate-100 sticky top-0 z-10">
+                            <th className="py-4 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Customer / Lead</th>
+                            <th className="py-4 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Contact Details</th>
+                            <th className="py-4 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Estimated Value</th>
+                            <th className="py-4 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Source</th>
+                            <th className="py-4 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Added Date</th>
+                            <th className="py-4 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 text-center">Pipeline Status</th>
+                            <th className="py-4 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-50">
-                        {filteredLeads.map((lead) => {
+                        {leads.map((lead) => {
                             const theme = getStatusTheme(lead.status);
                             return (
                                 <tr key={lead.id} className="hover:bg-slate-50/50 transition-colors group">
@@ -520,9 +817,7 @@ const LeadsList: React.FC<LeadsListProps> = ({ leads, onStatusUpdate, onDelete, 
                                                 </button>
 
                                                 <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl shadow-2xl border border-slate-50 p-2 z-50 opacity-0 invisible group-hover/actions:opacity-100 group-hover/actions:visible transition-all duration-300 translate-y-2 group-hover/actions:translate-y-0 origin-top-right">
-                                                    
-                                                    {/* 2. ADMIN ONLY EDIT OPTION */}
-                                                    {isAdmin && (
+                                                 
                                                         <>
                                                             <div className="px-4 py-2 mb-1">
                                                                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Management</p>
@@ -539,7 +834,7 @@ const LeadsList: React.FC<LeadsListProps> = ({ leads, onStatusUpdate, onDelete, 
                                                             </button>
                                                             <div className="h-px bg-slate-50 my-1.5 mx-2" />
                                                         </>
-                                                    )}
+                                                  
 
                                                     <div className="px-4 py-2 mb-1">
                                                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Update Pipeline</p>
@@ -575,14 +870,92 @@ const LeadsList: React.FC<LeadsListProps> = ({ leads, onStatusUpdate, onDelete, 
                 </table>
             </div>
 
-            <EditLeadModal 
+            {/* Pagination Footer */}
+            {totalPages > 0 && (
+                <div className="py-4 px-6 bg-slate-50/60 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <p className="text-[11px] font-black text-slate-500 uppercase tracking-[0.15em]">
+                        Showing <span className="text-blue-600">{leads.length}</span> of <span className="text-blue-600">{totalItems}</span> leads
+                    </p>
+                    <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-bold text-slate-400">Rows per page:</span>
+                            <select
+                                value={itemsPerPage}
+                                onChange={(e) => onItemsPerPageChange?.(Number(e.target.value))}
+                                className="text-xs font-bold rounded-lg border-slate-200 py-1.5 px-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+                            >
+                                <option value={5}>5</option>
+                                <option value={10}>10</option>
+                                <option value={20}>20</option>
+                                <option value={50}>50</option>
+                            </select>
+                        </div>
+                        <div className="flex items-center gap-1">
+                            <button
+                                onClick={() => onPageChange?.(Math.max(currentPage - 1, 1))}
+                                disabled={currentPage === 1}
+                                className="p-2 rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                            >
+                                <ChevronLeft size={14} />
+                            </button>
+                            <div className="flex items-center gap-1">
+                                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                                    let pageNum: number;
+                                    if (totalPages <= 5) {
+                                        pageNum = i + 1;
+                                    } else if (currentPage <= 3) {
+                                        pageNum = i + 1;
+                                    } else if (currentPage >= totalPages - 2) {
+                                        pageNum = totalPages - 4 + i;
+                                    } else {
+                                        pageNum = currentPage - 2 + i;
+                                    }
+                                    return (
+                                        <button
+                                            key={pageNum}
+                                            onClick={() => onPageChange?.(pageNum)}
+                                            className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${
+                                                currentPage === pageNum
+                                                    ? 'bg-blue-600 text-white shadow-sm'
+                                                    : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
+                                            }`}
+                                        >
+                                            {pageNum}
+                                        </button>
+                                    );
+                                })}
+                                {totalPages > 5 && currentPage < totalPages - 2 && (
+                                    <>
+                                        <span className="text-xs text-slate-400">...</span>
+                                        <button
+                                            onClick={() => onPageChange?.(totalPages)}
+                                            className="w-8 h-8 rounded-lg text-xs font-bold bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
+                                        >
+                                            {totalPages}
+                                        </button>
+                                    </>
+                                )}
+                            </div>
+                            <button
+                                onClick={() => onPageChange?.(Math.min(currentPage + 1, totalPages))}
+                                disabled={currentPage === totalPages || totalPages === 0}
+                                className="p-2 rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                            >
+                                <ChevronRightIcon size={14} />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            <EditLeadModal
                 isOpen={isEditModalOpen}
                 lead={selectedLead}
                 onClose={() => {
                     setIsEditModalOpen(false);
                     setSelectedLead(null);
                 }}
-                onSuccess={() => window.location.reload()}
+                onSuccess={handleEditSuccess}
             />
         </div>
     );
