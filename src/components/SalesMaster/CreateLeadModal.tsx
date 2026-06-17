@@ -789,8 +789,17 @@ const CreateLeadModal: React.FC<CreateLeadModalProps> = ({ isOpen, onClose, onSu
         if (!isOpen) return;
 
         if (isAdmin) {
-            fetch('${API_URL}/api/v1/employees', {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+          
+const API_URL = import.meta.env.VITE_API_URL;
+
+fetch(`${API_URL}/api/v1/employees`, {
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem('token')}`,
+  },
+
+
+
+
             })
                 .then(res => res.json())
                 .then(data => {
