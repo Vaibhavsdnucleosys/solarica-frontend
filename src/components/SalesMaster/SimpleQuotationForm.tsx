@@ -840,7 +840,7 @@ const SimpleQuotationForm = ({
         customerName: lead.name,
         customerEmail: lead.email || prev.customerEmail,
         customerContact: lead.phone,
-        customerAddress: lead.company ? `${lead.company}\n` : "",
+        customerAddress: lead.address  ? `${lead.address}\n` : "",
         customerGstin: lead.gstin || prev.customerGstin,
       };
 

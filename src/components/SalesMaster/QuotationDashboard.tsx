@@ -204,6 +204,8 @@ const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'accepted' 
         items: data.items || [],
         validityDays: parseInt(data.validityDays) || 7,
         numberOfFlats: parseInt(data.numberOfFlats) || 0,
+        address: data.customerAddress || "",
+        shippingAddress: data.shippingAddress || "",
       };
 
       const newQuotation = await createQuotation(submissionData);

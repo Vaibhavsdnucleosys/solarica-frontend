@@ -50,7 +50,9 @@ const ExportForm: React.FC<ExportFormProps> = ({ onBack, onSubmit, loading }) =>
         swift: 'KKBKINBBXXX',
         items: [] as ExportItem[],
         terms: defaultTerms, 
-
+        customerAddress: '',
+shippingAddress: '',
+sameAsBilling: false,
     });
 
     const [isCatalogOpen, setIsCatalogOpen] = useState(false);
@@ -368,7 +370,9 @@ const handleHsnSelect = (index: number, hsnData: any) => {
             // Customer/Proposal Details
             customerName: formData.proposalFor,
             customerEmail: formData.customerEmail,
-            customerAddress: formData.address, // Mapping 'address' from form to customerAddress
+            // customerAddress: formData.address, // Mapping 'address' from form to customerAddress
+            customerAddress: formData.customerAddress,
+shippingAddress: formData.shippingAddress,
             customerContact: '', // Add field if needed, currently empty
 
             // Financials
@@ -525,7 +529,9 @@ const handleHsnSelect = (index: number, hsnData: any) => {
               ...prev,
                    leadId: lead.id,
               proposalFor: lead.name,
-              customerEmail: lead.email || ''
+              customerEmail: lead.email || '',
+                 customerAddress: lead.address || '',
+        shippingAddress: lead.address || ''
             }));
             setShowResults(false);
           }}
@@ -577,6 +583,77 @@ const handleHsnSelect = (index: number, hsnData: any) => {
                         </div>
 
                     </section>
+
+                    <section className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+    <h3 className="text-xl font-bold mb-6">
+        Customer Address Details
+    </h3>
+
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        {/* Billing Address */}
+        <div>
+            <label className="block text-sm font-bold mb-2">
+                Customer Address
+            </label>
+
+            <textarea
+                rows={4}
+                value={formData.customerAddress}
+                onChange={(e) =>
+                    setFormData(prev => ({
+                        ...prev,
+                        customerAddress: e.target.value,
+                        shippingAddress: prev.sameAsBilling
+                            ? e.target.value
+                            : prev.shippingAddress
+                    }))
+                }
+                className="w-full border rounded-xl p-3"
+            />
+        </div>
+
+        {/* Shipping Address */}
+        <div>
+            <div className="flex justify-between items-center mb-2">
+                <label className="text-sm font-bold">
+                    Shipping Address
+                </label>
+
+                <label className="flex items-center gap-2 text-sm">
+                    <input
+                        type="checkbox"
+                        checked={formData.sameAsBilling}
+                        onChange={(e) =>
+                            setFormData(prev => ({
+                                ...prev,
+                                sameAsBilling: e.target.checked,
+                                shippingAddress: e.target.checked
+                                    ? prev.customerAddress
+                                    : ''
+                            }))
+                        }
+                    />
+                    Same as Customer Address
+                </label>
+            </div>
+
+            <textarea
+                rows={4}
+                value={formData.shippingAddress}
+                disabled={formData.sameAsBilling}
+                onChange={(e) =>
+                    setFormData(prev => ({
+                        ...prev,
+                        shippingAddress: e.target.value
+                    }))
+                }
+                className="w-full border rounded-xl p-3"
+            />
+        </div>
+
+    </div>
+</section>
 
                     {/* Items Section (Moved ABOVE Bank Details) */}
                     <section className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">

@@ -369,6 +369,7 @@ const EditLeadModal: React.FC<EditLeadModalProps> = ({ isOpen, onClose, lead, on
     const [formData, setFormData] = useState({
         name: '',
         company: '',
+        address: '',
         email: '',
         phone: '',
         source: 'Website',
@@ -378,6 +379,9 @@ const EditLeadModal: React.FC<EditLeadModalProps> = ({ isOpen, onClose, lead, on
         assignedToId: ''
     });
 
+
+    const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+
     useEffect(() => {
         if (isOpen) {
             fetch(`${API_URL}/employees`, {
@@ -386,10 +390,23 @@ const EditLeadModal: React.FC<EditLeadModalProps> = ({ isOpen, onClose, lead, on
             .then(res => res.json())
             .then(data => {
                 const users = data.employees || [];
-                const filtered = users.filter((u: SalesEmployee) => 
-                    u.role?.name?.toLowerCase() === 'sales' || u.role?.name?.toLowerCase() === 'admin'
-                );
-                setSalesEmployees(filtered);
+                // const filtered = users.filter((u: SalesEmployee) => 
+                //     u.role?.name?.toLowerCase() === 'sales' || u.role?.name?.toLowerCase() === 'admin'
+                // );
+                // setSalesEmployees(filtered);
+
+                const filtered: SalesEmployee[] =
+  currentUser?.role?.name?.toLowerCase() === "admin"
+    ? users.filter(
+        (u: SalesEmployee) =>
+          u.role?.name?.toLowerCase() === "sales" ||
+          u.role?.name?.toLowerCase() === "admin"
+      )
+    : users.filter(
+        (u: SalesEmployee) => u.id === currentUser.id
+      );
+
+setSalesEmployees(filtered);
             })
             .catch(err => console.error("Error fetching employees:", err));
         }
@@ -400,6 +417,7 @@ const EditLeadModal: React.FC<EditLeadModalProps> = ({ isOpen, onClose, lead, on
             setFormData({
                 name: lead.name || '',
                 company: lead.company || '',
+                address: lead.address || '',
                 email: lead.email || '',
                 phone: lead.phone || '',
                 source: lead.source || 'Website',
@@ -642,6 +660,21 @@ const EditLeadModal: React.FC<EditLeadModalProps> = ({ isOpen, onClose, lead, on
                                 </div>
                             </div>
                         </div>
+                        <div>
+  <label>Address</label>
+
+  <textarea
+    rows={3}
+    value={formData.address}
+    onChange={(e) =>
+      setFormData({
+        ...formData,
+        address: e.target.value,
+      })
+    }
+    className="w-full border rounded-lg p-3"
+  />
+</div>
 
                         {/* Strategic Notes (full width) */}
                         <div>

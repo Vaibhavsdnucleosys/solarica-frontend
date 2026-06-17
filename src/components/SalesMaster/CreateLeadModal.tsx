@@ -772,6 +772,7 @@ const CreateLeadModal: React.FC<CreateLeadModalProps> = ({ isOpen, onClose, onSu
     const [formData, setFormData] = useState({
         name: '',
         company: '',
+        address: '',
         email: '',
         phone: '',
         source: 'Website',
@@ -874,6 +875,7 @@ const CreateLeadModal: React.FC<CreateLeadModalProps> = ({ isOpen, onClose, onSu
         setFormData({
             name: '',
             company: '',
+             address: '',
             email: '',
             phone: '',
             source: 'Website',
@@ -961,6 +963,7 @@ const CreateLeadModal: React.FC<CreateLeadModalProps> = ({ isOpen, onClose, onSu
                                     />
                                 </div>
                             </div>
+                            
                         </div>
 
                       
@@ -1041,6 +1044,23 @@ const CreateLeadModal: React.FC<CreateLeadModalProps> = ({ isOpen, onClose, onSu
                                     />
                                 </div>
                             </div>
+
+<div >
+  <label>Address</label>
+
+  <textarea
+    rows={3}
+    value={formData.address}
+    onChange={(e) =>
+      setFormData({
+        ...formData,
+        address: e.target.value,
+      })
+    }
+    className="w-full border rounded-lg p-3"
+  />
+</div>
+
                          {/* Strategic Notes (full width) */}
                         <div>
                             <label className="block text-xs font-semibold text-slate-600 mb-1.5">

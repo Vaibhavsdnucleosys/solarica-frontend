@@ -116,6 +116,8 @@ isPaymentMode = false,
     name: string;
   } | null>(null);
 
+  const [sameAsBilling, setSameAsBilling] =
+  useState(false);
   const [formData, setFormData] = useState({
     // FROM Section
     fromCompanyName: initialCompany || "",
@@ -125,7 +127,10 @@ isPaymentMode = false,
     factoryAddress: "Shop No 2 Pari Chowk, Narhe, Sinhagad Road, Pune -411041",
     contactNumbers: "9272177947 / 9665389150",
     email: "Eresh@solarica.in , Kiran@solarica.in",
-
+  customerAddress: "",
+  
+  shippingAddress: "",
+sameAsBilling: false,
     // TO Section
     customerName: "",
     consumerNumber: "",
@@ -238,6 +243,22 @@ isPaymentMode = false,
     // [NEW] Sales Employee Fields
   });
 
+
+
+  const handleSameAddress = (
+  checked: boolean
+) => {
+
+  setSameAsBilling(checked);
+
+  if (checked) {
+    setFormData(prev => ({
+      ...prev,
+      shippingAddress:
+        prev.customerAddress
+    }));
+  }
+};
 useEffect(() => {
 
   if (!isEditMode || !initialData) {
@@ -271,6 +292,16 @@ useEffect(() => {
       initialData.customerContact ||
       ""
     ),
+
+    customerAddress:
+  String(
+    initialData.customerAddress || ""
+  ),
+
+shippingAddress:
+  String(
+    initialData.shippingAddress || ""
+  ),
 
   customerType:
     String(
@@ -592,6 +623,19 @@ const [additionalAmount, setAdditionalAmount] =
       return;
     }
 
+    if (
+  name === "customerAddress" &&
+  sameAsBilling
+) {
+  setFormData(prev => ({
+    ...prev,
+    customerAddress: value,
+    shippingAddress: value
+  }));
+
+  return;
+}
+
     // [VALIDATION] Customer Number - alphanumeric only
     if (name === "CustomerNumber") {
       const sanitized = value.replace(/[^a-zA-Z0-9]/g, "").slice(0, 20);
@@ -699,6 +743,7 @@ const [additionalAmount, setAdditionalAmount] =
         }
       }
 
+      
       // [AUTO-CALCULATION] when any cost field changes
       const currentTotalAmount = parseFloat(newData.totalAmount as any) || 0;
       const currentGstRate = parseFloat(newData.gstRate as any) || 0;
@@ -820,6 +865,8 @@ const [additionalAmount, setAdditionalAmount] =
         customerEmail: lead.email || prev.customerEmail,
         customerPhone: lead.phone || prev.customerPhone,
         gstNumber: lead.gstin || prev.gstNumber, // [UPGRADE] Added gstin mapping from Code B
+            customerAddress: lead.address || "",
+
       };
 
       // [UPGRADE] Auto-resolve state logic from Code B
@@ -954,6 +1001,12 @@ const [additionalAmount, setAdditionalAmount] =
         paidAmount,
         advancedEnabled,
         additionalAmount,
+
+        customerAddress:
+  formData.customerAddress,
+
+shippingAddress:
+  formData.shippingAddress,
 
         items: formData.items.map((item) => ({
 
@@ -1214,7 +1267,11 @@ const buildUpdatePayload = () => {
             leadId: selectedLeadId,
         onGrid: formData.serviceType,
         netPayableAmount: Number(formData.netPayable || 0),
-        
+        customerAddress:
+  formData.customerAddress,
+
+shippingAddress:
+  formData.shippingAddress,
         // Map items: Form State ('make', 'qty') -> API Keys ('make1', 'quantity')
         items: formData.items.map((item) => ({
             itemName: item.itemName || "",
@@ -1657,6 +1714,57 @@ const handleSubmit = async (
                 </div>
               ))}
             </div>
+                <div className="grid grid-cols-2 gap-6">
+
+  <div>
+    <label className="font-bold">
+      Billing Address
+    </label>
+
+    <textarea
+      name="customerAddress"
+      value={formData.customerAddress}
+      onChange={handleChange}
+      rows={4}
+      className="w-full border rounded-xl p-3"
+    />
+  </div>
+
+  <div>
+    <div className="flex items-center justify-between mb-2">
+
+      <label className="font-bold">
+        Shipping Address
+      </label>
+
+      <label className="flex items-center gap-2 text-sm">
+
+        <input
+          type="checkbox"
+          checked={sameAsBilling}
+          onChange={(e) =>
+            handleSameAddress(
+              e.target.checked
+            )
+          }
+        />
+
+        Same as Billing
+      </label>
+    </div>
+
+    <textarea
+      name="shippingAddress"
+      value={formData.shippingAddress}
+      onChange={handleChange}
+      rows={4}
+      disabled={sameAsBilling}
+      className="w-full border rounded-xl p-3"
+    />
+  </div>
+
+</div>
+     
           </section>
 
           {/* Section 3: Customer Type */}

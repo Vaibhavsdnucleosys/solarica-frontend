@@ -617,6 +617,7 @@ export interface Lead {
     id: string;
     name: string;
     company?: string;
+    address?: string;
     email: string;
     phone?: string;
     source?: string;
@@ -766,6 +767,7 @@ const LeadsList: React.FC<LeadsListProps> = ({
                     <thead>
                         <tr className="bg-slate-50/80 border-b border-slate-100 sticky top-0 z-10">
                             <th className="py-4 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Customer / Lead</th>
+                            <th className="py-4 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Address</th>
                             <th className="py-4 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Contact Details</th>
                             <th className="py-4 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Estimated Value</th>
                             <th className="py-4 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Source</th>
@@ -790,6 +792,17 @@ const LeadsList: React.FC<LeadsListProps> = ({
                                                     <Building2 size={10} className="text-slate-400" />
                                                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{lead.company || 'Private Lead'}</span>
                                                 </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                     <td className="py-4 px-6">
+                                        <div className="flex items-center gap-3">
+                                            <div className={`p-2.5 rounded-xl ${theme.light} ${theme.text} shadow-sm shrink-0`}>
+                                                <UserCircle2 size={18} />
+                                            </div>
+                                            <div className="flex flex-col gap-0.5">
+                                                <span className="text-sm font-black text-slate-800 tracking-tight">{lead.address || 'N/A'}</span>
+                                              
                                             </div>
                                         </div>
                                     </td>
