@@ -789,7 +789,7 @@ const CreateLeadModal: React.FC<CreateLeadModalProps> = ({ isOpen, onClose, onSu
         if (!isOpen) return;
 
         if (isAdmin) {
-            fetch('/api/v1/employees', {
+            fetch('${API_URL}/api/v1/employees', {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
             })
                 .then(res => res.json())
