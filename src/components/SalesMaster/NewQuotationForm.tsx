@@ -164,81 +164,279 @@ sameAsBilling: false,
       .split("T")[0],
 
     // Items Section
+    // items: [
+    //   {
+    //     itemName: "Solar PV Modules",
+    //     specification: "",
+    //     make: "",
+    //     qty: "6 NOS",
+    //     specification1: "",
+    //     specification2: "",
+    //     specification3: "",
+    //     specification7: "",
+    //     specification8: "",
+    //     specification9: "",
+    //   },
+    //   {
+    //     itemName: "Solar Inverter",
+    //     specification: "3 Phase 5 kw\n5 years Warranty",
+    //     make: "",
+    //     qty: "1 each",
+    //     specification1: "",
+    //     specification2: "",
+    //     specification3: "",
+    //     specification7: "",
+    //     specification8: "",
+    //     specification9: "",
+    //   },
+    //   {
+    //     itemName: "Solar Structure",
+    //     specification: "Galvanized Solar Structure Roof mounted",
+    //     make: "Solarica",
+    //     qty: "1 set",
+    //     specification1: "",
+    //     specification2: "",
+    //     specification3: "",
+    //     specification7: "",
+    //     specification8: "",
+    //     specification9: "",
+    //   },
+    //   {
+    //     itemName: "Earthing Plats and Cable",
+    //     specification:
+    //       "Down Conductor earthing 16 sqr mm- For Structure Earthing and Inverter Earthing And ACDB earthing EarthingRod/Plates",
+    //     make: "Polycab/Waree",
+    //     qty: "APR",
+    //     specification1: "",
+    //     specification2: "",
+    //     specification3: "",
+    //     specification7: "",
+    //     specification8: "",
+    //     specification9: "",
+    //   },
+    //   {
+    //     itemName: "AcCable",
+    //     specification: "2.5 Sqr mm 4 core Copper Flexible",
+    //     make: "Polycab",
+    //     qty: "APR",
+    //     specification1: "",
+    //     specification2: "",
+    //     specification3: "",
+    //     specification7: "",
+    //     specification8: "",
+    //     specification9: "",
+    //   },
+    //   {
+    //     itemName: "DC cable",
+    //     specification: "4 Sqr mm Single core R+B",
+    //     make: "Polycab/Waree/Apar",
+    //     qty: "APR",
+    //     specification1: "",
+    //     specification2: "",
+    //     specification3: "",
+    //     specification7: "",
+    //     specification8: "",
+    //     specification9: "",
+    //   },
+    // ],
+
     items: [
-      {
-        itemName: "Solar PV Modules",
-        specification: "",
-        make: "",
-        qty: "6 NOS",
-        specification1: "",
-        specification2: "",
-        specification3: "",
-        specification7: "",
-        specification8: "",
-        specification9: "",
-      },
-      {
-        itemName: "Solar Inverter",
-        specification: "3 Phase 5 kw\n5 years Warranty",
-        make: "",
-        qty: "1 each",
-        specification1: "",
-        specification2: "",
-        specification3: "",
-        specification7: "",
-        specification8: "",
-        specification9: "",
-      },
-      {
-        itemName: "Solar Structure",
-        specification: "Galvanized Solar Structure Roof mounted",
-        make: "Solarica",
-        qty: "1 set",
-        specification1: "",
-        specification2: "",
-        specification3: "",
-        specification7: "",
-        specification8: "",
-        specification9: "",
-      },
-      {
-        itemName: "Earthing Plats and Cable",
-        specification:
-          "Down Conductor earthing 16 sqr mm- For Structure Earthing and Inverter Earthing And ACDB earthing EarthingRod/Plates",
-        make: "Polycab/Waree",
-        qty: "APR",
-        specification1: "",
-        specification2: "",
-        specification3: "",
-        specification7: "",
-        specification8: "",
-        specification9: "",
-      },
-      {
-        itemName: "AcCable",
-        specification: "2.5 Sqr mm 4 core Copper Flexible",
-        make: "Polycab",
-        qty: "APR",
-        specification1: "",
-        specification2: "",
-        specification3: "",
-        specification7: "",
-        specification8: "",
-        specification9: "",
-      },
-      {
-        itemName: "DC cable",
-        specification: "4 Sqr mm Single core R+B",
-        make: "Polycab/Waree/Apar",
-        qty: "APR",
-        specification1: "",
-        specification2: "",
-        specification3: "",
-        specification7: "",
-        specification8: "",
-        specification9: "",
-      },
-    ],
+{
+  itemName: "Solar PV Modules",
+  specification:
+    "540-545-550 (Mono Crystalline/Bifacial DCR)\n25 Years Warranty",
+  make: "",
+  qty: "9 NOS",
+  specification1: "",
+  specification2: "",
+  specification3: "",
+  specification7: "",
+  specification8: "",
+  specification9: "",
+},
+
+{
+  itemName: "Solar Inverter",
+  specification:
+    "3 Phase 5 KW\n5 Years Warranty",
+  make: "",
+  qty: "1 Each",
+  specification1: "",
+  specification2: "",
+  specification3: "",
+  specification7: "",
+  specification8: "",
+  specification9: "",
+},
+
+{
+  itemName: "Solar Structure",
+  specification:
+    "Galvanized Solar Structure Roof Mounted",
+  make: "Solarica",
+  qty: "1 Set",
+  specification1: "",
+  specification2: "",
+  specification3: "",
+  specification7: "",
+  specification8: "",
+  specification9: "",
+},
+
+{
+  itemName: "ACDB",
+  specification:
+    "IP65 Enclosure with MCB Protection, SPDs and Misc. Items 3 Phase.\n2 Years Warranty",
+  make: "Solarica",
+  qty: "1 Each",
+  specification1: "",
+  specification2: "",
+  specification3: "",
+  specification7: "",
+  specification8: "",
+  specification9: "",
+},
+
+{
+  itemName: "DCDB",
+  specification:
+    "IP65 Enclosure with DC Fuses, DC SPDs and Misc. Items 3 Phase.\n2 Years Warranty",
+  make: "Solarica",
+  qty: "1 Each",
+  specification1: "",
+  specification2: "",
+  specification3: "",
+  specification7: "",
+  specification8: "",
+  specification9: "",
+},
+
+{
+  itemName: "Solar Net Meter",
+  specification:
+    "As Per Specifications Of MSEB",
+  make: "Adani",
+  qty: "1 Nos",
+  specification1: "Solar Generation Meter",
+  specification2:
+    "As Per Specifications Of MSEB",
+  specification3: "HPL / L&T",
+  specification7: "1 Nos",
+  specification8: "",
+  specification9: "",
+},
+
+{
+  itemName: "Earthing Plats and Cable",
+  specification:
+    "Down Conductor Earthing 16 Sqr mm - For Structure Earthing and Inverter Earthing And ACDB Earthing Earthing Rod/Plates",
+  make: "Polycab/Waree",
+  qty: "APR",
+  specification1: "",
+  specification2: "",
+  specification3: "",
+  specification7: "",
+  specification8: "",
+  specification9: "",
+},
+
+{
+  itemName: "AC Cable",
+  specification:
+    "2.5 Sqr mm 4 Core Copper Flexible",
+  make: "Polycab",
+  qty: "APR",
+  specification1: "",
+  specification2: "",
+  specification3: "",
+  specification7: "",
+  specification8: "",
+  specification9: "",
+},
+
+{
+  itemName: "DC Cable",
+  specification:
+    "4 Sqr mm Single Core R+B",
+  make: "Polycab/Waree/Apar",
+  qty: "APR",
+  specification1: "",
+  specification2: "",
+  specification3: "",
+  specification7: "",
+  specification8: "",
+  specification9: "",
+},
+
+{
+  itemName: "Lighting Arrestor",
+  specification:
+    "Solid LA with Base",
+  make: "TUV Protected ISI Approved",
+  qty: "1 Nos",
+  specification1: "",
+  specification2: "",
+  specification3: "",
+  specification7: "",
+  specification8: "",
+  specification9: "",
+},
+
+{
+  itemName: "Misc. Material",
+  specification:
+    "MC4 Connectors, Plugs, Accessories",
+  make: "TUV Protected",
+  qty: "APR",
+  specification1: "",
+  specification2: "",
+  specification3: "",
+  specification7: "",
+  specification8: "",
+  specification9: "",
+},
+
+{
+  itemName: "Installation",
+  specification: "APR",
+  make: "Solarica",
+  qty: "APR",
+  specification1: "",
+  specification2: "",
+  specification3: "",
+  specification7: "",
+  specification8: "",
+  specification9: "",
+},
+
+{
+  itemName: "Transportation",
+  specification:
+    "Included one time",
+  make: "Solarica",
+  qty: "APR",
+  specification1: "",
+  specification2: "",
+  specification3: "",
+  specification7: "",
+  specification8: "",
+  specification9: "",
+},
+
+{
+  itemName: "Lesioning",
+  specification:
+    "Included solar Lesioning up to completion full scope",
+  make: "Solarica",
+  qty: "-",
+  specification1: "",
+  specification2: "",
+  specification3: "",
+  specification7: "",
+  specification8: "",
+  specification9: "",
+},
+],
 
     // [NEW] Sales Employee Fields
   });
@@ -637,11 +835,11 @@ const [additionalAmount, setAdditionalAmount] =
 }
 
     // [VALIDATION] Customer Number - alphanumeric only
-    if (name === "CustomerNumber") {
-      const sanitized = value.replace(/[^a-zA-Z0-9]/g, "").slice(0, 20);
-      setFormData((prev) => ({ ...prev, [name]: sanitized }));
-      return;
-    }
+    // if (name === "CustomerNumber") {
+    //   const sanitized = value.replace(/[^a-zA-Z0-9]/g, "").slice(0, 20);
+    //   setFormData((prev) => ({ ...prev, [name]: sanitized }));
+    //   return;
+    // }
 
     // [VALIDATION] GST Number - uppercase alphanumeric, 15 chars [UPGRADED with state detection from Code B]
     if (name === "gstNumber") {
@@ -1516,7 +1714,7 @@ const handleSubmit = async (
                   placeholder: "12 digits",
                 },
                 { label: "Billing Number", name: "BillingNumber" },
-                { label: "Customer Number", name: "CustomerNumber" },
+                // { label: "Customer Number", name: "CustomerNumber" },
                 {
                   label: "GST Number",
                   name: "gstNumber",
