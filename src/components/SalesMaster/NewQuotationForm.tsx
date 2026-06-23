@@ -1246,6 +1246,8 @@ shippingAddress:
         })),
 
         documents,
+            gstRate: Number(formData.gstRate || 0),
+
 
     };
 };
@@ -1489,6 +1491,8 @@ shippingAddress:
             specification8: item.specification8 || "",
             specification9: item.specification9 || ""
         })),
+            gstRate: Number(formData.gstRate || 0),
+
     };
 };
 const handleSubmit = async (

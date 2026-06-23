@@ -1329,16 +1329,46 @@ const filteredQuotations = React.useMemo(() => {
         }
     };
 
+    // const handleStatusChange = async (id: string, status: string) => {
+    //     if (window.confirm(`Are you sure you want to mark this as ${status}?`)) {
+    //         try {
+    //             await updateQuotationStatus(id, status);
+    //             onRefresh();
+    //         } catch (error) {
+    //             console.error('Failed to update status', error);
+    //         }
+    //     }
+    // };
+
     const handleStatusChange = async (id: string, status: string) => {
-        if (window.confirm(`Are you sure you want to mark this as ${status}?`)) {
-            try {
-                await updateQuotationStatus(id, status);
-                onRefresh();
-            } catch (error) {
-                console.error('Failed to update status', error);
-            }
-        }
-    };
+
+  if (!window.confirm(`Are you sure you want to mark this as ${status}?`)) {
+    return;
+  }
+
+  try {
+
+    // 1. Update quotation status
+    await updateQuotationStatus(id, status);
+
+    // 2. If status is SENT then send email
+    if (status.toUpperCase() === 'SENT') {
+
+      await sendQuotationEmail(id);
+
+      alert('Quotation status updated and email sent successfully');
+    }
+
+    onRefresh();
+
+  } catch (error) {
+
+    console.error('Failed to update status', error);
+
+    alert('Failed to update status');
+
+  }
+};
 
     const handleSendEmail = async (id: string) => {
         if (window.confirm('Send quotation email to client?')) {
