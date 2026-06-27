@@ -301,7 +301,7 @@ const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'accepted' 
           grandTotalPayable: Number(data.totals.grandTotal || 0),
           amountInWords: data.amountInWords || "",
           items: (data.items || []).map((item: any) => ({
-            itemDescription: item.description,
+            itemDescription: item.subDescription || item.description,
             hsnSac: item.hsn,
           //  quantity: Number(item.qty || 0), 
           quantity: Number(item.quantity ?? item.qty ?? 0),
@@ -343,7 +343,23 @@ systemCapacity: data.systemCapacity,
             "Automatically sending email for new Estimate to:",
             invoicePayload.customerEmail,
           );
-          await sendInvoiceEmail(newInvoice.id);
+          // await sendInvoiceEmail(newInvoice.id);
+
+          try {
+
+ await sendInvoiceEmail(
+   newInvoice.id
+ );
+
+}
+catch(error){
+
+ console.log(
+  "Email skipped because PDF not ready"
+ );
+
+}
+
         } catch (emailError) {
           console.error(
             "Failed to automatically send email for invoice:",
