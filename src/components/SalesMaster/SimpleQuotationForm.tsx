@@ -541,8 +541,8 @@ const SimpleQuotationForm = ({
 
       bankAccountNo: String(
         initialData.bankAccountNo ||
-          initialData.accountNumber ||
-          prev.bankAccountNo,
+        initialData.accountNumber ||
+        prev.bankAccountNo,
       ),
 
       bankIfsc: String(
@@ -720,7 +720,7 @@ const SimpleQuotationForm = ({
     setFormData((prev) => ({
       ...prev,
       officerName: "Mr. Kiran Jagtap",
-      officerContact: "9325389168 / 9665389150",
+      officerContact: "9665389150 / 8956922167",
       systemCapacity: "5 HP",
     }));
 
@@ -753,8 +753,8 @@ const SimpleQuotationForm = ({
       const filteredByAccess = isAdmin
         ? indianLeads
         : indianLeads.filter(
-            (lead: any) => lead.assignedToId === currentUser.id,
-          );
+          (lead: any) => lead.assignedToId === currentUser.id,
+        );
 
       setRecentLeads(filteredByAccess);
     });
@@ -813,8 +813,8 @@ const SimpleQuotationForm = ({
       const filteredByAccess = isAdmin
         ? indianLeads
         : indianLeads.filter(
-            (lead: any) => lead.assignedToId === currentUser.id,
-          );
+          (lead: any) => lead.assignedToId === currentUser.id,
+        );
 
       // setSearchResults(filteredByAccess);
 
@@ -832,33 +832,43 @@ const SimpleQuotationForm = ({
     }
   };
 
-  const selectLead = (lead: Lead) => {
+  const selectLead = (lead: any) => {
     setSelectedLead(lead);
-    setFormData((prev) => {
-      const newData = {
-        ...prev,
-        customerName: lead.name,
-        customerEmail: lead.email || prev.customerEmail,
-        customerContact: lead.phone,
-        customerAddress: lead.address  ? `${lead.address}\n` : "",
-        customerGstin: lead.gstin || prev.customerGstin,
-      };
 
-      // [UPGRADE] Auto-resolve state logic from Code B
-      const gstin = lead.gstin || prev.customerGstin;
-      if (gstin && gstin.length >= 2) {
-        const state = getStateFromGST(gstin);
-        if (state) {
-          setResolvedGstState(state);
-          newData.stateCode = state.code;
-          newData.placeOfSupply = state.name;
-        }
-      }
+    setFormData((prev) => ({
+      ...prev,
 
-      return newData;
-    });
+      // Bill To Details
+      customerName: lead.name || "",
+      customerEmail: lead.email || "",
+      customerAddress: lead.address || "",
+      customerContact: lead.phone || "",
+      customerGstin: lead.gstNo || "", // ✅ Prefill GST No
+
+      // Optional
+      company: lead.company || "",
+    }));
+
     setShowLeadResults(false);
-    setSearchResults([]);
+
+    // Resolve GST State automatically
+    if (lead.gstNo && lead.gstNo.length >= 2) {
+      const state = getStateFromGST(lead.gstNo);
+
+      if (state) {
+        setResolvedGstState(state);
+
+        setFormData((prev) => ({
+          ...prev,
+          stateCode: state.code,
+          placeOfSupply: state.name,
+        }));
+      } else {
+        setResolvedGstState(null);
+      }
+    } else {
+      setResolvedGstState(null);
+    }
   };
 
   const handleCreateLead = async (leadData: any) => {
@@ -1412,6 +1422,23 @@ const SimpleQuotationForm = ({
     setIsCatalogOpen(false);
   };
 
+  const calculateCashDiscount = (netAmount: number) => {
+    // Example Logic
+    if (netAmount >= 300000) {
+      return netAmount * 0.05; // 5%
+    }
+
+    if (netAmount >= 100000) {
+      return netAmount * 0.03; // 3%
+    }
+
+    if (netAmount >= 50000) {
+      return netAmount * 0.02; // 2%
+    }
+
+    return 0;
+  };
+
   const calculateTotals = () => {
     // const netAmount = items.reduce((sum, item) => sum + item.amount, 0);
     const netAmount = items.reduce((sum, item) => {
@@ -1443,19 +1470,23 @@ const SimpleQuotationForm = ({
       totalSgst += gstAmount / 2;
     });
 
+    const cashDiscount = calculateCashDiscount(netAmount);
+
     const totalTax = totalCgst + totalSgst;
+
     const grandTotal = Math.max(
       0,
       Math.round(
         netAmount +
-          totalTax -
-          (formData.cashDiscount || 0) +
-          (formData.roundOff || 0),
-      ),
+        totalTax -
+        cashDiscount +
+        (Number(formData.roundOff) || 0)
+      )
     );
 
     return {
       netAmount,
+      cashDiscount,
       cgst: totalCgst,
       sgst: totalSgst,
       totalTax,
@@ -1484,6 +1515,7 @@ const SimpleQuotationForm = ({
       console.log("ITEMS BEFORE SUBMIT", items);
       const submissionData = {
         ...formData,
+        cashDiscount: totals.cashDiscount,
         // items,
         leadId: selectedLead?.id || null,
         items: items.map((it) => ({
@@ -1500,6 +1532,7 @@ const SimpleQuotationForm = ({
           amount: Number(it.amount || 0), // <--- FIX: Ensure amount is sent!
         })),
 
+        billOfMaterial: completeBOQ,
         totals,
         lightBill,
         paymentType,
@@ -1637,23 +1670,7 @@ const SimpleQuotationForm = ({
                   className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all outline-none"
                 />
               </div>
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-700 uppercase tracking-tight">
-                  Mode of Dispatch
-                </label>
-                <select
-                  name="modeOfDispatch"
-                  value={formData.modeOfDispatch}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all outline-none"
-                >
-                  <option value="By road">By Road</option>
-                  <option value="By air">By Air</option>
-                  <option value="By shipment">By Shipment</option>
-                  <option value="By rail">By Rail</option>
-                  <option value="By Cargo">By Cargo</option>
-                </select>
-              </div>
+
             </div>
           </section>
 
@@ -1768,6 +1785,7 @@ const SimpleQuotationForm = ({
                                         </span>
                                       )}
                                       <span>{lead.email}</span>
+
                                     </div>
                                   </div>
                                   <div className="text-slate-300 group-hover:text-blue-500">
@@ -1884,11 +1902,10 @@ const SimpleQuotationForm = ({
                       onChange={handleInputChange}
                       placeholder="15 character GSTIN"
                       maxLength={15}
-                      className={`w-full px-4 py-3 rounded-xl border bg-slate-50/50 text-slate-900 uppercase focus:ring-4 transition-all outline-none ${
-                        resolvedGstState
-                          ? "border-emerald-400 focus:border-emerald-500 focus:ring-emerald-100"
-                          : "border-slate-200 focus:border-indigo-500 focus:ring-indigo-100"
-                      }`}
+                      className={`w-full px-4 py-3 rounded-xl border bg-slate-50/50 text-slate-900 uppercase focus:ring-4 transition-all outline-none ${resolvedGstState
+                        ? "border-emerald-400 focus:border-emerald-500 focus:ring-emerald-100"
+                        : "border-slate-200 focus:border-indigo-500 focus:ring-indigo-100"
+                        }`}
                     />
 
                     {/* State resolved badge */}
@@ -2043,11 +2060,10 @@ const SimpleQuotationForm = ({
                       onChange={handleInputChange}
                       maxLength={2}
                       placeholder="e.g., 27"
-                      className={`w-full px-4 py-3 rounded-xl border transition-all outline-none ${
-                        resolvedGstState
-                          ? "border-emerald-300 bg-emerald-50/40 text-emerald-800 font-bold focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100"
-                          : "border-slate-200 bg-slate-50/50 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
-                      } ${sameAsBillTo && formData.stateCode ? "bg-slate-100" : ""}`}
+                      className={`w-full px-4 py-3 rounded-xl border transition-all outline-none ${resolvedGstState
+                        ? "border-emerald-300 bg-emerald-50/40 text-emerald-800 font-bold focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100"
+                        : "border-slate-200 bg-slate-50/50 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                        } ${sameAsBillTo && formData.stateCode ? "bg-slate-100" : ""}`}
                       readOnly={sameAsBillTo && !!formData.stateCode}
                     />
                   </div>
@@ -2068,13 +2084,29 @@ const SimpleQuotationForm = ({
                       onChange={handleInputChange}
                       maxLength={100}
                       placeholder="Enter place of supply"
-                      className={`w-full px-4 py-3 rounded-xl border transition-all outline-none ${
-                        resolvedGstState
-                          ? "border-emerald-300 bg-emerald-50/40 text-emerald-800 font-bold focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100"
-                          : "border-slate-200 bg-slate-50/50 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
-                      } ${sameAsBillTo && formData.placeOfSupply ? "bg-slate-100" : ""}`}
+                      className={`w-full px-4 py-3 rounded-xl border transition-all outline-none ${resolvedGstState
+                        ? "border-emerald-300 bg-emerald-50/40 text-emerald-800 font-bold focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100"
+                        : "border-slate-200 bg-slate-50/50 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                        } ${sameAsBillTo && formData.placeOfSupply ? "bg-slate-100" : ""}`}
                       readOnly={sameAsBillTo && !!formData.placeOfSupply}
                     />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-slate-700 uppercase tracking-tight">
+                      Mode of Dispatch
+                    </label>
+                    <select
+                      name="modeOfDispatch"
+                      value={formData.modeOfDispatch}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all outline-none"
+                    >
+                      <option value="By road">By Road</option>
+                      <option value="By air">By Air</option>
+                      <option value="By shipment">By Shipment</option>
+                      <option value="By rail">By Rail</option>
+                      <option value="By Cargo">By Cargo</option>
+                    </select>
                   </div>
                 </div>
               </div>
@@ -2686,11 +2718,9 @@ const SimpleQuotationForm = ({
                     </span>
                     <input
                       type="number"
-                      step="any"
-                      name="cashDiscount"
-                      value={formData.cashDiscount}
-                      onChange={handleInputChange}
-                      className="w-28 px-3 py-1.5 text-right bg-slate-50 rounded-lg border border-slate-200 font-black text-rose-500 focus:border-rose-500 focus:ring-4 focus:ring-rose-100 transition-all outline-none"
+                      value={totals.cashDiscount.toFixed(2)}
+                      readOnly
+                      className="w-28 px-3 py-1.5 text-right bg-slate-100 rounded-lg border border-slate-200 font-black text-rose-500 cursor-not-allowed"
                     />
                   </div>
                   <div className="flex justify-between items-center text-sm">

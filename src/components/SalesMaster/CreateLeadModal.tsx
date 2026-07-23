@@ -46,7 +46,7 @@
 
 
 // // useEffect(() => {
-   
+
 
 // //      fetch('/api/v1/employees', {
 // //     headers: {
@@ -99,7 +99,7 @@
 //     if (!isOpen) return null;
 
 
-    
+
 //     // LEAD-001: Lead Name - alphabets and spaces only, max 100 characters
 //     const handleNameChange = (value: string) => {
 //         const alphabetsOnly = value.replace(/[^a-zA-Z\s]/g, '').slice(0, 100);
@@ -199,7 +199,7 @@
 
 //     return ReactDOM.createPortal(
 //         // <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6">
-          
+
 // <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-6">        
 //         {/* Backdrop */}
 //             <div
@@ -209,7 +209,7 @@
 
 //             {/* Modal Content */}
 //             {/* <div className="relative bg-white/95 backdrop-blur-3xl w-full max-w-xl rounded-[2.5rem] shadow-[0_32px_120px_-20px_rgba(0,0,0,0.3)] border border-white/50 overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-10 duration-500"> */}
-               
+
 //                <div className="relative bg-white/95 backdrop-blur-3xl 
 // w-full max-w-xl sm:max-w-2xl 
 // max-h-[90vh] 
@@ -218,7 +218,7 @@
 // border border-white/50 
 // overflow-hidden 
 // animate-in zoom-in-95 slide-in-from-bottom-10 duration-500">
-               
+
 //                 {/* Header Decoration */}
 //                 <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-br from-blue-600/10 to-indigo-600/5 -z-10" />
 
@@ -749,6 +749,7 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { X, User, Building2, Mail, Phone, IndianRupee, FileText, Plus, ShieldCheck, Users } from 'lucide-react';
+import { API_URL, getAxiosConfig } from "../../config";
 
 interface CreateLeadModalProps {
     isOpen: boolean;
@@ -777,6 +778,7 @@ const CreateLeadModal: React.FC<CreateLeadModalProps> = ({ isOpen, onClose, onSu
         phone: '',
         source: 'Website',
         estimatedValue: '',
+        gstNo: '',
         customerType: 'Indian',
         notes: '',
         assignedTo: !isAdmin ? currentUser.id : ''
@@ -784,22 +786,26 @@ const CreateLeadModal: React.FC<CreateLeadModalProps> = ({ isOpen, onClose, onSu
 
     const [emailError, setEmailError] = useState('');
     const [salesEmployees, setSalesEmployees] = useState<SalesEmployee[]>([]);
+    const [gstError, setGstError] = useState("");
 
     useEffect(() => {
         if (!isOpen) return;
 
         if (isAdmin) {
-          
-const API_URL = import.meta.env.VITE_API_URL;
 
-fetch(`${API_URL}/api/v1/employees`, {
-  headers: {
-    Authorization: `Bearer ${localStorage.getItem('token')}`,
-  },
-
-
-
-
+            //             const API_URL = import.meta.env.VITE_API_URL;
+            //             console.log(import.meta.env);
+            // console.log("API URL:", API_URL);
+            // console.log("Request URL:", `${API_URL}/api/v1/employees`);
+            //             fetch(`${API_URL}/api/v1/employees`, {
+            //                 headers: {
+            //                     Authorization: `Bearer ${localStorage.getItem('token')}`,
+            //                 },
+            //  })
+            fetch(`${API_URL}/employees`, {
+                headers: {
+                    ...getAxiosConfig().headers,
+                },
             })
                 .then(res => res.json())
                 .then(data => {
@@ -853,6 +859,32 @@ fetch(`${API_URL}/api/v1/employees`, {
         const sanitized = value.replace(/<[^>]*>/g, '').replace(/javascript:/gi, '').slice(0, 1000);
         setFormData({ ...formData, notes: sanitized });
     };
+    const handleGSTChange = (value: string) => {
+        const gst = value
+            .toUpperCase()
+            .replace(/[^A-Z0-9]/g, "")
+            .slice(0, 15);
+
+        setFormData({
+            ...formData,
+            gstNo: gst,
+        });
+
+        // Optional field
+        if (!gst) {
+            setGstError("");
+            return;
+        }
+
+        const gstRegex =
+            /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+
+        if (!gstRegex.test(gst)) {
+            setGstError("Please enter a valid GST Number");
+        } else {
+            setGstError("");
+        }
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -863,6 +895,10 @@ fetch(`${API_URL}/api/v1/employees`, {
         }
         if (!formData.name.trim()) {
             alert("Lead name is required");
+            return;
+        } 
+        if (gstError) {
+            alert("Please enter a valid GST Number");
             return;
         }
 
@@ -884,12 +920,13 @@ fetch(`${API_URL}/api/v1/employees`, {
         setFormData({
             name: '',
             company: '',
-             address: '',
+            address: '',
             email: '',
             phone: '',
             source: 'Website',
             customerType: 'Indian',
             estimatedValue: '',
+            gstNo: '',
             notes: '',
             assignedTo: !isAdmin ? currentUser.id : ''
         });
@@ -972,14 +1009,14 @@ fetch(`${API_URL}/api/v1/employees`, {
                                     />
                                 </div>
                             </div>
-                            
+
                         </div>
 
-                      
+
 
                         {/* Row 3: Optional Fields (Company, Email, Estimated Value) */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                               <div >
+                            <div >
                                 <label className="block text-xs font-semibold text-slate-600 mb-1.5">
                                     Assign To <span className="text-red-500">*</span>
                                 </label>
@@ -988,9 +1025,8 @@ fetch(`${API_URL}/api/v1/employees`, {
                                     <select
                                         required
                                         disabled={!isAdmin}
-                                        className={`w-full pl-9 pr-3 py-2.5 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-white text-slate-800 appearance-none ${
-                                            !isAdmin ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : 'border-slate-200'
-                                        }`}
+                                        className={`w-full pl-9 pr-3 py-2.5 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-white text-slate-800 appearance-none ${!isAdmin ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : 'border-slate-200'
+                                            }`}
                                         value={formData.assignedTo}
                                         onChange={(e) => setFormData({ ...formData, assignedTo: e.target.value })}
                                     >
@@ -1027,9 +1063,8 @@ fetch(`${API_URL}/api/v1/employees`, {
                                     <input
                                         type="email"
                                         placeholder="example@mail.com"
-                                        className={`w-full pl-9 pr-3 py-2.5 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-white text-slate-800 ${
-                                            emailError ? 'border-red-300' : 'border-slate-200'
-                                        }`}
+                                        className={`w-full pl-9 pr-3 py-2.5 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-white text-slate-800 ${emailError ? 'border-red-300' : 'border-slate-200'
+                                            }`}
                                         value={formData.email}
                                         onChange={e => handleEmailChange(e.target.value)}
                                     />
@@ -1054,43 +1089,65 @@ fetch(`${API_URL}/api/v1/employees`, {
                                 </div>
                             </div>
 
-<div >
-  <label>Address</label>
+                            <div>
+                                <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+                                    GST No{" "}
+                                    <span className="text-slate-400 text-[11px] font-normal">
+                                        (Optional)
+                                    </span>
+                                </label>
 
-  <textarea
-    rows={3}
-    value={formData.address}
-    onChange={(e) =>
-      setFormData({
-        ...formData,
-        address: e.target.value,
-      })
-    }
-    className="w-full border rounded-lg p-3"
-  />
-</div>
+                                <div className="relative">
+                                    <input
+                                        type="text"
+                                        placeholder="Enter GST Number"
+                                        maxLength={15}
+                                        className="w-full px-3 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-white text-slate-800 uppercase"
+                                        value={formData.gstNo}
+                                        onChange={(e) => handleGSTChange(e.target.value)}
+                                    />
+                                </div>
+                                {gstError && (<p className="text-red-500 text-xs mt-1">{gstError} </p>)}
+                            </div>
 
-                         {/* Strategic Notes (full width) */}
-                        <div>
-                            <label className="block text-xs font-semibold text-slate-600 mb-1.5">
-                                Strategic Notes <span className="text-red-500">*</span>
-                            </label>
-                            <div className="relative">
-                                <FileText size={16} className="absolute left-3 top-3 text-slate-400" />
+
+                            <div >
+                                <label>Address</label>
+
                                 <textarea
-                                    required
                                     rows={3}
-                                    placeholder="Add requirements, notes, or any relevant details..."
-                                    className="w-full pl-9 pr-3 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-white text-slate-800 resize-none"
-                                    value={formData.notes}
-                                    onChange={e => handleNotesChange(e.target.value)}
+                                    value={formData.address}
+                                    onChange={(e) =>
+                                        setFormData({
+                                            ...formData,
+                                            address: e.target.value,
+                                        })
+                                    }
+                                    className="w-full border rounded-lg p-3"
                                 />
                             </div>
-                        </div>
-                       
+
+                            {/* Strategic Notes (full width) */}
+                            <div>
+                                <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+                                    Strategic Notes <span className="text-red-500">*</span>
+                                </label>
+                                <div className="relative">
+                                    <FileText size={16} className="absolute left-3 top-3 text-slate-400" />
+                                    <textarea
+                                        required
+                                        rows={3}
+                                        placeholder="Add requirements, notes, or any relevant details..."
+                                        className="w-full pl-9 pr-3 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-white text-slate-800 resize-none"
+                                        value={formData.notes}
+                                        onChange={e => handleNotesChange(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+
                         </div>
 
-                      
+
 
                         {/* Action Buttons */}
                         <div className="flex flex-col sm:flex-row gap-5 pt-4 border-t border-slate-100">

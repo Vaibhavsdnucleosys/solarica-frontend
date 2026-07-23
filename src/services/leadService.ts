@@ -6,6 +6,7 @@ export interface Lead {
     name: string;
     company?: string;
     address?: string;
+    gstNo?:String;
     email: string;
     phone: string;
     source: string;
