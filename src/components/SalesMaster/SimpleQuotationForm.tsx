@@ -1500,59 +1500,77 @@ const SimpleQuotationForm = ({
     (item) => item.description.trim() !== "" && item.qty > 0 && item.rate > 0,
   );
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+ const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    if (!hasValidItem) {
-      alert(
-        "Please add at least one item with Item Code, Quantity, and Rate before saving.",
-      );
-      return;
-    }
+  if (!hasValidItem) {
+    alert("Please add at least one item with Item Code, Quantity, and Rate before saving.");
+    return;
+  }
 
-    setLoading(true);
-    try {
-      console.log("ITEMS BEFORE SUBMIT", items);
-      const submissionData = {
-        ...formData,
-        cashDiscount: totals.cashDiscount,
-        // items,
-        leadId: selectedLead?.id || null,
-        items: items.map((it) => ({
-          description: it.description || "",
-          subDescription: it.subDescription || "",
-          hsnSac: it.hsn || "", // DB Column: hsnSac
-          // quantity: Number(it.qty || 0), // DB Column: quantity
-          quantity: Number(it.qty),
-          watt: Number(it.watt || 0),
-          unit: it.unit || "PCS",
-          rate: Number(it.rate || 0),
-          discPercent: Number(it.discPercent || 0),
-          gstRate: Number(it.gstRate || 0),
-          amount: Number(it.amount || 0), // <--- FIX: Ensure amount is sent!
-        })),
+  setLoading(true);
+  try {
+    // This is the technical breakdown derived from the UI's pump templates
+    // We map it to match the keys that "worked" in your NewQuotationForm
+    const mappedBillOfMaterial = completeBOQ.map((row) => ({
+      itemName: row.item || "",
+      specification: row.specification || "",
+      make1: row.make || "",
+      make2: "", // Placeholder to match schema
+      quantity: String(row.qty || ""),
+      image: row.image || "", // Include image path if backend stores it
+      specification1: "", // Fallbacks to match NewQuotationForm schema
+      specification2: "",
+      specification3: "",
+      specification7: "",
+      specification8: "",
+      specification9: "",
+    }));
 
-        billOfMaterial: completeBOQ,
-        totals,
-        lightBill,
-        paymentType,
-        paidAmount,
-        advancedEnabled,
-        additionalAmount,
-        status: "Draft",
-        category: isPump ? "PUMP" : "DOMESTIC",
-        officerName: formData.officerName,
-        officerContact: formData.officerContact,
-        systemCapacity: formData.systemCapacity,
-      };
-      console.log("SUBMISSION DATA", submissionData);
-      await onSubmit(submissionData);
-    } catch (error) {
-      console.error("Submission failed", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    const submissionData = {
+      ...formData,
+      leadId: selectedLead?.id || null,
+      
+      // Commercial Items (The line items the user sees in the "Item Details" table)
+      items: items.map((it) => ({
+        description: it.description || "",
+        subDescription: it.subDescription || "",
+        hsnSac: it.hsn || "",
+        quantity: Number(it.qty),
+        watt: Number(it.watt || 0),
+        unit: it.unit || "PCS",
+        rate: Number(it.rate || 0),
+        discPercent: Number(it.discPercent || 0),
+        gstRate: Number(it.gstRate || 0),
+        amount: Number(it.amount || 0),
+      })),
+
+      // Technical Bill of Material (The breakdown based on Pump Capacity)
+      // Sending it just like NewQuotationForm does
+      billOfMaterial: mappedBillOfMaterial, 
+
+      totals,
+      lightBill,
+      paymentType,
+      paidAmount,
+      advancedEnabled,
+      additionalAmount,
+      status: "Draft",
+      category: isPump ? "PUMP" : "DOMESTIC",
+      officerName: formData.officerName,
+      officerContact: formData.officerContact,
+      systemCapacity: formData.systemCapacity,
+    };
+
+    console.log("PUMP SUBMISSION DATA (WITH BOM) =>", submissionData);
+    await onSubmit(submissionData);
+  } catch (error) {
+    console.error("Submission failed", error);
+    toast.error("Failed to save estimate");
+  } finally {
+    setLoading(false);
+  }
+};
 
   const currentBOQ =
     pumpBOQ[formData.systemCapacity as keyof typeof pumpBOQ] || pumpBOQ["5 HP"];

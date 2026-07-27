@@ -300,6 +300,7 @@ const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'accepted' 
           roundOff: Number(data.roundOff || 0),
           grandTotalPayable: Number(data.totals.grandTotal || 0),
           amountInWords: data.amountInWords || "",
+          billOfMaterial: data.billOfMaterial,
           items: (data.items || []).map((item: any) => ({
             itemDescription: item.subDescription || item.description,
             hsnSac: item.hsn,

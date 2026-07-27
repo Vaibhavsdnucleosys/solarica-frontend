@@ -71,7 +71,7 @@
 
 //     return (
 //         <div className="flex flex-col h-full bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden animate-in fade-in zoom-in-95 duration-500">
-            
+
 //             {/* --- Header Section --- */}
 //             <div className="p-8 border-b border-slate-50 bg-gradient-to-r from-white to-slate-50/50">
 //                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
@@ -239,7 +239,7 @@
 //                         <Info size={14} className="text-blue-500" />
 //                         Page <span className="text-slate-800 font-black">{pagination.page}</span> of <span className="text-slate-800 font-black">{pagination.lastPage}</span>
 //                     </div>
-                    
+
 //                     <div className="flex items-center gap-2">
 //                         <button 
 //                             disabled={pagination.page === 1 || loading}
@@ -274,20 +274,28 @@ import {
   Download,
   ChevronLeft,
   ChevronRight,
-  ArrowUpDown
+  ArrowUpDown,
+  Plus,
+  Trash2,
 } from "lucide-react";
 import {
   getHsnMaster,
   updateHsnCode,
+  createHsn,
+  deleteHsn,
+  deleteMultipleHsn,
 } from "../../services/hsnService";
 import { importHsn } from "../../services/api";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+
 
 const HsnMaster = () => {
   const [data, setData] = useState<any[]>([]);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [loading, setLoading] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const [pagination, setPagination] = useState({
     page: 1,
@@ -341,6 +349,38 @@ const HsnMaster = () => {
     }
   };
 
+  const handleDelete = async (id: string) => {
+    if (!window.confirm("Delete this HSN?")) return;
+
+    try {
+      await deleteHsn(id);
+      toast.success("Deleted successfully");
+      loadData(pagination.page);
+    } catch {
+      toast.error("Delete failed");
+    }
+  };
+  const handleDeleteSelected = async () => {
+    if (selectedIds.length === 0) {
+      toast.error("Select records first");
+      return;
+    }
+
+    if (!window.confirm(`Delete ${selectedIds.length} records?`)) return;
+
+    try {
+      await deleteMultipleHsn(selectedIds);
+
+      toast.success("Deleted successfully");
+
+      setSelectedIds([]);
+
+      loadData(pagination.page);
+    } catch {
+      toast.error("Delete failed");
+    }
+  };
+
   const handleSort = (field: string) => {
     if (sortField === field) {
       setSortOrder(sortOrder === "asc" ? "desc" : "asc");
@@ -349,22 +389,47 @@ const HsnMaster = () => {
       setSortOrder("asc");
     }
   };
+  const handleCreate = async () => {
+    try {
+      await createHsn(newHsn);
 
+      toast.success("HSN created successfully");
 
-  
-const handleUpload = async (e: any) => {
-  const file = e.target.files[0];
-  if (!file) return;
+      setShowCreateModal(false);
 
-  try {
-    await importHsn(file);   // ✅ correct function
-    toast.success("Imported successfully");
-    loadData(1);
-  } catch (err) {
-    console.error(err);
-    toast.error("Import failed");
-  }
-};
+      setNewHsn({
+        hsnCode: "",
+        description: "",
+        category: "",
+        cgstRate: 0,
+        sgstRate: 0,
+        igstRate: 0,
+        isActive: true,
+      });
+
+      loadData(1);
+    } catch (error: any) {
+      console.error(error);
+
+      toast.error(
+        error?.response?.data?.message || "Failed to create HSN"
+      );
+    }
+  };
+
+  const handleUpload = async (e: any) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      await importHsn(file);   // ✅ correct function
+      toast.success("Imported successfully");
+      loadData(1);
+    } catch (err) {
+      console.error(err);
+      toast.error("Import failed");
+    }
+  };
 
   const handleSave = async (id: string) => {
     await updateHsnCode(id, editForm);
@@ -372,6 +437,17 @@ const handleUpload = async (e: any) => {
     setEditingId(null);
     loadData(pagination.page);
   };
+  const [showCreateModal, setShowCreateModal] = useState(false);
+
+  const [newHsn, setNewHsn] = useState({
+    hsnCode: "",
+    description: "",
+    category: "",
+    cgstRate: 0,
+    sgstRate: 0,
+    igstRate: 0,
+    isActive: true,
+  });
 
   const exportCSV = () => {
     const headers = [
@@ -403,9 +479,10 @@ const handleUpload = async (e: any) => {
     <div className="bg-white rounded-2xl shadow border p-6 flex flex-col h-full">
 
       {/* 🔥 HEADER */}
-      <div className="flex flex-wrap justify-between items-center gap-4 mb-4">
+      <div className="flex items-center justify-between gap-1 mb-4">
 
-        <div className="relative w-full md:w-80">
+        {/* Search */}
+        <div className="relative w-70 flex-shrink-0">
           <Search className="absolute left-3 top-3 text-gray-400" size={16} />
           <input
             placeholder="Search HSN..."
@@ -415,7 +492,8 @@ const handleUpload = async (e: any) => {
           />
         </div>
 
-        <div className="flex gap-3 items-center">
+        {/* Right Side Buttons */}
+        <div className="flex items-center gap-2 flex-nowrap">
 
           <select
             value={statusFilter}
@@ -428,16 +506,35 @@ const handleUpload = async (e: any) => {
           </select>
 
           <button
-            onClick={exportCSV}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl text-sm"
+            onClick={() => setShowCreateModal(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl text-sm whitespace-nowrap"
           >
-            <Download size={16} /> Export
+            <Plus size={16} />
+            Create New
+          </button>
+
+          <button
+            disabled={selectedIds.length === 0}
+            onClick={handleDeleteSelected}
+            className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-xl text-sm disabled:opacity-50 whitespace-nowrap"
+          >
+            <Trash2 size={16} />
+            Delete Selected
+          </button>
+
+          <button
+            onClick={exportCSV}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl text-sm whitespace-nowrap"
+          >
+            <Download size={16} />
+            Export
           </button>
 
           <input
             type="file"
             accept=".xlsx,.csv"
             onChange={handleUpload}
+            className="text-sm w-44"
           />
 
           <button
@@ -448,6 +545,7 @@ const handleUpload = async (e: any) => {
           </button>
 
         </div>
+
       </div>
 
       {/* 🔥 TABLE SCROLL */}
@@ -457,7 +555,25 @@ const handleUpload = async (e: any) => {
 
           {/* 🔥 STICKY HEADER */}
           <thead className="bg-gray-100 sticky top-0 z-10">
+
             <tr>
+
+              <th className="p-3">
+                <input
+                  type="checkbox"
+                  checked={
+                    data.length > 0 &&
+                    selectedIds.length === data.length
+                  }
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setSelectedIds(data.map(x => x.id));
+                    } else {
+                      setSelectedIds([]);
+                    }
+                  }}
+                />
+              </th>
               {[
                 { label: "HSN", field: "hsnCode" },
                 { label: "Description", field: "description" },
@@ -467,6 +583,7 @@ const handleUpload = async (e: any) => {
                 { label: "IGST", field: "igstRate" },
                 { label: "Status", field: "isActive" }
               ].map((col) => (
+
                 <th
                   key={col.field}
                   onClick={() => handleSort(col.field)}
@@ -486,7 +603,23 @@ const handleUpload = async (e: any) => {
             {data.map((item) => (
               <tr key={item.id} className="border-t hover:bg-gray-50">
 
-                <td className="p-3 font-semibold">{item.hsnCode}</td>
+                <td className="p-3">
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.includes(item.id)}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSelectedIds([...selectedIds, item.id]);
+                      } else {
+                        setSelectedIds(selectedIds.filter((x) => x !== item.id));
+                      }
+                    }}
+                  />
+                </td>
+
+                <td className="p-3 font-semibold">
+                  {item.hsnCode}
+                </td>
 
                 <td className="p-3">
                   {editingId === item.id ? (
@@ -508,9 +641,8 @@ const handleUpload = async (e: any) => {
                 <td className="p-3">{item.igstRate}%</td>
 
                 <td className="p-3">
-                  <span className={`px-2 py-1 rounded-full text-xs ${
-                    item.isActive ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"
-                  }`}>
+                  <span className={`px-2 py-1 rounded-full text-xs ${item.isActive ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"
+                    }`}>
                     {item.isActive ? "Active" : "Inactive"}
                   </span>
                 </td>
@@ -526,15 +658,26 @@ const handleUpload = async (e: any) => {
                       </button>
                     </div>
                   ) : (
-                    <button
-                      onClick={() => {
-                        setEditingId(item.id);
-                        setEditForm(item);
-                      }}
-                      className="p-2 bg-blue-100 text-blue-600 rounded"
-                    >
-                      <Edit2 size={14} />
-                    </button>
+                    <div className="flex justify-end gap-2">
+
+                      <button
+                        onClick={() => {
+                          setEditingId(item.id);
+                          setEditForm(item);
+                        }}
+                        className="p-2 bg-blue-100 text-blue-600 rounded hover:bg-blue-200"
+                      >
+                        <Edit2 size={14} />
+                      </button>
+
+                      <button
+                        onClick={() => handleDelete(item.id)}
+                        className="p-2 bg-red-100 text-red-600 rounded hover:bg-red-200"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+
+                    </div>
                   )}
                 </td>
 
@@ -570,6 +713,139 @@ const handleUpload = async (e: any) => {
         </div>
 
       </div>
+      {showCreateModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6">
+
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-semibold">
+                Create HSN
+              </h2>
+
+              <button
+                onClick={() => setShowCreateModal(false)}
+                className="p-2 rounded-lg hover:bg-gray-100"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+
+              <div>
+                <label className="text-sm font-medium">HSN Code</label>
+                <input
+                  className="w-full border rounded-lg px-3 py-2 mt-1"
+                  value={newHsn.hsnCode}
+                  onChange={(e) =>
+                    setNewHsn({ ...newHsn, hsnCode: e.target.value })
+                  }
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium">Category</label>
+                <input
+                  className="w-full border rounded-lg px-3 py-2 mt-1"
+                  value={newHsn.category}
+                  onChange={(e) =>
+                    setNewHsn({ ...newHsn, category: e.target.value })
+                  }
+                />
+              </div>
+
+              <div className="col-span-2">
+                <label className="text-sm font-medium">Description</label>
+                <textarea
+                  rows={3}
+                  className="w-full border rounded-lg px-3 py-2 mt-1"
+                  value={newHsn.description}
+                  onChange={(e) =>
+                    setNewHsn({ ...newHsn, description: e.target.value })
+                  }
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium">CGST %</label>
+                <input
+                  type="number"
+                  className="w-full border rounded-lg px-3 py-2 mt-1"
+                  value={newHsn.cgstRate}
+                  onChange={(e) =>
+                    setNewHsn({
+                      ...newHsn,
+                      cgstRate: Number(e.target.value),
+                    })
+                  }
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium">SGST %</label>
+                <input
+                  type="number"
+                  className="w-full border rounded-lg px-3 py-2 mt-1"
+                  value={newHsn.sgstRate}
+                  onChange={(e) =>
+                    setNewHsn({
+                      ...newHsn,
+                      sgstRate: Number(e.target.value),
+                    })
+                  }
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium">IGST %</label>
+                <input
+                  type="number"
+                  className="w-full border rounded-lg px-3 py-2 mt-1"
+                  value={newHsn.igstRate}
+                  onChange={(e) =>
+                    setNewHsn({
+                      ...newHsn,
+                      igstRate: Number(e.target.value),
+                    })
+                  }
+                />
+              </div>
+
+              <div className="flex items-center mt-7">
+                <input
+                  type="checkbox"
+                  checked={newHsn.isActive}
+                  onChange={(e) =>
+                    setNewHsn({
+                      ...newHsn,
+                      isActive: e.target.checked,
+                    })
+                  }
+                />
+                <span className="ml-2">Active</span>
+              </div>
+
+            </div>
+
+            <div className="flex justify-end gap-3 mt-8">
+              <button
+                onClick={() => setShowCreateModal(false)}
+                className="px-5 py-2 border rounded-lg"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={handleCreate}
+                className="px-5 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg"
+              >
+                Create
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
     </div>
   );
 };
