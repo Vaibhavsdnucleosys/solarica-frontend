@@ -3,7 +3,7 @@ import {
   getAllQuotations,
   getPDFDownloadUrl,
 } from "../../../services/quotationService";
-import {API_URL } from "../../../config";
+import { API_URL } from "../../../config";
 import {
   getInvoices,
   getInvoiceDownloadUrl,
@@ -169,23 +169,23 @@ const SalesDataDisplay: React.FC<SalesDataProps> = ({ onClose, onAction }) => {
   >("quotation");
 
   const [activeCard, setActiveCard] = useState<
-  "all" | "pending" | "accepted" | "rejected"
->("all");
+    "all" | "pending" | "accepted" | "rejected"
+  >("all");
   const [quotations, setQuotations] = useState<any[]>([]);
   const [domesticInvoices, setDomesticInvoices] = useState<any[]>([]);
   const [exportInvoices, setExportInvoices] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [dbOffline, setDbOffline] = useState(false);
-    const [editingItem, setEditingItem] = useState<any>(null);
+  const [editingItem, setEditingItem] = useState<any>(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showRejectModal, setShowRejectModal] =
     useState(false);
 
-const [rejectReason, setRejectReason] =
+  const [rejectReason, setRejectReason] =
     useState("");
 
-const [rejectItem, setRejectItem] =
+  const [rejectItem, setRejectItem] =
     useState<any>(null);
 
   // ── Auth gate state
@@ -208,9 +208,11 @@ const [rejectItem, setRejectItem] =
   );
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const userCompany = user?.company?.toLowerCase()?.trim();
+  console.log("User Company:", userCompany);
 
   // const userCompany =user?.companyName?.toLowerCase()?.trim();
   // ── Token validation on mount ─────────────────────────────────────────────
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -250,290 +252,290 @@ const [rejectItem, setRejectItem] =
     }
   };
 
-// const handleStatusChange = async (
-//     id: string,
-//     status: string,
-//     type: "quotation" | "invoice"
-// ) => {
+  // const handleStatusChange = async (
+  //     id: string,
+  //     status: string,
+  //     type: "quotation" | "invoice"
+  // ) => {
 
-//     try {
+  //     try {
 
-//         const token =
-//             localStorage.getItem("token");
+  //         const token =
+  //             localStorage.getItem("token");
 
-//         const endpoint =
-//             type === "quotation"
-//                 ? `${API_URL}/quotations/${id}`
-//                 : `${API_URL}/invoices/${id}`;
+  //         const endpoint =
+  //             type === "quotation"
+  //                 ? `${API_URL}/quotations/${id}`
+  //                 : `${API_URL}/invoices/${id}`;
 
-//         const response = await fetch(
-//             endpoint,
-//             {
-//                 method: "PUT",
+  //         const response = await fetch(
+  //             endpoint,
+  //             {
+  //                 method: "PUT",
 
-//                 headers: {
-//                     "Content-Type":
-//                         "application/json",
+  //                 headers: {
+  //                     "Content-Type":
+  //                         "application/json",
 
-//                     Authorization:
-//                         `Bearer ${token}`,
-//                 },
+  //                     Authorization:
+  //                         `Bearer ${token}`,
+  //                 },
 
-//                 body: JSON.stringify({
-//                     status,
-//                     paymentStatus: status,
-//                 }),
-//             }
-//         );
+  //                 body: JSON.stringify({
+  //                     status,
+  //                     paymentStatus: status,
+  //                 }),
+  //             }
+  //         );
 
-//         if (!response.ok) {
-//             throw new Error(
-//                 "Failed to update status"
-//             );
-//         }
+  //         if (!response.ok) {
+  //             throw new Error(
+  //                 "Failed to update status"
+  //             );
+  //         }
 
-//         // REFRESH DATA
+  //         // REFRESH DATA
 
-//         await fetchData();
+  //         await fetchData();
 
-//     } catch (error) {
+  //     } catch (error) {
 
-//         console.error(
-//             "Status update failed:",
-//             error
-//         );
+  //         console.error(
+  //             "Status update failed:",
+  //             error
+  //         );
 
-//         alert(
-//             "Failed to update status"
-//         );
-//     }
-// };
-
-
-
-// const handleStatusChange = async (
-//     id: string,
-//     status: string,
-//     type: "quotation" | "invoice"
-// ) => {
-
-//     try {
-
-//         const token = localStorage.getItem("token");
-
-//         const endpoint =
-//             type === "quotation"
-//                 ? `${API_URL}/quotations/${id}`
-//                 : `${API_URL}/invoices/${id}`;
-
-//         const payload: any = {
-//             status,
-//             paymentStatus: status,
-//         };
-
-//         // NEW CONDITION
-//         if (
-//             type === "invoice" &&
-//             status.toUpperCase() === "ACCEPTED"
-//         ) {
-//             payload.proformaAccepted = true;
-//             payload.proformaAcceptedAt = new Date();
-//             payload.paymentStatus = "PROFORMA_INVOICE_ACCEPTED";
-//         }
-
-//         const response = await fetch(endpoint, {
-//             method: "PUT",
-//             headers: {
-//                 "Content-Type": "application/json",
-//                 Authorization: `Bearer ${token}`,
-//             },
-//             body: JSON.stringify(payload),
-//         });
-
-//         if (!response.ok) {
-//             throw new Error("Failed to update status");
-//         }
-
-//         await fetchData();
-
-//     } catch (error) {
-
-//         console.error("Status update failed:", error);
-
-//         alert("Failed to update status");
-//     }
-// };
+  //         alert(
+  //             "Failed to update status"
+  //         );
+  //     }
+  // };
 
 
-const handleStatusChange = async (
+
+  // const handleStatusChange = async (
+  //     id: string,
+  //     status: string,
+  //     type: "quotation" | "invoice"
+  // ) => {
+
+  //     try {
+
+  //         const token = localStorage.getItem("token");
+
+  //         const endpoint =
+  //             type === "quotation"
+  //                 ? `${API_URL}/quotations/${id}`
+  //                 : `${API_URL}/invoices/${id}`;
+
+  //         const payload: any = {
+  //             status,
+  //             paymentStatus: status,
+  //         };
+
+  //         // NEW CONDITION
+  //         if (
+  //             type === "invoice" &&
+  //             status.toUpperCase() === "ACCEPTED"
+  //         ) {
+  //             payload.proformaAccepted = true;
+  //             payload.proformaAcceptedAt = new Date();
+  //             payload.paymentStatus = "PROFORMA_INVOICE_ACCEPTED";
+  //         }
+
+  //         const response = await fetch(endpoint, {
+  //             method: "PUT",
+  //             headers: {
+  //                 "Content-Type": "application/json",
+  //                 Authorization: `Bearer ${token}`,
+  //             },
+  //             body: JSON.stringify(payload),
+  //         });
+
+  //         if (!response.ok) {
+  //             throw new Error("Failed to update status");
+  //         }
+
+  //         await fetchData();
+
+  //     } catch (error) {
+
+  //         console.error("Status update failed:", error);
+
+  //         alert("Failed to update status");
+  //     }
+  // };
+
+
+  const handleStatusChange = async (
     id: string,
     status: string,
     type: "quotation" | "invoice"
-) => {
+  ) => {
 
     try {
 
-        const token =
-            localStorage.getItem("token");
+      const token =
+        localStorage.getItem("token");
 
-        const endpoint =
-            type === "quotation"
-                ? `${API_URL}/quotations/${id}`
-                : `${API_URL}/invoices/${id}`;
+      const endpoint =
+        type === "quotation"
+          ? `${API_URL}/quotations/${id}`
+          : `${API_URL}/invoices/${id}`;
 
-        const payload: any = {
-            status,
-            paymentStatus: status,
-        };
+      const payload: any = {
+        status,
+        paymentStatus: status,
+      };
 
-        // ACCEPT CONDITION
+      // ACCEPT CONDITION
 
-        if (
-            type === "invoice" &&
-            status.toUpperCase() === "ACCEPTED"
-        ) {
+      if (
+        type === "invoice" &&
+        status.toUpperCase() === "ACCEPTED"
+      ) {
 
-            payload.proformaAccepted = true;
+        payload.proformaAccepted = true;
 
-            payload.proformaAcceptedAt =
-                new Date();
+        payload.proformaAcceptedAt =
+          new Date();
 
-            payload.paymentStatus =
-                "PROFORMA_INVOICE_ACCEPTED";
-        }
+        payload.paymentStatus =
+          "PROFORMA_INVOICE_ACCEPTED";
+      }
 
-        // REJECT CONDITION
-if (
-    type === "invoice" &&
-    status.toUpperCase() === "REJECTED"
-) {
+      // REJECT CONDITION
+      if (
+        type === "invoice" &&
+        status.toUpperCase() === "REJECTED"
+      ) {
 
-    setRejectItem({
-        id,
-        type,
-    });
-
-    setRejectReason("");
-
-    setShowRejectModal(true);
-
-    return;
-}
-
-        const response = await fetch(
-            endpoint,
-            {
-                method: "PUT",
-
-                headers: {
-                    "Content-Type":
-                        "application/json",
-
-                    Authorization:
-                        `Bearer ${token}`,
-                },
-
-                body: JSON.stringify(payload),
-            }
-        );
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Failed to update status"
-            );
-        }
-
-        await fetchData();
-
-    } catch (error) {
-
-        console.error(
-            "Status update failed:",
-            error
-        );
-
-        alert(
-            "Failed to update status"
-        );
-    }
-};
-
-const submitRejectReason = async () => {
-
-    try {
-
-        if (!rejectReason.trim()) {
-
-            toast.error(
-                "Please enter rejection reason"
-            );
-
-            return;
-        }
-
-        const token =
-            localStorage.getItem("token");
-
-        const endpoint =
-            rejectItem.type === "quotation"
-                ? `${API_URL}/quotations/${rejectItem.id}`
-                : `${API_URL}/invoices/${rejectItem.id}`;
-
-        const response = await fetch(
-            endpoint,
-            {
-                method: "PUT",
-
-                headers: {
-                    "Content-Type":
-                        "application/json",
-
-                    Authorization:
-                        `Bearer ${token}`,
-                },
-
-                body: JSON.stringify({
-
-                    status: "REJECTED",
-
-                    paymentStatus:
-                        "REJECTED",
-
-                    rejectionReason:
-                        rejectReason,
-                }),
-            }
-        );
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Failed to reject"
-            );
-        }
-
-        toast.success(
-            "Rejected Successfully"
-        );
-
-        setShowRejectModal(false);
+        setRejectItem({
+          id,
+          type,
+        });
 
         setRejectReason("");
 
-        setRejectItem(null);
+        setShowRejectModal(true);
 
-        fetchData();
+        return;
+      }
+
+      const response = await fetch(
+        endpoint,
+        {
+          method: "PUT",
+
+          headers: {
+            "Content-Type":
+              "application/json",
+
+            Authorization:
+              `Bearer ${token}`,
+          },
+
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (!response.ok) {
+
+        throw new Error(
+          "Failed to update status"
+        );
+      }
+
+      await fetchData();
 
     } catch (error) {
 
-        console.error(error);
+      console.error(
+        "Status update failed:",
+        error
+      );
+
+      alert(
+        "Failed to update status"
+      );
+    }
+  };
+
+  const submitRejectReason = async () => {
+
+    try {
+
+      if (!rejectReason.trim()) {
 
         toast.error(
-            "Failed to reject"
+          "Please enter rejection reason"
         );
+
+        return;
+      }
+
+      const token =
+        localStorage.getItem("token");
+
+      const endpoint =
+        rejectItem.type === "quotation"
+          ? `${API_URL}/quotations/${rejectItem.id}`
+          : `${API_URL}/invoices/${rejectItem.id}`;
+
+      const response = await fetch(
+        endpoint,
+        {
+          method: "PUT",
+
+          headers: {
+            "Content-Type":
+              "application/json",
+
+            Authorization:
+              `Bearer ${token}`,
+          },
+
+          body: JSON.stringify({
+
+            status: "REJECTED",
+
+            paymentStatus:
+              "REJECTED",
+
+            rejectionReason:
+              rejectReason,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+
+        throw new Error(
+          "Failed to reject"
+        );
+      }
+
+      toast.success(
+        "Rejected Successfully"
+      );
+
+      setShowRejectModal(false);
+
+      setRejectReason("");
+
+      setRejectItem(null);
+
+      fetchData();
+
+    } catch (error) {
+
+      console.error(error);
+
+      toast.error(
+        "Failed to reject"
+      );
     }
-};
+  };
 
   const handleMarkAsRead = async (
     id: string,
@@ -618,15 +620,27 @@ const submitRejectReason = async () => {
             : [];
         // setAllQuotations(quotes);
         // setQuotations(quotes.filter((q: any) => (q.status || '').toUpperCase() === 'ACCEPTED'));
+        // const filteredQuotes = quotes.filter(
+        //   (q: any) => q.companyName?.toLowerCase()?.trim() === userCompany,
+        // );
         const filteredQuotes = quotes.filter(
-          (q: any) => q.companyName?.toLowerCase()?.trim() === userCompany,
+          (q: any) =>
+            q.fromCompanyName?.toLowerCase()?.trim() === userCompany
         );
+        console.table(
+          quotes.map((q: any) => ({
+            companyName: q.companyName,
+            fromCompanyName: q.fromCompanyName,
+            status: q.status,
+          }))
+        );
+        console.log("Filtered Quotes:", filteredQuotes.length);
 
         setAllQuotations(filteredQuotes);
 
         setQuotations(
           filteredQuotes.filter(
-            (q: any) => (q.status || "").toUpperCase() === "ACCEPTED",
+            (q: any) => (q.status || "").toUpperCase(),
           ),
         );
       } catch (quotErr: any) {
@@ -671,24 +685,26 @@ const submitRejectReason = async () => {
         // setExportInvoices(exportInv);
 
         const filteredInvoices = invoices.filter(
-  (inv: any) =>
-    inv.companyName?.toLowerCase()?.trim() === userCompany
-);
+          (inv: any) =>
+            inv.companyName?.toLowerCase()?.trim() === userCompany
+        );
 
-setAllInvoices(filteredInvoices);
+        setAllInvoices(filteredInvoices);
 
-const domestic = filteredInvoices.filter(
-  (inv: any) =>
-    inv.category !== "EXPORT" && inv.isProforma
-);
+        const domestic = filteredInvoices.filter(
+          (inv: any) =>
+            inv.category !== "EXPORT" && inv.isProforma
+        );
+        console.log("Invoice Companies:", invoices.map(i => i.companyName));
 
-const exportInv = filteredInvoices.filter(
-  (inv: any) =>
-    inv.category === "EXPORT" && inv.isProforma
-);
 
-setDomesticInvoices(domestic);
-setExportInvoices(exportInv);
+        const exportInv = filteredInvoices.filter(
+          (inv: any) =>
+            inv.category === "EXPORT" && inv.isProforma
+        );
+
+        setDomesticInvoices(domestic);
+        setExportInvoices(exportInv);
       } catch (invErr: any) {
         if (isAuthErr(invErr)) {
           localStorage.removeItem("token");
@@ -726,17 +742,17 @@ setExportInvoices(exportInv);
   const getDisplayStatus = (status?: string) => {
 
     const normalized =
-        (status || "").toUpperCase();
+      (status || "").toUpperCase();
 
     if (
-        normalized ===
-        "PROFORMA_INVOICE_ACCEPTED"
+      normalized ===
+      "PROFORMA_INVOICE_ACCEPTED"
     ) {
-        return "ACCEPTED";
+      return "ACCEPTED";
     }
 
     return normalized;
-};
+  };
   // Calculate dynamic stats for currently active tab
   const getStats = () => {
     let items: any[] = [];
@@ -800,37 +816,37 @@ setExportInvoices(exportInv);
 
   const currentData = getCurrentData();
 
-const filteredData = currentData.filter((item: any) => {
+  const filteredData = currentData.filter((item: any) => {
 
-  if (activeCard === "all") {
+    if (activeCard === "all") {
+      return true;
+    }
+
+    const status = (
+      item.status ||
+      item.paymentStatus ||
+      ""
+    ).toUpperCase();
+
+    if (activeCard === "pending") {
+      return ["PENDING", "DRAFT", "SENT"].includes(status);
+    }
+
+    if (activeCard === "accepted") {
+      return [
+        "ACCEPTED",
+        "PAID",
+        "DELIVERED",
+        "PROFORMA_INVOICE_ACCEPTED"
+      ].includes(status);
+    }
+
+    if (activeCard === "rejected") {
+      return ["REJECTED", "OVERDUE"].includes(status);
+    }
+
     return true;
-  }
-
-  const status = (
-    item.status ||
-    item.paymentStatus ||
-    ""
-  ).toUpperCase();
-
-  if (activeCard === "pending") {
-    return ["PENDING", "DRAFT", "SENT"].includes(status);
-  }
-
-  if (activeCard === "accepted") {
-    return [
-      "ACCEPTED",
-      "PAID",
-      "DELIVERED",
-      "PROFORMA_INVOICE_ACCEPTED"
-    ].includes(status);
-  }
-
-  if (activeCard === "rejected") {
-    return ["REJECTED", "OVERDUE"].includes(status);
-  }
-
-  return true;
-});
+  });
 
   // Get tab-specific title and summary
   const getTabInfo = () => {
@@ -919,6 +935,7 @@ const filteredData = currentData.filter((item: any) => {
   //     alert("Failed to load documents");
   //   }
   // };
+
 
   // ── Login gate ───────────────────────────────────────────────────────────
   if (!isAuthenticated) {
@@ -1047,13 +1064,12 @@ const filteredData = currentData.filter((item: any) => {
                             className={`p-5 flex gap-4 hover:bg-slate-50 transition-all cursor-pointer group ${!notif.isRead ? "bg-blue-50/30" : ""}`}
                           >
                             <div
-                              className={`size-10 rounded-xl shrink-0 flex items-center justify-center ${
-                                notif.type === "SUCCESS"
+                              className={`size-10 rounded-xl shrink-0 flex items-center justify-center ${notif.type === "SUCCESS"
                                   ? "bg-emerald-50 text-emerald-500"
                                   : notif.type === "WARNING"
                                     ? "bg-amber-50 text-amber-500"
                                     : "bg-blue-50 text-blue-500"
-                              }`}
+                                }`}
                             >
                               {notif.type === "SUCCESS" ? (
                                 <Check size={18} />
@@ -1095,14 +1111,13 @@ const filteredData = currentData.filter((item: any) => {
       <div className="px-4 sm:px-6 py-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm"> */}
         <div
-  onClick={() => setActiveCard("all")}
-  className={`bg-white rounded-lg p-4 border shadow-sm cursor-pointer transition-all duration-200
-  ${
-    activeCard === "all"
-      ? "border-blue-500 ring-2 ring-blue-100 scale-[1.02]"
-      : "border-gray-200 hover:border-blue-200"
-  }`}
->
+          onClick={() => setActiveCard("all")}
+          className={`bg-white rounded-lg p-4 border shadow-sm cursor-pointer transition-all duration-200
+  ${activeCard === "all"
+              ? "border-blue-500 ring-2 ring-blue-100 scale-[1.02]"
+              : "border-gray-200 hover:border-blue-200"
+            }`}
+        >
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm text-gray-500 mb-1">
@@ -1133,14 +1148,13 @@ const filteredData = currentData.filter((item: any) => {
 
         {/* <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm"> */}
         <div
-  onClick={() => setActiveCard("pending")}
-  className={`bg-white rounded-lg p-4 border shadow-sm cursor-pointer transition-all duration-200
-  ${
-    activeCard === "pending"
-      ? "border-orange-500 ring-2 ring-orange-100 scale-[1.02]"
-      : "border-gray-200 hover:border-orange-200"
-  }`}
->
+          onClick={() => setActiveCard("pending")}
+          className={`bg-white rounded-lg p-4 border shadow-sm cursor-pointer transition-all duration-200
+  ${activeCard === "pending"
+              ? "border-orange-500 ring-2 ring-orange-100 scale-[1.02]"
+              : "border-gray-200 hover:border-orange-200"
+            }`}
+        >
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm text-gray-500 mb-1">Pending Action</p>
@@ -1168,15 +1182,14 @@ const filteredData = currentData.filter((item: any) => {
 
         {/* <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm"> */}
 
-<div
-  onClick={() => setActiveCard("accepted")}
-  className={`bg-white rounded-lg p-4 border shadow-sm cursor-pointer transition-all duration-200
-  ${
-    activeCard === "accepted"
-      ? "border-green-500 ring-2 ring-green-100 scale-[1.02]"
-      : "border-gray-200 hover:border-green-200"
-  }`}
->          <div className="flex justify-between items-start">
+        <div
+          onClick={() => setActiveCard("accepted")}
+          className={`bg-white rounded-lg p-4 border shadow-sm cursor-pointer transition-all duration-200
+  ${activeCard === "accepted"
+              ? "border-green-500 ring-2 ring-green-100 scale-[1.02]"
+              : "border-gray-200 hover:border-green-200"
+            }`}
+        >          <div className="flex justify-between items-start">
             <div>
               <p className="text-sm text-gray-500 mb-1">Accepted</p>
               <p className="text-3xl font-bold text-gray-800">
@@ -1203,14 +1216,13 @@ const filteredData = currentData.filter((item: any) => {
 
         {/* <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm"> */}
         <div
-  onClick={() => setActiveCard("rejected")}
-  className={`bg-white rounded-lg p-4 border shadow-sm cursor-pointer transition-all duration-200
-  ${
-    activeCard === "rejected"
-      ? "border-red-500 ring-2 ring-red-100 scale-[1.02]"
-      : "border-gray-200 hover:border-red-200"
-  }`}
->
+          onClick={() => setActiveCard("rejected")}
+          className={`bg-white rounded-lg p-4 border shadow-sm cursor-pointer transition-all duration-200
+  ${activeCard === "rejected"
+              ? "border-red-500 ring-2 ring-red-100 scale-[1.02]"
+              : "border-gray-200 hover:border-red-200"
+            }`}
+        >
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm text-gray-500 mb-1">Rejected</p>
@@ -1242,31 +1254,28 @@ const filteredData = currentData.filter((item: any) => {
         <div className="flex gap-2 border-b border-gray-200 min-w-max">
           <button
             onClick={() => setActiveTab("quotation")}
-            className={`px-4 py-3 text-sm font-semibold transition-colors relative whitespace-nowrap ${
-              activeTab === "quotation"
+            className={`px-4 py-3 text-sm font-semibold transition-colors relative whitespace-nowrap ${activeTab === "quotation"
                 ? "text-blue-600 border-b-2 border-blue-600"
                 : "text-gray-500 hover:text-gray-700"
-            }`}
+              }`}
           >
             📋 QUOTATIONS
           </button>
           <button
             onClick={() => setActiveTab("estimated")}
-            className={`px-4 py-3 text-sm font-semibold transition-colors relative whitespace-nowrap ${
-              activeTab === "estimated"
+            className={`px-4 py-3 text-sm font-semibold transition-colors relative whitespace-nowrap ${activeTab === "estimated"
                 ? "text-blue-600 border-b-2 border-blue-600"
                 : "text-gray-500 hover:text-gray-700"
-            }`}
+              }`}
           >
             📊 PROFORMA INVOICES
           </button>
           <button
             onClick={() => setActiveTab("export")}
-            className={`px-4 py-3 text-sm font-semibold transition-colors relative whitespace-nowrap ${
-              activeTab === "export"
+            className={`px-4 py-3 text-sm font-semibold transition-colors relative whitespace-nowrap ${activeTab === "export"
                 ? "text-blue-600 border-b-2 border-blue-600"
                 : "text-gray-500 hover:text-gray-700"
-            }`}
+              }`}
           >
             🌐 EXPORT PROFORMA
           </button>
@@ -1303,172 +1312,172 @@ const filteredData = currentData.filter((item: any) => {
                 <div className="flex items-center justify-center h-64">
                   <div className="text-red-500">{error}</div>
                 </div>
-              ) : 
-              // currentData.length === 0 
-              
-              filteredData.length === 0
-              ? (
-                <div className="flex items-center justify-center h-64">
-                  <div className="text-gray-500">No data found</div>
-                </div>
-              ) : (
-                // currentData.map((item: any, index: number) => {
-                filteredData.map((item: any, index: number) => {
-                  // Determine field names based on active tab
-                  const isQuotation = activeTab === "quotation";
-                  const date = isQuotation ? item.createdAt : item.invoiceDate;
-                  const ref = isQuotation
-                    ? `Q-${item.id.slice(0, 8)}`
-                    : item.invoiceNumber;
-                  const company = item.companyName;
-                  const customer = isQuotation
-                    ? item.companyEmail
-                    : item.customerName;
-                  const email = isQuotation
-                    ? item.companyEmail
-                    : item.customerEmail || "";
-                  const amount = isQuotation
-                    ? item.netPayableAmount
-                    : item.grandTotalPayable;
-                  const createdBy = item.createdBy?.name || "Unknown";
+              ) :
+                // currentData.length === 0 
 
-                  // Determine item status based on tab type
-             const itemStatus =
-    getDisplayStatus(
-        isQuotation
-            ? item.status
-            : item.status ||
-                  item.paymentStatus
-    ) || "N/A";
-                  return (
-                    <div
-                      key={item.id || index}
-                      className="grid grid-cols-[0.8fr,1.5fr,1.5fr,1fr,1fr,1fr,0.8fr] gap-4 px-4 py-3 text-sm border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors items-center"
-                    >
-                      <div className="text-left pl-2 overflow-hidden">
-                        <div className="font-semibold text-gray-800 text-[11px] truncate">
-                          {formatDate(date)}
-                        </div>
+                filteredData.length === 0
+                  ? (
+                    <div className="flex items-center justify-center h-64">
+                      <div className="text-gray-500">No data found</div>
+                    </div>
+                  ) : (
+                    // currentData.map((item: any, index: number) => {
+                    filteredData.map((item: any, index: number) => {
+                      // Determine field names based on active tab
+                      const isQuotation = activeTab === "quotation";
+                      const date = isQuotation ? item.createdAt : item.invoiceDate;
+                      const ref = isQuotation
+                        ? `Q-${item.id.slice(0, 8)}`
+                        : item.invoiceNumber;
+                      const company = item.companyName;
+                      const customer = isQuotation
+                        ? item.companyEmail
+                        : item.customerName;
+                      const email = isQuotation
+                        ? item.companyEmail
+                        : item.customerEmail || "";
+                      const amount = isQuotation
+                        ? item.netPayableAmount
+                        : item.grandTotalPayable;
+                      const createdBy = item.createdBy?.name || "Unknown";
+
+                      // Determine item status based on tab type
+                      const itemStatus =
+                        getDisplayStatus(
+                          isQuotation
+                            ? item.status
+                            : item.status ||
+                            item.paymentStatus
+                        ) || "N/A";
+                      return (
                         <div
-                          className="text-[10px] text-blue-600 font-medium truncate"
-                          title={ref}
+                          key={item.id || index}
+                          className="grid grid-cols-[0.8fr,1.5fr,1.5fr,1fr,1fr,1fr,0.8fr] gap-4 px-4 py-3 text-sm border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors items-center"
                         >
-                          {ref}
-                        </div>
-                      </div>
-                      <div
-                        className="text-gray-700 truncate text-left"
-                        title={company}
-                      >
-                        {company}
-                      </div>
-                      <div className="text-left overflow-hidden">
-                        <div
-                          className="font-medium text-gray-800 truncate"
-                          title={customer}
-                        >
-                          {customer}
-                        </div>
-                        <div
-                          className="text-xs text-gray-500 truncate"
-                          title={email}
-                        >
-                          {email}
-                        </div>
-                      </div>
-                      <div className="text-right font-bold text-gray-800 truncate">
-                        {formatCurrency(amount)}
-                      </div>
+                          <div className="text-left pl-2 overflow-hidden">
+                            <div className="font-semibold text-gray-800 text-[11px] truncate">
+                              {formatDate(date)}
+                            </div>
+                            <div
+                              className="text-[10px] text-blue-600 font-medium truncate"
+                              title={ref}
+                            >
+                              {ref}
+                            </div>
+                          </div>
+                          <div
+                            className="text-gray-700 truncate text-left"
+                            title={company}
+                          >
+                            {company}
+                          </div>
+                          <div className="text-left overflow-hidden">
+                            <div
+                              className="font-medium text-gray-800 truncate"
+                              title={customer}
+                            >
+                              {customer}
+                            </div>
+                            <div
+                              className="text-xs text-gray-500 truncate"
+                              title={email}
+                            >
+                              {email}
+                            </div>
+                          </div>
+                          <div className="text-right font-bold text-gray-800 truncate">
+                            {formatCurrency(amount)}
+                          </div>
 
-                      {/* Centered Created By */}
-                      <div className="flex flex-col items-center justify-center text-center overflow-hidden">
-                        <div
-                          className="text-gray-700 truncate w-full"
-                          title={createdBy}
-                        >
-                          {createdBy}
-                        </div>
-                        <div className="text-xs text-gray-500 italic w-full">
-                          {createdBy.split(" ")[0]}
-                        </div>
-                      </div>
+                          {/* Centered Created By */}
+                          <div className="flex flex-col items-center justify-center text-center overflow-hidden">
+                            <div
+                              className="text-gray-700 truncate w-full"
+                              title={createdBy}
+                            >
+                              {createdBy}
+                            </div>
+                            <div className="text-xs text-gray-500 italic w-full">
+                              {createdBy.split(" ")[0]}
+                            </div>
+                          </div>
 
 
-                      {/* REJECT MODAL */}
+                          {/* REJECT MODAL */}
 
-{showRejectModal && (
+                          {showRejectModal && (
 
-<div className="fixed inset-0 z-[999] flex items-center justify-center backdrop-blur-[1.5px]">        <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl p-6 animate-in fade-in zoom-in-95 duration-200">
+                            <div className="fixed inset-0 z-[999] flex items-center justify-center backdrop-blur-[1.5px]">        <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl p-6 animate-in fade-in zoom-in-95 duration-200">
 
-            <div className="flex items-center justify-between mb-4">
+                              <div className="flex items-center justify-between mb-4">
 
-                <h2 className="text-xl font-bold text-slate-800">
-                    Reject Reason
-                </h2>
+                                <h2 className="text-xl font-bold text-slate-800">
+                                  Reject Reason
+                                </h2>
 
-                <button
-                    onClick={() => {
+                                <button
+                                  onClick={() => {
 
-                        setShowRejectModal(false);
+                                    setShowRejectModal(false);
 
-                        setRejectReason("");
+                                    setRejectReason("");
 
-                        setRejectItem(null);
-                    }}
-                    className="text-slate-400 hover:text-red-500 text-xl"
-                >
-                    ✕
-                </button>
-            </div>
+                                    setRejectItem(null);
+                                  }}
+                                  className="text-slate-400 hover:text-red-500 text-xl"
+                                >
+                                  ✕
+                                </button>
+                              </div>
 
-            <p className="text-sm text-slate-500 mb-3">
-                Please enter reason for rejection
-            </p>
+                              <p className="text-sm text-slate-500 mb-3">
+                                Please enter reason for rejection
+                              </p>
 
-            <textarea
-                value={rejectReason}
-                onChange={(e) =>
-                    setRejectReason(
-                        e.target.value
-                    )
-                }
-                rows={5}
-                placeholder="Enter rejection reason..."
-                className="w-full border border-slate-200 rounded-xl p-4 outline-none focus:ring-2 focus:ring-red-200 focus:border-red-400 resize-none"
-            />
+                              <textarea
+                                value={rejectReason}
+                                onChange={(e) =>
+                                  setRejectReason(
+                                    e.target.value
+                                  )
+                                }
+                                rows={5}
+                                placeholder="Enter rejection reason..."
+                                className="w-full border border-slate-200 rounded-xl p-4 outline-none focus:ring-2 focus:ring-red-200 focus:border-red-400 resize-none"
+                              />
 
-            <div className="flex justify-end gap-3 mt-5">
+                              <div className="flex justify-end gap-3 mt-5">
 
-                <button
-                    onClick={() => {
+                                <button
+                                  onClick={() => {
 
-                        setShowRejectModal(false);
+                                    setShowRejectModal(false);
 
-                        setRejectReason("");
+                                    setRejectReason("");
 
-                        setRejectItem(null);
-                    }}
-                    className="px-5 py-2 rounded-xl border border-slate-200 font-semibold text-slate-600 hover:bg-slate-100"
-                >
-                    Cancel
-                </button>
+                                    setRejectItem(null);
+                                  }}
+                                  className="px-5 py-2 rounded-xl border border-slate-200 font-semibold text-slate-600 hover:bg-slate-100"
+                                >
+                                  Cancel
+                                </button>
 
-                <button
-                    onClick={submitRejectReason}
-                    className="px-5 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold shadow-lg"
-                >
-                    Reject
-                </button>
+                                <button
+                                  onClick={submitRejectReason}
+                                  className="px-5 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold shadow-lg"
+                                >
+                                  Reject
+                                </button>
 
-            </div>
+                              </div>
 
-        </div>
+                            </div>
 
-    </div>
-)}
+                            </div>
+                          )}
 
-                      {/* Centered Status */}
-                      {/* <div className="flex items-center justify-center">
+                          {/* Centered Status */}
+                          {/* <div className="flex items-center justify-center">
                         <span
                           className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase shadow-sm whitespace-nowrap ${
                             ["ACCEPTED", "PAID", "DELIVERED"].includes(
@@ -1490,137 +1499,136 @@ const filteredData = currentData.filter((item: any) => {
                         </span>
                       </div> */}
 
-                      <div className="flex items-center justify-center">
+                          <div className="flex items-center justify-center">
 
-    <select
-        value={itemStatus}
-        onChange={(e) => {
+                            <select
+                              value={itemStatus}
+                              onChange={(e) => {
 
-    const value = e.target.value;
+                                const value = e.target.value;
 
-    // OPEN PAYMENT EDIT MODAL
-    if (
-        value === "PAID"
-    ) {
+                                // OPEN PAYMENT EDIT MODAL
+                                if (
+                                  value === "PAID"
+                                ) {
 
-        setEditingItem({
-            ...item,
-            status: value,
-            paymentMode: true,
-        });
+                                  setEditingItem({
+                                    ...item,
+                                    status: value,
+                                    paymentMode: true,
+                                  });
 
-        setShowEditModal(true);
+                                  setShowEditModal(true);
 
-        return;
-    }
+                                  return;
+                                }
 
-    // NORMAL STATUS UPDATE
-    handleStatusChange(
-        item.id,
-        value,
-        isQuotation
-            ? "quotation"
-            : "invoice"
-    );
-}}
-        
+                                // NORMAL STATUS UPDATE
+                                handleStatusChange(
+                                  item.id,
+                                  value,
+                                  isQuotation
+                                    ? "quotation"
+                                    : "invoice"
+                                );
+                              }}
 
-        className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase border-0 outline-none cursor-pointer shadow-sm
 
-        ${
-            ["ACCEPTED", "PAID", "DELIVERED"].includes(
-                (itemStatus || "").toUpperCase()
-            )
-                ? "bg-green-100 text-green-700"
-                : ["PENDING", "SENT", "DRAFT"].includes(
-                        (itemStatus || "").toUpperCase()
-                    )
-                  ? "bg-orange-100 text-orange-700"
-                  : ["REJECTED", "OVERDUE"].includes(
-                          (itemStatus || "").toUpperCase()
-                      )
-                    ? "bg-red-100 text-red-700"
-                    : "bg-gray-100 text-gray-700"
-        }
+                              className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase border-0 outline-none cursor-pointer shadow-sm
+
+        ${["ACCEPTED", "PAID", "DELIVERED"].includes(
+                                (itemStatus || "").toUpperCase()
+                              )
+                                  ? "bg-green-100 text-green-700"
+                                  : ["PENDING", "SENT", "DRAFT"].includes(
+                                    (itemStatus || "").toUpperCase()
+                                  )
+                                    ? "bg-orange-100 text-orange-700"
+                                    : ["REJECTED", "OVERDUE"].includes(
+                                      (itemStatus || "").toUpperCase()
+                                    )
+                                      ? "bg-red-100 text-red-700"
+                                      : "bg-gray-100 text-gray-700"
+                                }
         `}
-    >
+                            >
 
-        <option value="PENDING">
-            PENDING
-        </option>
+                              <option value="PENDING">
+                                PENDING
+                              </option>
 
-        <option value="ACCEPTED">
-            ACCEPTED
-        </option>
+                              <option value="ACCEPTED">
+                                ACCEPTED
+                              </option>
 
-        <option value="REJECTED">
-            REJECTED
-        </option>
+                              <option value="REJECTED">
+                                REJECTED
+                              </option>
 
-        <option value="PAID">
-            PAID
-        </option>
+                              <option value="PAID">
+                                PAID
+                              </option>
 
-        <option value="DRAFT">
-            DRAFT
-        </option>
+                              <option value="DRAFT">
+                                DRAFT
+                              </option>
 
-    </select>
+                            </select>
 
-</div>
+                          </div>
 
-                      {/* Centered Actions */}
-                      {/* Centered Actions */}
-                      <div className="flex items-center justify-center gap-2 relative">
-                        <button
-                          className="px-3 py-1 bg-blue-50 text-blue-600 rounded text-xs font-bold hover:bg-blue-100 transition-colors"
-                          onClick={(e) => handleViewPDF(item.id, e)}
-                        >
-                          View
-                        </button>
-                       
-                       
-                      </div>
-                    </div>
-                    
-                  );
-                })
-              )}
+                          {/* Centered Actions */}
+                          {/* Centered Actions */}
+                          <div className="flex items-center justify-center gap-2 relative">
+                            <button
+                              className="px-3 py-1 bg-blue-50 text-blue-600 rounded text-xs font-bold hover:bg-blue-100 transition-colors"
+                              onClick={(e) => handleViewPDF(item.id, e)}
+                            >
+                              View
+                            </button>
 
-              
+
+                          </div>
+                        </div>
+
+                      );
+                    })
+                  )}
+
+
             </div>
           </div>
         </div>
 
       </div>
-      
-{/* PAYMENT / EDIT MODAL */}
 
-{showEditModal && editingItem && (
+      {/* PAYMENT / EDIT MODAL */}
 
-    <EditSalesModal
+      {showEditModal && editingItem && (
 
-        item={editingItem}
+        <EditSalesModal
 
-        onClose={() => {
+          item={editingItem}
+
+          onClose={() => {
 
             setShowEditModal(false);
 
             setEditingItem(null);
-        }}
+          }}
 
-        onSave={() => {
+          onSave={() => {
 
             fetchData();
 
             setShowEditModal(false);
 
             setEditingItem(null);
-        }}
-    />
+          }}
+        />
 
-)}
-    
+      )}
+
     </div>
   );
 };
