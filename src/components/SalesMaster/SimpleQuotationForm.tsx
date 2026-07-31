@@ -23,7 +23,15 @@ import {
 } from "../../services/leadService";
 import CreateLeadModal from "./CreateLeadModal";
 import CatalogItemSelector from "../Catalog/CatalogItemSelector";
-
+import Motor from "../../assets/images/ONLY WATER PUMP AND MOTOR.jpg";
+import CABLES from "../../assets/images/CABLES.jpg.jpeg";
+import DC_CABLE from "../../assets/images/DC CABLE.jpg.jpeg";
+import INSTALLATION from "../../assets/images/INSTALLATION.jfif.jpeg";
+import STRUCTURE from "../../assets/images/STRUCTURE.jpg";
+import WATER_PUMP_CONTROLLER from "../../assets/images/WATER PUMP CONTROLLER.jpg";
+import solar from "../../assets/images/solar.jpg";
+import pipe from "../../assets/images/water_pump.jpg";
+import local_travels_and_transportation from "../../assets/images/local-travels-and-transportation.jpeg";
 import toast from "react-hot-toast";
 
 // [UPGRADE] GST State Code Lookup Table present in Code B
@@ -208,7 +216,7 @@ const SimpleQuotationForm = ({
           specification: "535 to 550 Wp (Mono Crystalline)",
           make: "Vikram / Goldi / Renewsys / Mackwin / Livguard / Microtech",
           qty: "1 NOS",
-          image: "/images/pump/panel.jpg",
+          image: solar,
         },
         {
           sr: 2,
@@ -216,7 +224,7 @@ const SimpleQuotationForm = ({
           specification: "0.5 HP SOLAR WATER PUMP and Motor FULLY SS IMPELLER",
           make: "SOLARICA (2 Years Warranty)",
           qty: "1-1 EACH",
-          image: "/images/pump/motor.jpg",
+          image: Motor,
         },
         {
           sr: 3,
@@ -225,7 +233,7 @@ const SimpleQuotationForm = ({
             "1 HP Solar Water Pump Controller 3 Phase / Single Phase",
           make: "SOLARICA (2 Years Warranty)",
           qty: "1 NOS",
-          image: "/images/pump/controller.jpg",
+          image: WATER_PUMP_CONTROLLER,
         },
       ],
     },
@@ -239,7 +247,7 @@ const SimpleQuotationForm = ({
           specification: "535 to 550 Wp (Mono Crystalline)",
           make: "Vikram / Goldi / Renewsys / Mackwin / Livguard / Microtech",
           qty: "2 NOS",
-          image: "/images/pump/panel.jpg",
+          image: solar,
         },
         {
           sr: 2,
@@ -247,7 +255,7 @@ const SimpleQuotationForm = ({
           specification: "1 HP SOLAR WATER PUMP and Motor FULLY SS IMPELLER",
           make: "SOLARICA (2 Years Warranty)",
           qty: "1-1 EACH",
-          image: "/images/pump/motor.jpg",
+          image: Motor,
         },
         {
           sr: 3,
@@ -256,7 +264,7 @@ const SimpleQuotationForm = ({
             "1 HP Solar Water Pump Controller 3 Phase / Single Phase",
           make: "SOLARICA (2 Years Warranty)",
           qty: "1 NOS",
-          image: "/images/pump/controller.jpg",
+          image: WATER_PUMP_CONTROLLER,
         },
       ],
     },
@@ -270,7 +278,7 @@ const SimpleQuotationForm = ({
           specification: "535 to 550 Wp (Mono Crystalline)",
           make: "Remosys / Dhoop (25 Years Warranty)",
           qty: "4 NOS",
-          image: "/images/pump/panel.jpg",
+          image: solar,
         },
         {
           sr: 2,
@@ -278,7 +286,7 @@ const SimpleQuotationForm = ({
           specification: "2 HP SOLAR WATER PUMP and Motor FULLY SS IMPELLER",
           make: "SOLARICA (2 Years Warranty)",
           qty: "1-1 EACH",
-          image: "/images/pump/motor.jpg",
+          image: Motor,
         },
         {
           sr: 3,
@@ -287,7 +295,7 @@ const SimpleQuotationForm = ({
             "2 HP Solar Water Pump Controller 3 Phase / Single Phase",
           make: "SOLARICA (2 Years Warranty)",
           qty: "1 NOS",
-          image: "/images/pump/controller.jpg",
+          image: WATER_PUMP_CONTROLLER,
         },
       ],
     },
@@ -301,7 +309,7 @@ const SimpleQuotationForm = ({
           specification: "535 to 550 Wp (Mono Crystalline)",
           make: "Vikram / Goldi / Renewsys / Mackwin / Livguard / Microtech",
           qty: "6 NOS",
-          image: "/images/pump/panel.jpg",
+          image: solar,
         },
         {
           sr: 2,
@@ -309,7 +317,7 @@ const SimpleQuotationForm = ({
           specification: "3 HP SOLAR WATER PUMP and Motor FULLY SS IMPELLER",
           make: "SOLARICA (2 Years Warranty)",
           qty: "1-1 EACH",
-          image: "/images/pump/motor.jpg",
+          image: Motor,
         },
         {
           sr: 3,
@@ -318,7 +326,7 @@ const SimpleQuotationForm = ({
             "3 HP Solar Water Pump Controller 3 Phase / Single Phase",
           make: "SOLARICA (2 Years Warranty)",
           qty: "1 NOS",
-          image: "/images/pump/controller.jpg",
+          image: WATER_PUMP_CONTROLLER,
         },
       ],
     },
@@ -332,7 +340,7 @@ const SimpleQuotationForm = ({
           specification: "535 to 550 Wp (Mono Crystalline)",
           make: "Vikram / Goldi / Renewsys / Mackwin / Livguard / Microtech",
           qty: "9 NOS",
-          image: "/images/pump/panel.jpg",
+          image: solar,
         },
         {
           sr: 2,
@@ -340,7 +348,7 @@ const SimpleQuotationForm = ({
           specification: "5 HP SOLAR WATER PUMP and Motor FULLY SS IMPELLER",
           make: "SOLARICA (2 Years Warranty)",
           qty: "1-1 EACH",
-          image: "/images/pump/motor.jpg",
+          image: Motor,
         },
         {
           sr: 3,
@@ -349,7 +357,7 @@ const SimpleQuotationForm = ({
             "5 HP Solar Water Pump Controller 3 Phase / Single Phase",
           make: "SOLARICA (2 Years Warranty)",
           qty: "1 NOS",
-          image: "/images/pump/controller.jpg",
+          image: WATER_PUMP_CONTROLLER,
         },
       ],
     },
@@ -363,7 +371,7 @@ const SimpleQuotationForm = ({
           specification: "535 to 550 Wp (Mono Crystalline)",
           make: "Vikram / Goldi / Renewsys / Mackwin / Livguard / Microtech",
           qty: "13 NOS",
-          image: "/images/pump/panel.jpg",
+          image: solar,
         },
         {
           sr: 2,
@@ -371,7 +379,7 @@ const SimpleQuotationForm = ({
           specification: "7.5 HP SOLAR WATER PUMP and Motor FULLY SS IMPELLER",
           make: "SOLARICA (2 Years Warranty)",
           qty: "1-1 EACH",
-          image: "/images/pump/motor.jpg",
+          image: Motor,
         },
         {
           sr: 3,
@@ -380,7 +388,7 @@ const SimpleQuotationForm = ({
             "7.5 HP Solar Water Pump Controller 3 Phase / Single Phase",
           make: "SOLARICA (2 Years Warranty)",
           qty: "1 NOS",
-          image: "/images/pump/controller.jpg",
+          image: WATER_PUMP_CONTROLLER,
         },
       ],
     },
@@ -393,7 +401,7 @@ const SimpleQuotationForm = ({
       specification: "GI Structure",
       make: "GI Structure (Approved) - 5 Years Warranty",
       qty: "1 Set",
-      image: "/images/pump/structure.jpg",
+      image: STRUCTURE,
     },
 
     {
@@ -402,7 +410,7 @@ const SimpleQuotationForm = ({
       specification: "6 Gauge Solar Pipe For Pump With Adjuster Warranted",
       make: "APR",
       qty: "",
-      image: "/images/pump/pipe.jpg",
+      image: pipe,
     },
 
     {
@@ -411,7 +419,7 @@ const SimpleQuotationForm = ({
       specification: "Nylon Rope Warranted",
       make: "APR",
       qty: "",
-      image: "/images/pump/rope.jpg",
+      image: DC_CABLE,
     },
 
     {
@@ -420,7 +428,7 @@ const SimpleQuotationForm = ({
       specification: "3 Core Cable For Connection To Controller",
       make: "Polycab APR",
       qty: "",
-      image: "/images/pump/cable.jpg",
+      image: CABLES,
     },
 
     {
@@ -429,7 +437,7 @@ const SimpleQuotationForm = ({
       specification: "Installation Charges With Foundation Work",
       make: "SOLARICA",
       qty: "-",
-      image: "/images/pump/installation.jpg",
+      image: INSTALLATION,
     },
 
     {
@@ -438,7 +446,7 @@ const SimpleQuotationForm = ({
       specification: "From Pune To Installation Location",
       make: "",
       qty: "-",
-      image: "/images/pump/transport.jpg",
+      image: local_travels_and_transportation,
     },
   ];
   const isAdmin =
