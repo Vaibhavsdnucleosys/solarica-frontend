@@ -640,7 +640,7 @@ const SalesDataDisplay: React.FC<SalesDataProps> = ({ onClose, onAction }) => {
 
         setQuotations(
           filteredQuotes.filter(
-            (q: any) => (q.status || "").toUpperCase(),
+            (q: any) => (q.status || "").toUpperCase() === "ACCEPTED",
           ),
         );
       } catch (quotErr: any) {
