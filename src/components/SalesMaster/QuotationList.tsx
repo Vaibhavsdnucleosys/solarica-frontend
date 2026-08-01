@@ -1176,6 +1176,7 @@ interface Quotation {
         id: string;
         type: 'ADVANCE' | 'FULL' | 'WORK';
         imageUrl: string;
+        url: string;    
         uploadedAt: string;
         uploadedBy: {
             id: string;
@@ -1738,7 +1739,7 @@ const filteredQuotations = React.useMemo(() => {
                                                         {advanceProof ? (
                                                             <div className="relative group/proof">
                                                                 <a 
-                                                                    href={advanceProof.imageUrl} 
+                                                                    href={advanceProof.url}
                                                                     target="_blank" 
                                                                     rel="noopener noreferrer"
                                                                     className="size-8 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-500 cursor-pointer hover:bg-blue-100 transition-all shadow-sm"
@@ -1786,7 +1787,7 @@ const filteredQuotations = React.useMemo(() => {
                                                         {fullProof ? (
                                                             <div className="relative group/proof">
                                                                 <div
-                                                                    onClick={() => window.open(fullProof.imageUrl, '_blank')}
+                                                                    onClick={() => window.open(fullProof.url, '_blank')}
                                                                     className="size-8 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-500 cursor-pointer hover:bg-emerald-100 transition-all shadow-sm"
                                                                 >
                                                                     <ImageIcon size={14} />
@@ -1833,7 +1834,7 @@ const filteredQuotations = React.useMemo(() => {
                                                         {workProof ? (
                                                             <div className="relative group/proof">
                                                                 <div
-                                                                    onClick={() => window.open(workProof.imageUrl, '_blank')}
+                                                                    onClick={() => window.open(workProof.url, '_blank')}
                                                                     className="size-8 rounded-lg bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-500 cursor-pointer hover:bg-indigo-100 transition-all shadow-sm"
                                                                 >
                                                                     <Wrench size={14} />
